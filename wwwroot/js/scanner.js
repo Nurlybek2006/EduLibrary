@@ -42,14 +42,14 @@
         if (found || !code) return;
         if (code.length > 100 || /[\x00-\x1f\x7f]/.test(code)) {
             stop(false);
-            message("Бұл QR код кітап данасының коды ретінде жарамсыз. Штрихкодты қолмен енгізіңіз.");
+            message(panel.dataset.scanInvalid || "Бұл QR код кітап данасының коды ретінде жарамсыз. Штрихкодты қолмен енгізіңіз.");
             codeInput.focus();
             return;
         }
         found = true;
         codeInput.value = code;
         stop(false);
-        message("Код оқылды. Кітап данасы ізделуде…");
+        message(panel.dataset.scanSuccess || "Код оқылды. Кітап данасы ізделуде…");
         // Decoded text is submitted as a value to our own route, never navigated as a URL.
         form.requestSubmit();
     };

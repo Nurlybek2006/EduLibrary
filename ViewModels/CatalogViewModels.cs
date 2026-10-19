@@ -223,6 +223,8 @@ public sealed class CopyEditViewModel : IValidatableObject
     public DateTime AcquiredAt { get; set; } = DateTime.Today;
     public string? RowVersion { get; set; }
     public bool IsOnLoan { get; set; }
+    public bool IsReserved { get; set; }
+    public bool IsLocked => IsOnLoan || IsReserved;
     public IReadOnlyList<SelectListItem> Books { get; set; } = [];
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -244,9 +246,10 @@ public static class CatalogLabels
         CopyStatus.Damaged => "Зақымдалған",
         CopyStatus.Lost => "Жоғалған",
         CopyStatus.Maintenance => "Жөндеуде",
+        CopyStatus.Reserved => "Брондалған",
         _ => "Белгісіз"
     };
     public static IEnumerable<SelectListItem> CopyStatuses(bool includeOnLoan = true) =>
-        Enum.GetValues<CopyStatus>().Where(x => includeOnLoan || x != CopyStatus.OnLoan)
+        Enum.GetValues<CopyStatus>().Where(x => includeOnLoan || x is not (CopyStatus.OnLoan or CopyStatus.Reserved))
             .Select(x => new SelectListItem(CopyStatusLabel(x), ((int)x).ToString()));
 }

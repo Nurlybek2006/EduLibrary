@@ -277,7 +277,7 @@ namespace EduLibrary.Data.Migrations
 
                     b.ToTable("BookCopies", t =>
                         {
-                            t.HasCheckConstraint("CK_Copies_Status", "[Status] BETWEEN 0 AND 4");
+                            t.HasCheckConstraint("CK_Copies_Status", "[Status] BETWEEN 0 AND 5");
                         });
                 });
 
@@ -562,6 +562,126 @@ namespace EduLibrary.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Publishers");
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.Reservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BookCopyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CancelledAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CancelledByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpiredAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FulfilledAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("LoanId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PickupAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PickupCode")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
+
+                    b.Property<string>("PickupLocationId")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("PreparedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ReadyAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RequestedPickupAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookCopyId")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Reservations_ActiveCopy")
+                        .HasFilter("[BookCopyId] IS NOT NULL AND [Status] IN (0, 1)");
+
+                    b.HasIndex("CancelledByUserId");
+
+                    b.HasIndex("LoanId")
+                        .IsUnique()
+                        .HasFilter("[LoanId] IS NOT NULL");
+
+                    b.HasIndex("PickupCode")
+                        .IsUnique();
+
+                    b.HasIndex("PreparedByUserId");
+
+                    b.HasIndex("BookCopyId", "BookId");
+
+                    b.HasIndex("LoanId", "StudentId");
+
+                    b.HasIndex("Status", "ExpiresAtUtc");
+
+                    b.HasIndex("StudentId", "BookId")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Reservations_ActiveStudentBook")
+                        .HasFilter("[Status] IN (0, 1, 2)");
+
+                    b.HasIndex("PickupLocationId", "PickupAtUtc", "Status");
+
+                    b.HasIndex("BookId", "Status", "CreatedAtUtc", "Id");
+
+                    b.ToTable("Reservations", t =>
+                        {
+                            t.HasCheckConstraint("CK_Reservations_Allocation", "([Status] IN (0,1,3) AND [BookCopyId] IS NOT NULL AND [PickupAtUtc] IS NOT NULL AND [ExpiresAtUtc] IS NOT NULL) OR ([Status] = 2 AND [BookCopyId] IS NULL AND [PickupAtUtc] IS NULL AND [ExpiresAtUtc] IS NULL) OR [Status] IN (4,5)");
+
+                            t.HasCheckConstraint("CK_Reservations_Code", "LEN([PickupCode]) = 36 AND LEFT([PickupCode],4) = 'ELR-' AND SUBSTRING([PickupCode],5,32) COLLATE Latin1_General_100_BIN2 NOT LIKE '%[^0-9A-F]%'");
+
+                            t.HasCheckConstraint("CK_Reservations_Completed", "([Status] <> 4 OR [CancelledAtUtc] IS NOT NULL) AND ([Status] <> 5 OR [ExpiredAtUtc] IS NOT NULL)");
+
+                            t.HasCheckConstraint("CK_Reservations_Dates", "([ReadyAtUtc] IS NULL OR [ReadyAtUtc] >= [CreatedAtUtc]) AND ([ExpiresAtUtc] IS NULL OR [ExpiresAtUtc] >= [CreatedAtUtc]) AND ([PickupAtUtc] IS NULL OR [ExpiresAtUtc] IS NULL OR [ExpiresAtUtc] >= [PickupAtUtc]) AND ([FulfilledAtUtc] IS NULL OR [FulfilledAtUtc] >= [CreatedAtUtc]) AND ([CancelledAtUtc] IS NULL OR [CancelledAtUtc] >= [CreatedAtUtc]) AND ([ExpiredAtUtc] IS NULL OR [ExpiredAtUtc] >= [CreatedAtUtc])");
+
+                            t.HasCheckConstraint("CK_Reservations_Fulfillment", "([Status] = 3 AND [LoanId] IS NOT NULL AND [FulfilledAtUtc] IS NOT NULL AND [ReadyAtUtc] IS NOT NULL) OR ([Status] <> 3 AND [LoanId] IS NULL AND [FulfilledAtUtc] IS NULL)");
+
+                            t.HasCheckConstraint("CK_Reservations_Ready", "[Status] <> 1 OR [ReadyAtUtc] IS NOT NULL");
+
+                            t.HasCheckConstraint("CK_Reservations_Status", "[Status] BETWEEN 0 AND 5");
+                        });
                 });
 
             modelBuilder.Entity("EduLibrary.Models.Entities.Return", b =>
@@ -1089,6 +1209,51 @@ namespace EduLibrary.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.Reservation", b =>
+                {
+                    b.HasOne("EduLibrary.Models.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduLibrary.Models.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("CancelledByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EduLibrary.Models.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("PreparedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EduLibrary.Models.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduLibrary.Models.Entities.BookCopy", "BookCopy")
+                        .WithMany()
+                        .HasForeignKey("BookCopyId", "BookId")
+                        .HasPrincipalKey("Id", "BookId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EduLibrary.Models.Entities.Loan", "Loan")
+                        .WithMany()
+                        .HasForeignKey("LoanId", "StudentId")
+                        .HasPrincipalKey("Id", "StudentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Book");
+
+                    b.Navigation("BookCopy");
+
+                    b.Navigation("Loan");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("EduLibrary.Models.Entities.Return", b =>

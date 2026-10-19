@@ -6,8 +6,9 @@
     <a class="@Current("Books")" asp-controller="Books" asp-action="Index">Каталог</a>
     @if (User.Identity?.IsAuthenticated == true) {
         <a class="@Current("Loans")" asp-controller="Loans" asp-action="Index">Менің кітаптарым</a>
+        @if (User.IsInRole("Student")) { <a class="@Current("Reservations")" asp-controller="Reservations" asp-action="Index">Броньдарым</a> }
         <a class="@Current("Recommendations")" asp-controller="Recommendations" asp-action="Index">Ұсыныстар</a>
-        @if (User.IsInRole("Student")) { <a class="@Current("ReadingSpace")" asp-controller="ReadingSpace" asp-action="Index">Менің оқу кеңістігім <i data-lucide="arrow-up-right"></i></a> }
+        @if (User.IsInRole("Student")) { <a class="@Current("ReadingSpace")" asp-controller="ReadingSpace" asp-action="Index">Оқу кеңістігім <i data-lucide="arrow-up-right"></i></a> }
         <a class="reader-mobile-link @Current("Fines")" asp-controller="Fines" asp-action="Index">Айыппұлдар</a>
         <a class="reader-mobile-link" asp-controller="Account" asp-action="Profile">Профиль</a>
     } else {

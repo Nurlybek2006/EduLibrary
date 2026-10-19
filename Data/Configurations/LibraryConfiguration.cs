@@ -49,7 +49,7 @@ public class LibraryConfiguration : IEntityTypeConfiguration<Book>, IEntityTypeC
         b.Property(x=>x.ShelfLocation).HasMaxLength(100).IsRequired(); b.Property(x=>x.Condition).HasMaxLength(500);
         b.Property(x=>x.RowVersion).IsRowVersion(); b.HasIndex(x=>new{x.BookId,x.Status});
         b.HasOne(x=>x.Book).WithMany(x=>x.Copies).HasForeignKey(x=>x.BookId);
-        b.ToTable(t=>t.HasCheckConstraint("CK_Copies_Status","[Status] BETWEEN 0 AND 4"));
+        b.ToTable(t=>t.HasCheckConstraint("CK_Copies_Status","[Status] BETWEEN 0 AND 5"));
     }
     public void Configure(EntityTypeBuilder<Student> b)
     {

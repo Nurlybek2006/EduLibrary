@@ -45,6 +45,10 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IReadingSpaceService, ReadingSpaceService>();
+builder.Services.AddOptions<ReservationOptions>().Configure<IConfiguration>(ReservationOptions.Bind)
+    .Validate(ReservationOptions.IsValid, "Брондау кестесі мен алып кету параметрлері жарамсыз.").ValidateOnStart();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddHostedService<ReservationBackgroundService>();
 builder.Services.AddScoped<RecommendationContextService>();
 builder.Services.AddScoped<IRecommendationExplanationService, RecommendationExplanationService>();
 builder.Services.AddScoped<TemplateExplanationProvider>();

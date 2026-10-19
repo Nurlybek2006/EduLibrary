@@ -3,6 +3,7 @@
     <div class="dropdown-menu dropdown-menu-end profile-dropdown"><span class="dropdown-title user-identity">@User.Identity?.Name</span>
         @if (User.IsInRole("Student")) { <a class="dropdown-item" asp-controller="ReadingSpace" asp-action="Index"><i data-lucide="armchair"></i>Менің оқу кеңістігім</a> }
         <a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i data-lucide="user-round"></i>Профиль</a>
+        @if (staff || User.IsInRole("Student")) { <a class="dropdown-item" asp-controller="Reservations" asp-action="Index"><i data-lucide="bookmark-check"></i>@(staff ? "Броньдарды басқару" : "Менің броньдарым")</a> }
         <a class="dropdown-item" asp-controller="Recommendations" asp-action="@(staff ? "Index" : "Preferences")"><i data-lucide="sliders-horizontal"></i>Қызығушылықтар</a>
         <a class="dropdown-item" asp-controller="Notifications" asp-action="Index"><i data-lucide="bell"></i>Хабарландырулар</a>
         @if (!staff) { <a class="dropdown-item" asp-controller="Fines" asp-action="Index"><i data-lucide="receipt-text"></i>Айыппұлдар</a> }

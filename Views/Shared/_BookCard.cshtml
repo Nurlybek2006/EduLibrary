@@ -16,5 +16,13 @@
             else { <span class="book-availability is-unavailable"><span></span>Қазір қолжетімсіз</span> }
             <a class="book-card-detail-link" href="@detailsUrl" aria-label="@Model.Title — кітап туралы">Толығырақ <i data-lucide="arrow-right" aria-hidden="true"></i></a>
         </div>
+        @if (!Model.IsArchived && (User.IsInRole("Student") || User.Identity?.IsAuthenticated != true))
+        {
+            var reserveUrl = Url.Action("Create", "Reservations", new { bookId = Model.BookId });
+            <div class="book-reservation-action">
+            @if (User.IsInRole("Student")) { <a class="book-reserve-link" href="@reserveUrl"><i data-lucide="@(Model.AvailableCopies > 0 ? "bookmark-plus" : "list-ordered")" aria-hidden="true"></i>@(Model.AvailableCopies > 0 ? "Брондау" : "Кезекке тұру")<i data-lucide="arrow-up-right" aria-hidden="true"></i></a> }
+            else { <a class="book-reserve-link" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@reserveUrl"><i data-lucide="bookmark-plus" aria-hidden="true"></i>@(Model.AvailableCopies > 0 ? "Брондау" : "Кезекке тұру")<i data-lucide="arrow-up-right" aria-hidden="true"></i></a> }
+            </div>
+        }
     </div>
 </article>

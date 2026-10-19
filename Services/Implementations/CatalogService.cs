@@ -1,3 +1,4 @@
+using System.Data;
 using EduLibrary.Data;
 using EduLibrary.Helpers;
 using EduLibrary.Models.Entities;
@@ -6,10 +7,12 @@ using EduLibrary.Services.Interfaces;
 using EduLibrary.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace EduLibrary.Services.Implementations;
 
-public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock, ILogger<CatalogService> logger) : ICatalogService
+public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock, ILogger<CatalogService> logger,
+    IOptions<ReservationOptions>? reservationOptions = null) : ICatalogService
 {
     private const int PageSize = 12;
 
@@ -171,9 +174,15 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
 
     public async Task SetBookArchivedAsync(int id, bool archived, CancellationToken ct = default)
     {
+        await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
+        await ReservationCoordinator.LockAsync(db, ct);
+        if (archived && await db.Reservations.AnyAsync(r => r.BookId == id &&
+                (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.ReadyForPickup || r.Status == ReservationStatus.Queued), ct))
+            throw new BusinessException("Кітапта белсенді броньдар бар. Мұрағатқа көшіру алдында оларды тоқтатыңыз.");
         var book = await db.Books.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Кітап табылмады.");
         book.IsArchived = archived; book.UpdatedAt = clock.UtcNow;
         await SaveAsync("Кітап мәртебесін өзгерту мүмкін болмады.", ct);
+        await transaction.CommitAsync(ct);
         logger.LogInformation("Book {BookId} archive status changed to {Archived}", id, archived);
     }
 
@@ -275,7 +284,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         if (status.HasValue) query = query.Where(x => x.Status == status);
         var total = await query.CountAsync(ct); var pages = Math.Max(1, (int)Math.Ceiling(total / 20d)); page = Math.Clamp(page, 1, pages);
         var rows = await query.OrderBy(x => x.Book.Title).ThenBy(x => x.InventoryNumber).Skip((page - 1) * 20).Take(20)
-            .Select(x => new { Copy = x, Title = x.Book.Title, HasLoans = x.Loans.Any() }).ToListAsync(ct);
+            .Select(x => new { Copy = x, Title = x.Book.Title, HasLoans = x.Loans.Any() || db.Reservations.Any(r => r.BookCopyId == x.Id) }).ToListAsync(ct);
         return new CopiesIndexViewModel { Search = search, BookId = bookId, Status = status, Page = page, TotalCount = total, TotalPages = pages,
             Copies = rows.Select(x => new CopyListItemViewModel { Id = x.Copy.Id, BookId = x.Copy.BookId, BookTitle = x.Title,
                 InventoryNumber = x.Copy.InventoryNumber, Barcode = x.Copy.Barcode, ShelfLocation = x.Copy.ShelfLocation, Condition = x.Copy.Condition,
@@ -288,7 +297,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         if (copy is null) return null;
         var model = new CopyEditViewModel { Id = copy.Id, BookId = copy.BookId, InventoryNumber = copy.InventoryNumber, Barcode = copy.Barcode,
             Status = copy.Status, ShelfLocation = copy.ShelfLocation, Condition = copy.Condition, AcquiredAt = copy.AcquiredAt,
-            RowVersion = Convert.ToBase64String(copy.RowVersion), IsOnLoan = copy.Status == CopyStatus.OnLoan };
+            RowVersion = Convert.ToBase64String(copy.RowVersion), IsOnLoan = copy.Status == CopyStatus.OnLoan, IsReserved = copy.Status == CopyStatus.Reserved };
         await PopulateCopyOptionsAsync(model, ct); return model;
     }
 
@@ -297,10 +306,13 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         model.Books = await db.Books.AsNoTracking().Where(x => !x.IsArchived || x.Id == model.BookId).OrderBy(x => x.Title)
             .Select(x => new SelectListItem(x.Title + " · " + x.ISBN + (x.IsArchived ? " (мұрағат)" : ""), x.Id.ToString())).ToListAsync(ct);
         if (model.Id != 0) model.IsOnLoan = await db.BookCopies.AnyAsync(x => x.Id == model.Id && x.Status == CopyStatus.OnLoan, ct);
+        if (model.Id != 0) model.IsReserved = await db.BookCopies.AnyAsync(x => x.Id == model.Id && x.Status == CopyStatus.Reserved, ct);
     }
 
     public async Task<int> SaveCopyAsync(CopyEditViewModel model, CancellationToken ct = default)
     {
+        await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
+        await ReservationCoordinator.LockAsync(db, ct);
         if (model.AcquiredAt.Year < 1900 || model.AcquiredAt.Date > clock.Today)
             throw new BusinessException("Қабылданған күн 1900 жылдан бүгінгі күнге дейін болуы тиіс.");
         var inventoryNumber = model.InventoryNumber.Trim();
@@ -310,6 +322,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         if (await db.BookCopies.AnyAsync(x => x.Id != model.Id && x.Barcode == barcode, ct))
             throw new BusinessException("Бұл штрихкод басқа данаға тиесілі.");
         if (!Enum.IsDefined(model.Status)) throw new BusinessException("Жарамды мәртебені таңдаңыз.");
+        if (model.Status == CopyStatus.Reserved) throw new BusinessException("Дананы брондау үшін «Броньдар» бөлімін пайдаланыңыз.");
         BookCopy copy;
         if (model.Id == 0)
         {
@@ -321,6 +334,9 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         {
             copy = await db.BookCopies.SingleOrDefaultAsync(x => x.Id == model.Id, ct) ?? throw new BusinessException("Кітап данасы табылмады.");
             if (copy.BookId != model.BookId) throw new BusinessException("Тіркелген дананы басқа кітапқа ауыстыруға болмайды.");
+            if (copy.Status == CopyStatus.Reserved || await db.Reservations.AnyAsync(r => r.BookCopyId == copy.Id &&
+                    (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.ReadyForPickup), ct))
+                throw new BusinessException("Брондалған дананы өзгертуге болмайды. Алдымен броньды тоқтатыңыз немесе кітапты тапсырыңыз.");
             if (copy.Status == CopyStatus.OnLoan || await db.Loans.AnyAsync(x => x.BookCopyId == copy.Id && x.ReturnedAt == null, ct))
                 throw new BusinessException("Оқырмандағы дананы өзгертуге болмайды. Алдымен қайтаруды рәсімдеңіз.");
             if (model.Status == CopyStatus.OnLoan) throw new BusinessException("Кітапты беру үшін «Кітап беру» бөлімін пайдаланыңыз.");
@@ -329,16 +345,23 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         copy.InventoryNumber = inventoryNumber; copy.Barcode = barcode; copy.Status = model.Status;
         copy.ShelfLocation = model.ShelfLocation.Trim(); copy.Condition = model.Condition.Trim(); copy.AcquiredAt = model.AcquiredAt.Date;
         await SaveAsync("Дананы сақтау мүмкін болмады. Түгендеу нөмірі мен штрихкодтың бірегейлігін тексеріңіз.", ct);
+        await ReservationCoordinator.ReconcileAsync(db, clock, reservationOptions?.Value ?? new ReservationOptions(), model.BookId, ct);
+        await transaction.CommitAsync(ct);
         logger.LogInformation("Copy {CopyId} saved", copy.Id); return copy.Id;
     }
 
     public async Task DeleteCopyAsync(int id, string rowVersion, CancellationToken ct = default)
     {
+        await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
+        await ReservationCoordinator.LockAsync(db, ct);
         var copy = await db.BookCopies.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Кітап данасы табылмады.");
+        if (copy.Status == CopyStatus.Reserved || await db.Reservations.AnyAsync(r => r.BookCopyId == id, ct))
+            throw new BusinessException("Броньмен байланысқан дананы жоюға болмайды. Брондау тарихы сақталады.");
         if (copy.Status == CopyStatus.OnLoan || await db.Loans.AnyAsync(x => x.BookCopyId == id, ct))
             throw new BusinessException("Берілу тарихы бар дананы жоюға болмайды. Қажет болса, мәртебесін өзгертіңіз.");
         db.Entry(copy).Property(x => x.RowVersion).OriginalValue = ParseRowVersion(rowVersion);
         db.BookCopies.Remove(copy); await SaveAsync("Дананы жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін.", ct);
+        await transaction.CommitAsync(ct);
         logger.LogInformation("Copy {CopyId} deleted", id);
     }
 

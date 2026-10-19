@@ -1,6 +1,6 @@
 {
   "base_url": "http://localhost:5298",
-  "passed": 283,
+  "passed": 284,
   "failed": 0,
   "checks": [
     {
@@ -1248,6 +1248,11 @@
     },
     {
       "check": "Phase 2 static asset: /css/recommendations.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/reservations.css",
       "passed": true,
       "status": 200
     },

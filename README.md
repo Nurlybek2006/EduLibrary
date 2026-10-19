@@ -420,6 +420,53 @@ tests/                      SQL Server интеграциялық тексеру
 | Пікір / QR | `Services/Implementations/ReviewService.cs`, `CopyLookupService.cs`; `Helpers/ReviewPolicy.cs`, `CopyCode.cs` |
 | Хабарландыру | `Services/Implementations/NotificationService.cs`, `WorkflowNotificationWriter.cs`, `ReminderBackgroundService.cs`; `ViewComponents/NotificationBellViewComponent.cs` |
 
+## Онлайн бронь және кітапханадан алып кету
+
+Student каталогтан немесе кітап бетінен **Кітапты брондау** әрекетін ашады. Бос дана болса, алып кету орны, жұмыс күні және бос уақыт таңдалады; дана басқа оқырманға берілмейтін `Reserved` күйіне өтеді. Барлық дана алынған не брондалған болса, **Кезекке тұру** формасы ашылады. `/Reservations` студентке тек өзінің өтінімдерін, қызметкерге басқару тізімін көрсетеді. `/ReadingSpace` ішінде белсенді броньдардың қысқаша тізімі бар.
+
+`Pending` — дайындауды күтуде, `ReadyForPickup` — алып кетуге дайын, `Queued` — FIFO кезегі, `Fulfilled` — физикалық берілді, `Cancelled` — тоқтатылды, `Expired` — мерзімі өтті. Librarian нақты дананы таңдап, дайын екенін растайды. Student QR немесе болжауға қиын `ELR-…` кодын көрсеткенде қызметкер `/Reservations/Lookup` арқылы CSRF-қорғалған POST іздеуін орындайды, кодты тексеріп, кітапты қолына беруді бөлек растайды. Код URL-ге немесе журналға жазылмайды.
+
+**Бронь жасағанда Loan құрылмайды.** Нақты тапсыру кезінде ғана бір транзакция Loan жасайды, Reservation-ды `Fulfilled`, дананы `OnLoan` күйіне ауыстырады және беру хабарын сақтайды. Берілген күн — сол сәттегі кітапхана күні; қайтару мерзімін қызметкер белгілейді. Дайын бронь мерзімі аяқталмаған болса, студент белгіленген уақыттан ертерек келгенде де қызметкер физикалық тапсыруды растай алады.
+
+`Reservations` конфигурациясы жұмыс сағатын (`09:00–18:00`, дүйсенбі–жұма), 30 минуттық слотты, бір орын/уақытқа 5 оқырманды, 14 күндік көкжиекті және 30 минуттық дайындық аралығын анықтайды. Әдепкі Pending hold — 24 сағат, Ready hold — 48 сағат; соңғы мерзім белгіленген appointment + 60 минуттан ерте болмайды. `ReservationBackgroundService` іске қосылғанда және әр 5 минутта мерзімі өткен броньдарды босатып, кезекті жылжытады; аяқталуға 6 сағат қалғанда бір ескерту жібереді. Кезектің ескі appointment-і өтіп кетсе, жылжыту кезінде келесі жарамды бос уақыт беріледі.
+
+Additive migration: `20261019204748_OnlineReservations`. Ол `Reservations` кестесін, сыртқы кілттерді, check constraints пен индекстерді қосады; бар кітаптар, берулер және студенттер жойылмайды. `RowVersion`, active Student+Book / active Copy filtered unique индекстері және транзакциялық `sp_getapplock` қатар брондау, беру, қайтару, expiry және бірнеше worker арасын үйлестіреді. Хабарландырулар сол транзакцияда сақталады; хабар жазылмаса, негізгі өзгерістер де кері қайтады. Толық оқу материалы: [STUDY.md](STUDY.md#19-онлайн-бронь-кезек-және-физикалық-тапсыру).
+
+Тексерулерді қайта орындау:
+
+```powershell
+dotnet build
+dotnet test tests/EduLibrary.Tests
+dotnet run --project tests/EduLibrary.ReservationChecks
+```
+
+ReservationChecks тек `EduLibraryReservationChecks_<guid>` атты өзі жасаған уақытша базаны миграциялайды және соңында жояды; `EDULIBRARY_TEST_CONNECTION_STRING` берілгенде де негізгі catalog атауын қолданбайды. Ол concurrency, FIFO, slot capacity, ownership, pickup, stale RowVersion, expiry/reminder dedup және хабарландыруға мәжбүрлі SQL constraint қатесі кезіндегі rollback-ті тексереді. `tests/reservations_ui_smoke.cjs` сәтті браузер әрекеттерін тек бөлек `localhost:5399` тест қосымшасында орындайды; негізгі 5298 портына жазуды қабылдамайды. Оған уақытша UI базасын алдын ала жасаған оператордың `artifacts/reservation-ui-fixture.json` деректері қажет; оны `tests/EduLibrary.ReservationUiSeed` тек `EduLibraryReservationUi_<guid>` базасында дайындайды. Парольдер/кодтар журналға шығарылмайды; скриншоттарда pickup code пен QR жасырылады.
+
+Қосымша іске қосылып тұрғанда HTTP және алдын ала дайындалған оқшау UI тексеруі:
+
+```powershell
+python tests/reservations_http_smoke.py http://localhost:5298
+# Тек өзіңіз жасаған, migration/seed орындалған уақытша UI база үшін:
+dotnet run --project tests/EduLibrary.ReservationUiSeed -- EduLibraryReservationUi_<32-lowercase-hex>
+node tests/reservations_ui_smoke.cjs http://localhost:5399
+```
+
+Соңғы reservation тексеру нәтижелері:
+
+| Тексеру | Нәтиже |
+|---|---|
+| Соңғы restore / build / test | **0 қате, 0 ескерту; 131 xUnit өтті** (24 жаңа брондау/конфигурация тексеруі) |
+| Нақты SQL ReservationChecks | **83 өтті**, 0 қате; барлық migration қолданылды, өзі жасаған база жойылды |
+| Бұрынғы SQL регрессиялары | **79 + 64 өтті**; уақытша базалар тазартылды |
+| Бұрынғы HTTP / editorial UI | **157 + 284 HTTP, 375 browser өтті**; 0 қате |
+| Read-only reservation HTTP | **94 өтті**, 0 қате; негізгі базада сәтті мазмұндық POST орындалмады |
+| Оқшауланған Chrome workflow | **153 өтті**, 0 қате; ішінде 96 рөл/тақырып/экран өлшемі тексеруі, JavaScript қатесі жоқ |
+| Браузер әрекеттері | Брондау → кезек → дайындау → қате кодты қабылдамау → POST lookup → физикалық беру/Loan → қайтару/FIFO → cancel/FIFO → бос қолжетімділік |
+| Көріністер | 360/390/768/1024/1440/1920 px, light/dark; mobile/desktop PNG қаралды, көлденең шығу табылмады |
+| Негізгі база | 36 кітап, 106 дана, 19 студент, 14 беру, 1 пікір өзгермеді; `Reservations` бастапқыда бос. 4 migration қолданылған, модельде pending өзгеріс жоқ |
+
+HTTP есебі — `artifacts/reservation-http-results.json`, браузер есебі мен құпия кодтары жабылған PNG — `artifacts/reservation-ui/`. UI сценарийі уақытша базаға сәтті бизнес жазбаларын әдейі сақтайды; оны негізгі базаға бағыттамаңыз. Физикалық камерамен QR оқу тексерілмеген, қолмен код енгізу және сервердің QR SVG жауабы тексерілді.
+
 ## Шектеулер және орналастыру
 
 Сыртқы LLM әдепкіде өшірулі және тірі API-мен тексерілмеген; жергілікті ұсынымдар оған тәуелсіз. Камера мен баспа сапасын нақты құрылғыда тексеру керек. Desktop/mobile өлшемдері Chrome Playwright арқылы тексерілді; Safari/Firefox пен физикалық мобильді құрылғы тексерілмеген. Email/SMS және банк төлем шлюзі қосылмаған; хабарландырулар ішкі, төлемдер қызметкер тіркейтін кітапхана есебі ретінде жұмыс істейді.

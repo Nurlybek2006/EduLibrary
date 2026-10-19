@@ -25,6 +25,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<SeedHistory> SeedHistory => Set<SeedHistory>();
     public DbSet<BookSubject> BookSubjects => Set<BookSubject>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<Reservation> Reservations => Set<Reservation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

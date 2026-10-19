@@ -1,6 +1,6 @@
 {
   "base_url": "http://localhost:5298",
-  "passed": 156,
+  "passed": 157,
   "failed": 0,
   "checks": [
     {
@@ -515,6 +515,11 @@
     },
     {
       "check": "Static asset: /css/account.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /css/reservations.css",
       "passed": true,
       "status": 200
     },

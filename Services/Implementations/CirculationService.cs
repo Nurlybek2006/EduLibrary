@@ -17,7 +17,8 @@ public sealed class CirculationService(
     ApplicationDbContext db,
     IOptions<LibraryOptions> options,
     ILibraryClock clock,
-    ILogger<CirculationService> logger) : ICirculationService
+    ILogger<CirculationService> logger,
+    IOptions<ReservationOptions>? reservationOptions = null) : ICirculationService
 {
     private const int PageSize = 15;
     private decimal DailyRate => options.Value.FinePerOverdueDay;
@@ -134,6 +135,11 @@ public sealed class CirculationService(
             if (copy is null || copy.Book.IsArchived) throw new BusinessException("Кітап данасы табылмады немесе кітап мұрағатталған.");
             if (copy.Status != CopyStatus.Available || await db.Loans.AnyAsync(x => x.BookCopyId == copy.Id && x.ReturnedAt == null, ct))
                 throw new BusinessException("Бұл дана қазір қолжетімсіз. Басқа дананы таңдаңыз.");
+            if (await db.Reservations.AnyAsync(r => r.BookId == copy.BookId && r.Status == ReservationStatus.Queued, ct))
+                throw new BusinessException("Бұл кітапта күту кезегі бар. Алдымен кезектегі броньдарға дана мен алып кету слотын бөліңіз.");
+            if (await db.Reservations.AnyAsync(r => r.StudentId == student.Id && r.BookId == copy.BookId &&
+                    (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.ReadyForPickup || r.Status == ReservationStatus.Queued), ct))
+                throw new BusinessException("Студенттің осы кітапқа белсенді броні бар. Кітапты бронь бетінде алып кету кодымен беріңіз.");
             var record = new Loan
             {
                 StudentId = student.Id, BookCopyId = copy.Id,
@@ -275,6 +281,8 @@ public sealed class CirculationService(
                 // deactivated, nor the selected book archived, between validation
                 // and issuing its physical copy.
                 await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
+                await ReservationCoordinator.LockAsync(db, ct);
+                await ReservationCoordinator.ReconcileAsync(db, clock, reservationOptions?.Value ?? new ReservationOptions(), ct: ct);
                 var result = await action();
                   var issued = db.ChangeTracker.Entries<Loan>().Where(e=>e.State==EntityState.Added).Select(e=>e.Entity).ToList();
                   var returned = db.ChangeTracker.Entries<Return>().Where(e=>e.State==EntityState.Added).Select(e=>e.Entity).ToList();
@@ -282,6 +290,7 @@ public sealed class CirculationService(
                 await db.SaveChangesAsync(ct);
                   await WorkflowNotificationWriter.AppendAsync(db,clock,issued,returned,fines,ct);
                   if(db.ChangeTracker.HasChanges()) await db.SaveChangesAsync(ct);
+                await ReservationCoordinator.ReconcileAsync(db, clock, reservationOptions?.Value ?? new ReservationOptions(), ct: ct);
                 await transaction.CommitAsync(ct);
                 return result;
             });
