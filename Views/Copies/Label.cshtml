@@ -1,0 +1,6 @@
+@model EduLibrary.ViewModels.CopyDetailsViewModel
+@{ ViewData["Title"] = "Түгендеу жапсырмасы"; }
+<div class="page-header no-print"><div><p class="eyebrow">КІТАПХАНА ҚОРЫН БЕЛГІЛЕУ</p><h1>Түгендеу жапсырмасы</h1><p class="text-muted">QR код пен түгендеу нөмірін басып шығарыңыз.</p></div><div class="actions"><button type="button" class="btn btn-primary" data-print-label><i data-lucide="printer" aria-hidden="true"></i> Басып шығару</button><a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Данаға оралу</a></div></div>
+<div class="inventory-label-wrap"><article class="inventory-label" aria-label="Кітаптың түгендеу жапсырмасы"><div class="inventory-label-brand">EDULIBRARY <span>АКАДЕМИЯЛЫҚ КІТАПХАНА</span></div><div class="inventory-label-content"><img src="@Url.Action("Qr", new { id = Model.Id })" width="180" height="180" alt="Дананың QR коды" class="qr-image" /><div><h2>@Model.BookTitle</h2><dl><dt>Түгендеу №</dt><dd><strong>@Model.InventoryNumber</strong></dd><dt>Сөре</dt><dd>@Model.ShelfLocation</dd></dl><code>@Model.Barcode</code></div></div></article></div>
+<p class="text-muted mt-3 no-print">Жапсырмада тек кітап данасының мәліметтері көрсетіледі. Оқырман ақпараты қамтылмайды.</p>
+@section Scripts { <script src="~/js/scanner.js" asp-append-version="true"></script> }

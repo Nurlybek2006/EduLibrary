@@ -9,3 +9,5 @@ artifacts/
 .tools/
 tests/**/bin/
 tests/**/obj/
+__pycache__/
+*.pyc

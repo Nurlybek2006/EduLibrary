@@ -12,6 +12,8 @@ public sealed class BookFilterViewModel
     public int? AuthorId { get; set; }
     public int? PublisherId { get; set; }
     public int? CategoryId { get; set; }
+    public int? SubjectId { get; set; }
+    public bool AvailableOnly { get; set; }
     public string? Language { get; set; }
     public string Sort { get; set; } = "title";
     public bool IncludeArchived { get; set; }
@@ -26,6 +28,7 @@ public sealed class BookCatalogViewModel
     public IReadOnlyList<SelectListItem> Publishers { get; set; } = [];
     public IReadOnlyList<SelectListItem> Categories { get; set; } = [];
     public IReadOnlyList<SelectListItem> Languages { get; set; } = [];
+    public IReadOnlyList<SelectListItem> Subjects { get; set; } = [];
     public int TotalCount { get; set; }
     public int TotalPages { get; set; }
 }
@@ -43,15 +46,20 @@ public sealed class BookCardViewModel
     public int TotalCopies { get; set; }
     public int AvailableCopies { get; set; }
     public bool IsArchived { get; set; }
+    public double AverageRating { get; set; }
+    public int ReviewCount { get; set; }
+    public IReadOnlyList<string> Categories { get; set; } = [];
 }
 
 public sealed class BookDetailsViewModel
 {
+    public BookRecommendationContext? RecommendationContext { get; set; }
     public BookCardViewModel Book { get; set; } = new();
     public string Description { get; set; } = "";
     public int PageCount { get; set; }
     public IReadOnlyList<string> Categories { get; set; } = [];
     public IReadOnlyList<CopyListItemViewModel> Copies { get; set; } = [];
+    public IReadOnlyList<string> Subjects { get; set; } = [];
 }
 
 public sealed class BookEditViewModel : IValidatableObject
@@ -88,9 +96,12 @@ public sealed class BookEditViewModel : IValidatableObject
     [MinLength(1, ErrorMessage = "Кемінде бір санатты таңдаңыз.")]
     [Display(Name = "Санаттар")]
     public List<int> CategoryIds { get; set; } = [];
+    [Display(Name="Пәндер")]
+    public List<int> SubjectIds { get; set; } = [];
     public IReadOnlyList<SelectListItem> Authors { get; set; } = [];
     public IReadOnlyList<SelectListItem> Publishers { get; set; } = [];
     public IReadOnlyList<SelectListItem> Categories { get; set; } = [];
+    public IReadOnlyList<SelectListItem> Subjects { get; set; } = [];
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

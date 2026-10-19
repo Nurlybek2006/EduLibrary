@@ -78,6 +78,7 @@ public static class DbSeeder
             ISBN=$"978-0-00-{i+100000:000000}-0", Title=t.Title, Description=$"{t.Title} — университет студенттеріне арналған оқу және тәжірибелік әдебиет. Кітап негізгі ұғымдар мен практикалық тәсілдерді жүйелі меңгеруге көмектеседі.",
             PublicationYear=t.Year, PageCount=t.Pages, Language=i is 13 or 14 ? "Қазақша" : "English", Publisher=publishers[i%publishers.Length], CreatedAt=clock.UtcNow, UpdatedAt=clock.UtcNow,
             BookAuthors=new List<BookAuthor>{new(){ Author=authors[t.Author] }}, BookCategories=new List<BookCategory>{ new(){Category=categories[t.Category]} },
+            BookSubjects=subjects.Where((s,index)=>index==(t.Category switch {4=>5,5=>4,<=3=>t.Category,_=>-1})).Select(s=>new BookSubject{Subject=s}).ToList(),
             Copies=Enumerable.Range(1,1+i%5).Select(j=>new BookCopy { InventoryNumber=$"EL-{i+1:0000}-{j:00}", Barcode=$"EDU{i+1:000000}{j:000}", Status=CopyStatus.Available, ShelfLocation=$"{(char)('A'+t.Category)}-{i%4+1:00}", Condition="Жақсы", AcquiredAt=today.AddMonths(-6) }).ToList()
         }).ToArray();
         books[5].BookAuthors.Add(new BookAuthor { Author=authors[6] });

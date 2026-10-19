@@ -1,4 +1,5 @@
 using EduLibrary.Helpers;
+using System.Security.Claims;
 using EduLibrary.Services.Interfaces;
 using EduLibrary.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -6,8 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EduLibrary.Controllers;
 
-public sealed class BooksController(ICatalogService catalog, ILibraryClock clock) : Controller
+public sealed class BooksController(ICatalogService catalog, ILibraryClock clock,EduLibrary.Services.Implementations.RecommendationContextService recommendationContext) : Controller
 {
+    [HttpGet]
+    public async Task<IActionResult> Results(BookFilterViewModel filter,CancellationToken ct)
+        => PartialView("_Results",await catalog.GetBooksAsync(filter,User.IsInRole("Admin")||User.IsInRole("Librarian"),ct));
     private bool IsStaff => User.IsInRole("Admin") || User.IsInRole("Librarian");
 
     [AllowAnonymous, HttpGet]
@@ -18,9 +22,10 @@ public sealed class BooksController(ICatalogService catalog, ILibraryClock clock
     }
 
     [AllowAnonymous, HttpGet]
-    public async Task<IActionResult> Details(int id, CancellationToken ct)
+    public async Task<IActionResult> Details(int id, CancellationToken ct,string? relevance=null)
     {
         var model = await catalog.GetBookAsync(id, IsStaff, ct);
+        if(model is not null)model.RecommendationContext=recommendationContext.Read(relevance,User.FindFirstValue(ClaimTypes.NameIdentifier),id);
         return model is null ? NotFound() : View(model);
     }
 

@@ -271,7 +271,12 @@ public sealed class CirculationService(
                 // and issuing its physical copy.
                 await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
                 var result = await action();
+                  var issued = db.ChangeTracker.Entries<Loan>().Where(e=>e.State==EntityState.Added).Select(e=>e.Entity).ToList();
+                  var returned = db.ChangeTracker.Entries<Return>().Where(e=>e.State==EntityState.Added).Select(e=>e.Entity).ToList();
+                  var fines = db.ChangeTracker.Entries<Fine>().Where(e=>e.State==EntityState.Added).Select(e=>e.Entity).ToList();
                 await db.SaveChangesAsync(ct);
+                  await WorkflowNotificationWriter.AppendAsync(db,clock,issued,returned,fines,ct);
+                  if(db.ChangeTracker.HasChanges()) await db.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
                 return result;
             });

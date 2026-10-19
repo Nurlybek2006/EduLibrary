@@ -1,4 +1,4 @@
-﻿@{
+@{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     var staff = User.IsInRole("Admin") || User.IsInRole("Librarian");
     string Active(string name) => controller == name ? "active" : "";
@@ -14,6 +14,7 @@
     <script src="~/js/theme.js" asp-append-version="true"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/intelligence.css" asp-append-version="true" />
 </head>
 <body>
 <a class="skip-link" href="#main-content">Мазмұнға өту</a>
@@ -38,16 +39,18 @@
             @if(staff) { <a class="@Active("Returns")" asp-controller="Returns" asp-action="Index"><i data-lucide="arrow-down-left"></i>Қайтарулар</a> }
             <a class="@Active("Fines")" asp-controller="Fines" asp-action="Index"><i data-lucide="wallet"></i>Айыппұлдар</a>
             <span class="nav-section">ИНТЕЛЛЕКТ</span>
-            <a asp-controller="Home" asp-action="Intelligence" asp-route-section="recommendations"><i data-lucide="sparkles"></i>AI ұсыныстары<span class="soon-tag">Жақында</span></a>
+            <a class="@Active("Recommendations")" asp-controller="Recommendations" asp-action="Index"><i data-lucide="sparkles"></i>AI ұсыныстары<span class="soon-tag">AI</span></a>
             @if(staff) {
-                <a asp-controller="Home" asp-action="Intelligence" asp-route-section="analytics"><i data-lucide="chart-no-axes-combined"></i>Талдау</a>
-                <a asp-controller="Home" asp-action="Intelligence" asp-route-section="reports"><i data-lucide="file-chart-column"></i>Есептер</a>
+                <a class="@Active("Analytics")" asp-controller="Analytics" asp-action="Index"><i data-lucide="chart-no-axes-combined"></i>Талдау</a>
+                <a class="@Active("Reports")" asp-controller="Reports" asp-action="Index"><i data-lucide="file-chart-column"></i>Есептер</a>
+                <a asp-controller="Copies" asp-action="Lookup"><i data-lucide="scan-line"></i>QR / штрихкод іздеу</a>
             }
         }
     </nav>
     <div class="sidebar-bottom">
         @if(User.IsInRole("Admin")) {
             <a class="@Active("Staff")" asp-controller="Staff" asp-action="Index"><i data-lucide="shield-check"></i>Қызметкерлер</a>
+            <a class="@Active("Reviews")" asp-controller="Reviews" asp-action="Index"><i data-lucide="message-square-text"></i>Пікірлерді тексеру</a>
             <a asp-controller="Home" asp-action="Settings"><i data-lucide="settings-2"></i>Баптаулар</a>
         }
         @if(User.Identity?.IsAuthenticated == true) {
@@ -59,7 +62,11 @@
 <div class="app-shell">
     <header class="topbar">
         <div class="topbar-location"><button class="icon-button mobile-menu" id="menu-toggle" type="button" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false"><i data-lucide="menu"></i></button><span class="breadcrumb-home">Кітапхана</span><i data-lucide="chevron-right"></i><strong>@ViewData["Title"]</strong></div>
-        <div class="topbar-actions"><span class="semester-label"><span class="workspace-dot"></span>Оқу кеңістігі</span><button type="button" class="icon-button" id="theme-toggle" aria-label="Түс режимін ауыстыру"><i data-lucide="sun-moon"></i></button>
+        <div class="topbar-actions"><form class="topbar-search" asp-controller="Books" asp-action="Index" method="get"><i data-lucide="search"></i><input name="Search" aria-label="Каталогтан іздеу" placeholder="Каталогтан іздеу…" maxlength="200"/></form><button type="button" class="icon-button" id="theme-toggle" aria-label="Түс режимін ауыстыру"><i data-lucide="sun-moon"></i></button>
+        @if(User.Identity?.IsAuthenticated==true){
+            @await Component.InvokeAsync("NotificationBell")
+            <div class="dropdown"><button class="avatar profile-menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Жеке кабинет мәзірі"><i data-lucide="user-round"></i></button><div class="dropdown-menu dropdown-menu-end profile-dropdown"><span class="dropdown-title">Жеке кеңістік</span><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i data-lucide="user-round"></i>Профиль</a><a class="dropdown-item" asp-controller="Recommendations" asp-action="@(staff ? "Index" : "Preferences")"><i data-lucide="sliders-horizontal"></i>Қызығушылықтар</a><a class="dropdown-item" asp-controller="Notifications" asp-action="Index"><i data-lucide="bell"></i>Хабарландырулар</a><div class="dropdown-divider"></div><form asp-controller="Account" asp-action="Logout" method="post"><button class="dropdown-item" type="submit"><i data-lucide="log-out"></i>Шығу</button></form></div></div>
+        }
         @if(User.Identity?.IsAuthenticated != true) { <a class="btn btn-sm btn-primary" asp-controller="Account" asp-action="Login">Кіру <i data-lucide="arrow-right"></i></a> }
         </div>
     </header>

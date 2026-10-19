@@ -20,6 +20,7 @@ public class LibraryConfiguration : IEntityTypeConfiguration<Book>, IEntityTypeC
         b.HasIndex(x=>x.Title);
         b.Property(x=>x.Description).HasMaxLength(6000);
         b.Property(x=>x.Language).HasMaxLength(50).IsRequired();
+        b.HasIndex(x=>new{x.IsArchived,x.Language,x.PublicationYear});
         b.Property(x=>x.CoverImageUrl).HasMaxLength(1000);
         b.HasOne(x=>x.Publisher).WithMany(x=>x.Books).HasForeignKey(x=>x.PublisherId);
         b.ToTable(t=> { t.HasCheckConstraint("CK_Books_Year", "[PublicationYear] BETWEEN 1000 AND 2200"); t.HasCheckConstraint("CK_Books_Pages", "[PageCount] > 0"); });
@@ -67,11 +68,13 @@ public class LibraryConfiguration : IEntityTypeConfiguration<Book>, IEntityTypeC
         b.Property(x=>x.Notes).HasMaxLength(2000); b.Property(x=>x.RowVersion).IsRowVersion();
         b.HasIndex(x=>x.BookCopyId).IsUnique().HasFilter("[ReturnedAt] IS NULL").HasDatabaseName("UX_Loans_ActiveCopy");
         b.HasIndex(x=>new{x.DueDate,x.ReturnedAt});
+        b.HasIndex(x=>x.LoanDate);
         b.HasAlternateKey(x=>new{x.Id,x.StudentId});
         b.ToTable(t=> { t.HasCheckConstraint("CK_Loans_Dates", "[DueDate] >= [LoanDate] AND ([ReturnedAt] IS NULL OR [ReturnedAt] >= [LoanDate])"); });
     }
     public void Configure(EntityTypeBuilder<Return> b)
     {
+        b.HasIndex(x=>x.ReturnDate);
         b.HasOne(x=>x.Loan).WithOne(x=>x.Return).HasForeignKey<Return>(x=>x.LoanId);
         b.HasOne(x=>x.ReceivedByUser).WithMany().HasForeignKey(x=>x.ReceivedByUserId);
         b.Property(x=>x.ReturnCondition).HasMaxLength(500).IsRequired(); b.Property(x=>x.Notes).HasMaxLength(2000);
@@ -87,15 +90,20 @@ public class LibraryConfiguration : IEntityTypeConfiguration<Book>, IEntityTypeC
     }
     public void Configure(EntityTypeBuilder<FinePayment> b)
     {
+        b.HasIndex(x=>x.PaidAt);
         b.Property(x=>x.Amount).HasPrecision(18,2); b.HasOne(x=>x.Fine).WithMany(x=>x.Payments).HasForeignKey(x=>x.FineId);
         b.HasOne(x=>x.ReceivedByUser).WithMany().HasForeignKey(x=>x.ReceivedByUserId);
         b.ToTable(t=>t.HasCheckConstraint("CK_Payments_Amount","[Amount] > 0"));
     }
     public void Configure(EntityTypeBuilder<Review> b)
     {
+        b.HasIndex(x=>new{x.IsDeleted,x.IsHidden,x.CreatedAt});
         b.HasOne(x=>x.Book).WithMany(x=>x.Reviews).HasForeignKey(x=>x.BookId);
         b.HasOne(x=>x.Student).WithMany().HasForeignKey(x=>x.StudentId);
-        b.Property(x=>x.Comment).HasMaxLength(3000); b.HasIndex(x=>new{x.BookId,x.StudentId}).IsUnique();
+        b.Property(x=>x.Comment).HasMaxLength(3000);
+        b.Property(x=>x.RowVersion).IsRowVersion();
+        b.HasIndex(x=>new{x.BookId,x.StudentId}).IsUnique().HasFilter("[IsDeleted] = 0");
+        b.HasIndex(x=>new{x.BookId,x.IsDeleted,x.IsHidden});
         b.ToTable(t=>t.HasCheckConstraint("CK_Reviews_Rating","[Rating] BETWEEN 1 AND 5"));
     }
     public void Configure(EntityTypeBuilder<BookAuthor> b) { b.HasKey(x=>new{x.BookId,x.AuthorId}); b.HasOne(x=>x.Book).WithMany(x=>x.BookAuthors).HasForeignKey(x=>x.BookId); b.HasOne(x=>x.Author).WithMany(x=>x.BookAuthors).HasForeignKey(x=>x.AuthorId); }

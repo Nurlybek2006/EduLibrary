@@ -18,7 +18,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         filter.Search = filter.Search?.Trim();
         filter.Language = filter.Language?.Trim();
         filter.IncludeArchived &= canViewArchived;
-        filter.Sort = filter.Sort is "year" or "popularity" ? filter.Sort : "title";
+        filter.Sort = filter.Sort is "year" or "popularity" or "rating" ? filter.Sort : "title";
         var query = db.Books.AsNoTracking().AsQueryable();
         if (!filter.IncludeArchived) query = query.Where(x => !x.IsArchived);
         if (!string.IsNullOrWhiteSpace(filter.Search))
@@ -26,12 +26,16 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
             var search = filter.Search;
             var isbnSearch = NormalizeIsbn(search);
             query = query.Where(x => x.Title.Contains(search) || (isbnSearch.Length > 0 && x.ISBN.Replace("-", "").Replace(" ", "").Contains(isbnSearch)) ||
+                x.Description.Contains(search) || x.Language.Contains(search) || x.Publisher.Name.Contains(search) ||
+                x.BookCategories.Any(c=>c.Category.Name.Contains(search)) || x.BookSubjects.Any(s=>s.Subject.Name.Contains(search)) ||
                 x.BookAuthors.Any(a => (a.Author.FirstName + " " + a.Author.LastName).Contains(search) ||
                     (a.Author.LastName + " " + a.Author.FirstName).Contains(search)));
         }
         if (filter.AuthorId.HasValue) query = query.Where(x => x.BookAuthors.Any(a => a.AuthorId == filter.AuthorId));
         if (filter.PublisherId.HasValue) query = query.Where(x => x.PublisherId == filter.PublisherId);
         if (filter.CategoryId.HasValue) query = query.Where(x => x.BookCategories.Any(a => a.CategoryId == filter.CategoryId));
+        if (filter.SubjectId.HasValue) query = query.Where(x=>x.BookSubjects.Any(s=>s.SubjectId==filter.SubjectId));
+        if (filter.AvailableOnly) query = query.Where(x=>!x.IsArchived && x.Copies.Any(c=>c.Status==CopyStatus.Available));
         if (!string.IsNullOrEmpty(filter.Language)) query = query.Where(x => x.Language == filter.Language);
         var total = await query.CountAsync(ct);
         var totalPages = Math.Max(1, (int)Math.Ceiling(total / (double)PageSize));
@@ -40,17 +44,30 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         {
             "year" => query.OrderByDescending(x => x.PublicationYear).ThenBy(x => x.Title).ThenBy(x => x.Id),
             "popularity" => query.OrderByDescending(x => db.Loans.Count(l => l.BookCopy.BookId == x.Id)).ThenBy(x => x.Title).ThenBy(x => x.Id),
+            "rating" => query.OrderByDescending(x=>x.Reviews.Where(r=>!r.IsDeleted&&!r.IsHidden).Average(r=>(double?)r.Rating)??0).ThenBy(x=>x.Title).ThenBy(x=>x.Id),
             _ => query.OrderBy(x => x.Title).ThenBy(x => x.Id)
         };
         var books = await query.Skip((filter.Page - 1) * PageSize).Take(PageSize)
-            .Include(x => x.Publisher).Include(x => x.BookAuthors).ThenInclude(x => x.Author)
-            .Include(x => x.Copies).AsSplitQuery().ToListAsync(ct);
+            .Select(x=>new BookCardViewModel {
+                Id=x.Id,ISBN=x.ISBN,Title=x.Title,Publisher=x.Publisher.Name,Language=x.Language,
+                PublicationYear=x.PublicationYear,CoverImageUrl=x.CoverImageUrl,IsArchived=x.IsArchived,
+                TotalCopies=x.Copies.Count,AvailableCopies=x.IsArchived?0:x.Copies.Count(c=>c.Status==CopyStatus.Available),
+                AverageRating=x.Reviews.Where(r=>!r.IsDeleted&&!r.IsHidden).Average(r=>(double?)r.Rating)??0,
+                ReviewCount=x.Reviews.Count(r=>!r.IsDeleted&&!r.IsHidden)
+            }).ToListAsync(ct);
+        var ids=books.Select(x=>x.Id).ToArray();
+        var authors=await db.BookAuthors.AsNoTracking().Where(x=>ids.Contains(x.BookId)).OrderBy(x=>x.Author.LastName)
+            .Select(x=>new{x.BookId,Name=x.Author.FirstName+" "+x.Author.LastName}).ToListAsync(ct);
+        var categories=await db.BookCategories.AsNoTracking().Where(x=>ids.Contains(x.BookId))
+            .Select(x=>new{x.BookId,x.Category.Name}).ToListAsync(ct);
+        foreach(var book in books){book.Authors=string.Join(", ",authors.Where(x=>x.BookId==book.Id).Select(x=>x.Name));book.Categories=categories.Where(x=>x.BookId==book.Id).Select(x=>x.Name).Order().ToList();}
         return new BookCatalogViewModel
         {
-            Filter = filter, TotalCount = total, TotalPages = totalPages, Books = books.Select(ToCard).ToList(),
+            Filter = filter, TotalCount = total, TotalPages = totalPages, Books = books,
             Authors = await AuthorOptionsAsync(ct),
             Publishers = await db.Publishers.AsNoTracking().OrderBy(x => x.Name).Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToListAsync(ct),
             Categories = await db.Categories.AsNoTracking().OrderBy(x => x.Name).Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToListAsync(ct),
+            Subjects=await db.Subjects.AsNoTracking().OrderBy(x=>x.Name).Select(x=>new SelectListItem(x.Name,x.Id.ToString())).ToListAsync(ct),
             Languages = await db.Books.AsNoTracking().Where(x => !x.IsArchived || filter.IncludeArchived).Select(x => x.Language).Distinct().OrderBy(x => x)
                 .Select(x => new SelectListItem(x, x)).ToListAsync(ct)
         };
@@ -61,12 +78,17 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         var book = await db.Books.AsNoTracking().Include(x => x.Publisher)
             .Include(x => x.BookAuthors).ThenInclude(x => x.Author)
             .Include(x => x.BookCategories).ThenInclude(x => x.Category)
+              .Include(x=>x.BookSubjects).ThenInclude(x=>x.Subject)
             .Include(x => x.Copies).AsSplitQuery()
             .SingleOrDefaultAsync(x => x.Id == id && (!x.IsArchived || canViewArchived), ct);
         if (book is null) return null;
+        var card=ToCard(book);
+        card.AverageRating=await db.Reviews.Where(r=>r.BookId==id&&!r.IsDeleted&&!r.IsHidden).AverageAsync(r=>(double?)r.Rating,ct)??0;
+        card.ReviewCount=await db.Reviews.CountAsync(r=>r.BookId==id&&!r.IsDeleted&&!r.IsHidden,ct);
         return new BookDetailsViewModel
         {
-            Book = ToCard(book), Description = book.Description ?? "", PageCount = book.PageCount,
+            Book = card, Description = book.Description ?? "", PageCount = book.PageCount,
+            Subjects=book.BookSubjects.Select(x=>x.Subject.Name).Order().ToList(),
             Categories = book.BookCategories.Select(x => x.Category.Name).Order().ToList(),
             Copies = book.Copies.OrderBy(x => x.InventoryNumber).Select(x => new CopyListItemViewModel
             {
@@ -79,7 +101,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
 
     public async Task<BookEditViewModel?> GetBookForEditAsync(int id, CancellationToken ct = default)
     {
-        var book = await db.Books.AsNoTracking().Include(x => x.BookAuthors).Include(x => x.BookCategories).SingleOrDefaultAsync(x => x.Id == id, ct);
+        var book = await db.Books.AsNoTracking().Include(x => x.BookAuthors).Include(x => x.BookCategories).Include(x=>x.BookSubjects).AsSplitQuery().SingleOrDefaultAsync(x => x.Id == id, ct);
         if (book is null) return null;
         var model = new BookEditViewModel
         {
@@ -87,6 +109,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
             PublicationYear = book.PublicationYear, Language = book.Language, PageCount = book.PageCount,
             CoverImageUrl = book.CoverImageUrl, PublisherId = book.PublisherId,
             AuthorIds = book.BookAuthors.Select(x => x.AuthorId).ToList(), CategoryIds = book.BookCategories.Select(x => x.CategoryId).ToList()
+            ,SubjectIds=book.BookSubjects.Select(x=>x.SubjectId).ToList()
         };
         await PopulateBookOptionsAsync(model, ct);
         return model;
@@ -97,6 +120,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         model.Authors = await AuthorOptionsAsync(ct);
         model.Publishers = await db.Publishers.AsNoTracking().OrderBy(x => x.Name).Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToListAsync(ct);
         model.Categories = await db.Categories.AsNoTracking().OrderBy(x => x.Name).Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToListAsync(ct);
+        model.Subjects = await db.Subjects.AsNoTracking().OrderBy(x=>x.Name).Select(x=>new SelectListItem(x.Name,x.Id.ToString())).ToListAsync(ct);
     }
 
     public async Task<int> SaveBookAsync(BookEditViewModel model, CancellationToken ct = default)
@@ -108,6 +132,8 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
             throw new BusinessException("Таңдалған баспа табылмады.");
         var authorIds = model.AuthorIds.Distinct().ToList();
         var categoryIds = model.CategoryIds.Distinct().ToList();
+        var subjectIds=model.SubjectIds.Distinct().ToList();
+        if(await db.Subjects.CountAsync(s=>subjectIds.Contains(s.Id),ct)!=subjectIds.Count)throw new BusinessException("Жарамды пәндерді таңдаңыз.");
         if (authorIds.Count == 0 || await db.Authors.CountAsync(x => authorIds.Contains(x.Id), ct) != authorIds.Count)
             throw new BusinessException("Кемінде бір жарамды авторды таңдаңыз.");
         if (categoryIds.Count == 0 || await db.Categories.CountAsync(x => categoryIds.Contains(x.Id), ct) != categoryIds.Count)
@@ -123,7 +149,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         }
         else
         {
-            book = await db.Books.Include(x => x.BookAuthors).Include(x => x.BookCategories).SingleOrDefaultAsync(x => x.Id == model.Id, ct)
+            book = await db.Books.Include(x => x.BookAuthors).Include(x => x.BookCategories).Include(x=>x.BookSubjects).AsSplitQuery().SingleOrDefaultAsync(x => x.Id == model.Id, ct)
                 ?? throw new BusinessException("Кітап табылмады.");
         }
         book.ISBN = isbn; book.Title = model.Title.Trim(); book.Description = model.Description?.Trim() ?? "";
@@ -136,6 +162,8 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         foreach (var item in book.BookCategories.Where(x => !categoryIds.Contains(x.CategoryId)).ToList()) db.BookCategories.Remove(item);
         foreach (var categoryId in categoryIds.Where(id => book.BookCategories.All(x => x.CategoryId != id)))
             book.BookCategories.Add(new BookCategory { CategoryId = categoryId });
+        foreach(var item in book.BookSubjects.Where(x=>!subjectIds.Contains(x.SubjectId)).ToList())db.BookSubjects.Remove(item);
+        foreach(var subjectId in subjectIds.Where(id=>book.BookSubjects.All(x=>x.SubjectId!=id)))book.BookSubjects.Add(new(){SubjectId=subjectId});
         await SaveAsync("Кітапты сақтау мүмкін болмады. ISBN бірегейлігін және анықтамалықтарды тексеріңіз.", ct);
         logger.LogInformation("Book {BookId} saved", book.Id);
         return book.Id;

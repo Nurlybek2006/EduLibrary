@@ -1,0 +1,14 @@
+@model EduLibrary.ViewModels.ReviewEditViewModel
+@{ ViewData["Title"] = Model.Id == 0 ? "Пікір жазу" : "Пікірді өзгерту"; }
+<div class="page-header"><div><p class="eyebrow">ОҚУ ТӘЖІРИБЕСІ</p><h1>@ViewData["Title"]</h1><p class="text-muted">@Model.BookTitle</p></div><a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" asp-fragment="reviews" class="btn btn-outline-secondary">Кітапқа оралу</a></div>
+<div class="card form-card">
+@if (Model.IsHidden) { <div class="alert alert-warning">Пікірді модератор жасырған. Өзгерістер пікірді автоматты түрде қайта жарияламайды.</div> }
+<form asp-controller="Reviews" asp-action="@(Model.Id == 0 ? "Create" : "Edit")" asp-route-id="@(Model.Id == 0 ? (int?)null : Model.Id)" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div><input asp-for="Id" type="hidden" /><input asp-for="BookId" type="hidden" /><input asp-for="RowVersion" type="hidden" />
+    <fieldset class="mb-4"><legend class="h5">Бағаңыз</legend><div class="rating-picker actions">@for (var rating = 1; rating <= 5; rating++) { <label class="rating-option"><input asp-for="Rating" type="radio" value="@rating" id="review-rating-@rating" /><span>@rating <span aria-hidden="true">★</span></span></label> }</div><span asp-validation-for="Rating" class="text-danger"></span></fieldset>
+    <div class="mb-3"><label asp-for="Comment"></label><textarea asp-for="Comment" class="form-control" rows="6" maxlength="3000" placeholder="Кітаптың пайдалы жақтары, мазмұны немесе оқу тәжірибеңіз туралы жазыңыз."></textarea><span asp-validation-for="Comment" class="text-danger"></span><p class="form-text">Пікір мәтіні міндетті емес. Басқа адамдардың жеке деректерін жарияламаңыз.</p></div>
+    <div class="actions"><button type="submit" class="btn btn-primary">Пікірді сақтау</button><a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" asp-fragment="reviews" class="btn btn-outline-secondary">Бас тарту</a></div>
+</form>
+@if (Model.Id != 0) { <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="mt-4" data-confirm="Пікіріңіз жойылсын ба? Рейтинг жалпы есептен алынады."><input name="rowVersion" value="@Model.RowVersion" type="hidden" /><button type="submit" class="btn btn-outline-danger"><i data-lucide="trash-2" aria-hidden="true"></i> Пікірді жою</button></form> }
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

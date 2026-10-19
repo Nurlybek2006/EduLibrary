@@ -182,6 +182,8 @@ namespace EduLibrary.Data.Migrations
 
                     b.HasIndex("Title");
 
+                    b.HasIndex("IsArchived", "Language", "PublicationYear");
+
                     b.ToTable("Books", t =>
                         {
                             t.HasCheckConstraint("CK_Books_Pages", "[PageCount] > 0");
@@ -277,6 +279,21 @@ namespace EduLibrary.Data.Migrations
                         {
                             t.HasCheckConstraint("CK_Copies_Status", "[Status] BETWEEN 0 AND 4");
                         });
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.BookSubject", b =>
+                {
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookId", "SubjectId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("BookSubjects");
                 });
 
             modelBuilder.Entity("EduLibrary.Models.Entities.Category", b =>
@@ -390,6 +407,8 @@ namespace EduLibrary.Data.Migrations
 
                     b.HasIndex("FineId");
 
+                    b.HasIndex("PaidAt");
+
                     b.HasIndex("ReceivedByUserId");
 
                     b.ToTable("FinePayments", t =>
@@ -444,6 +463,8 @@ namespace EduLibrary.Data.Migrations
 
                     b.HasIndex("IssuedByUserId");
 
+                    b.HasIndex("LoanDate");
+
                     b.HasIndex("StudentId");
 
                     b.HasIndex("DueDate", "ReturnedAt");
@@ -451,6 +472,65 @@ namespace EduLibrary.Data.Migrations
                     b.ToTable("Loans", t =>
                         {
                             t.HasCheckConstraint("CK_Loans_Dates", "[DueDate] >= [LoanDate] AND ([ReturnedAt] IS NULL OR [ReturnedAt] >= [LoanDate])");
+                        });
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeduplicationKey")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeduplicationKey");
+
+                    b.HasIndex("UserId", "DeduplicationKey")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "ReadAt", "CreatedAt");
+
+                    b.ToTable("Notifications", t =>
+                        {
+                            t.HasCheckConstraint("CK_Notifications_ReadAt", "[ReadAt] IS NULL OR [ReadAt] >= [CreatedAt]");
                         });
                 });
 
@@ -518,6 +598,8 @@ namespace EduLibrary.Data.Migrations
 
                     b.HasIndex("ReceivedByUserId");
 
+                    b.HasIndex("ReturnDate");
+
                     b.ToTable("Returns");
                 });
 
@@ -540,18 +622,38 @@ namespace EduLibrary.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId");
 
                     b.HasIndex("BookId", "StudentId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
+                    b.HasIndex("BookId", "IsDeleted", "IsHidden");
+
+                    b.HasIndex("IsDeleted", "IsHidden", "CreatedAt");
 
                     b.ToTable("Reviews", t =>
                         {
@@ -893,6 +995,25 @@ namespace EduLibrary.Data.Migrations
                     b.Navigation("Book");
                 });
 
+            modelBuilder.Entity("EduLibrary.Models.Entities.BookSubject", b =>
+                {
+                    b.HasOne("EduLibrary.Models.Entities.Book", "Book")
+                        .WithMany("BookSubjects")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduLibrary.Models.Entities.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("EduLibrary.Models.Entities.Fine", b =>
                 {
                     b.HasOne("EduLibrary.Models.Entities.Student", "Student")
@@ -957,6 +1078,17 @@ namespace EduLibrary.Data.Migrations
                     b.Navigation("IssuedByUser");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.Notification", b =>
+                {
+                    b.HasOne("EduLibrary.Models.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EduLibrary.Models.Entities.Return", b =>
@@ -1098,6 +1230,8 @@ namespace EduLibrary.Data.Migrations
                     b.Navigation("BookAuthors");
 
                     b.Navigation("BookCategories");
+
+                    b.Navigation("BookSubjects");
 
                     b.Navigation("Copies");
 

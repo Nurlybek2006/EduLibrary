@@ -1,0 +1,17 @@
+@model EduLibrary.ViewModels.RecommendationPreferencesViewModel
+@{ ViewData["Title"] = "Оқу бағыты"; }
+<link rel="stylesheet" href="~/css/recommendations.css" asp-append-version="true" />
+<div class="page-header"><div><span class="eyebrow">ҰСЫНЫСТАРДЫ ЖЕКЕЛЕНДІРУ</span><h1>Оқу бағытыңыз</h1><p>@Model.StudentName · @Model.Faculty</p></div><a asp-action="Index" asp-route-studentId="@Model.StudentId" class="btn btn-outline-secondary">Ұсыныстарға оралу</a></div>
+<section class="card form-card"><form asp-action="Preferences" method="post" id="recommendation-preferences">
+    <input type="hidden" asp-for="StudentId" /><div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <h2>Қай бағыттар сізге қызық?</h2><p class="text-muted">Өзекті тақырыптарды қосыңыз немесе қажет емесін алып тастаңыз. Мысалы: Python, алгоритмдер, дизайн.</p>
+    <div id="interest-textarea"><label asp-for="Interests"></label><textarea asp-for="Interests" class="form-control" rows="3" maxlength="1000"></textarea><small class="form-text text-muted">Атауларды үтірмен бөліңіз. Ең көбі 20 бағыт; әр атау 100 таңбадан аспасын.</small></div>
+    <div id="interest-editor" hidden><label for="new-interest">Қызығушылық қосу</label><div class="recommendation-interest-input"><input id="new-interest" type="text" class="form-control" maxlength="100" placeholder="Мысалы, деректер қоры" autocomplete="off" /><button id="add-interest" type="button" class="btn btn-primary"><i data-lucide="plus" aria-hidden="true"></i> Қосу</button></div><div id="interest-chips" class="recommendation-interest-chips" aria-label="Қызығушылықтар"></div><p id="interest-editor-error" class="text-danger" role="status" aria-live="polite"></p></div>
+    <span asp-validation-for="Interests" class="text-danger"></span>
+    <hr class="my-4" /><h2>Оқитын пәндеріңіз</h2><p class="text-muted">Оқу жоспарыңыздағы пәндерді таңдаңыз. Олар әдебиеттің пәндік байланысын анықтауға көмектеседі.</p>
+    <div class="recommendation-subjects">@foreach (var subject in Model.Subjects) { var selected = Model.SelectedSubjectIds.Contains(int.Parse(subject.Value)); <label class="recommendation-subject"><input class="form-check-input" type="checkbox" name="SelectedSubjectIds" value="@subject.Value" checked="@selected" /><span>@subject.Text</span></label> }</div>
+    @if (Model.Subjects.Count == 0) { <p class="text-muted">Пәндер каталогы әлі толтырылмаған. Қазір қызығушылықтарыңызды сақтай аласыз.</p> }
+    <span asp-validation-for="SelectedSubjectIds" class="text-danger"></span>
+    <div class="form-actions"><button type="submit" class="btn btn-primary"><i data-lucide="check" aria-hidden="true"></i> Сақтау және ұсыныстарды жаңарту</button><a asp-action="Index" asp-route-studentId="@Model.StudentId" class="btn btn-outline-secondary">Бас тарту</a></div>
+</form></section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /><script src="~/js/recommendations.js" asp-append-version="true"></script> }

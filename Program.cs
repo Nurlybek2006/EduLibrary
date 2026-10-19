@@ -43,6 +43,20 @@ builder.Services.AddScoped<ICirculationService, CirculationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+builder.Services.AddScoped<RecommendationContextService>();
+builder.Services.AddScoped<IRecommendationExplanationService, RecommendationExplanationService>();
+builder.Services.AddScoped<TemplateExplanationProvider>();
+builder.Services.AddHttpClient<OpenAICompatibleExplanationProvider>(client=>client.Timeout=Timeout.InfiniteTimeSpan)
+    .ConfigurePrimaryHttpMessageHandler(()=>new HttpClientHandler{AllowAutoRedirect=false});
+builder.Services.AddOptions<RecommendationOptions>().BindConfiguration(RecommendationOptions.SectionName)
+    .Validate(RecommendationOptions.IsValid,"Ұсынымдар салмағы мен шектеулері жарамсыз.").ValidateOnStart();
+builder.Services.AddScoped<IReportingService, ReportingService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<ICopyLookupService, CopyLookupService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddHostedService<ReminderBackgroundService>();
 builder.Services.AddControllersWithViews(o=>
 {
     o.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());

@@ -1,0 +1,38 @@
+@model EduLibrary.ViewModels.RecommendationViewModel
+@{ ViewData["Title"] = "Жеке кітап ұсыныстары"; }
+<link rel="stylesheet" href="~/css/recommendations.css" asp-append-version="true" />
+<div class="page-header"><div><span class="eyebrow">EDULIBRARY · ЖЕКЕ ҰСЫНЫСТАР</span><h1>Келесі кітабыңызды ашыңыз</h1><p>Оқу жолыңызға сай әдебиеттер. Әр ұсыныстың себебі ашық көрсетіледі.</p></div>@if (Model.StudentId.HasValue) { <a asp-action="Preferences" asp-route-studentId="@Model.StudentId" class="btn btn-outline-secondary"><i data-lucide="sliders-horizontal" aria-hidden="true"></i> Оқу бағытын өзгерту</a> }</div>
+@if (Model.IsStaff)
+{
+    <section class="card mb-4"><form asp-action="Index" method="get" class="recommendation-reader-form"><div><label for="recommendation-student">Ұсыныстарын көретін студент</label><select id="recommendation-student" asp-for="StudentId" asp-items="Model.Students" class="form-select"><option value="">Студентті таңдаңыз</option></select></div><button class="btn btn-primary" type="submit">Ұсыныстарды ашу <i data-lucide="arrow-right" aria-hidden="true"></i></button></form></section>
+}
+@if (!Model.StudentId.HasValue)
+{
+    <section class="card empty-state"><i data-lucide="sparkles" aria-hidden="true"></i><h2>@(Model.IsStaff ? "Оқырманның оқу әлемін ашыңыз" : "Оқырман профилі байланыстырылмаған")</h2><p>@(Model.IsStaff ? "Студентті таңдаңыз. Ұсыныстар оның нақты пәндері, қызығушылықтары және кітап алу тарихынан есептеледі." : "Жеке ұсыныстар үшін аккаунтыңыз студент жазбасымен байланысуы керек. Кітапханашыға хабарласыңыз.")</p><a asp-controller="Books" asp-action="Index" class="btn btn-outline-secondary">Каталогты қарау</a></section>
+}
+else
+{
+    <section class="recommendation-hero card mb-4">
+        <div><span class="badge badge-primary"><i data-lucide="sparkles" aria-hidden="true"></i> @Model.ActualMode</span><h2>@(Model.IsStaff ? Model.StudentName + " үшін оқу таңдауы" : "Сіздің жеке оқу таңдауыңыз")</h2><p>@Model.Faculty</p><div class="actions">@foreach (var interest in Model.Interests.Take(5)) { <span class="recommendation-topic">@interest</span> }@foreach (var subject in Model.Subjects.Take(3)) { <span class="recommendation-topic">@subject</span> }</div></div>
+        <div class="recommendation-hero-note"><i data-lucide="scan-line" aria-hidden="true"></i><strong>@Model.CandidateCount кітап қаралды</strong><span>Сәйкестік нақты каталог, ашық рейтингтер және оқырман деректерінен есептеледі.</span></div>
+    </section>
+    @if (Model.IsColdStart)
+    {
+        <div class="alert alert-info" role="status"><strong>Оқу жолыңыз енді басталады.</strong> Қызығушылық, пәндер және оқу тарихы әзірге жоқ. Ұсыныстар кітапханадағы нақты танымалдыққа, ашық рейтингтерге және факультет деректеріне сүйенеді. <a asp-action="Preferences" asp-route-studentId="@Model.StudentId">Оқу бағытын толықтырыңыз.</a></div>
+    }
+    else if (Model.HasMissingSignals)
+    {
+        <div class="recommendation-method-note"><i data-lucide="info" aria-hidden="true"></i><span>Дерегі жоқ факторлардың салмағы бар деректерге қайта бөлінеді. Әр кітаптың есептеу кестесінен нақты салмақтарды көре аласыз.</span></div>
+    }
+    <form asp-action="Index" method="get" class="recommendation-policy mb-4"><input type="hidden" name="studentId" value="@Model.StudentId" /><div class="form-check"><input class="form-check-input" asp-for="IncludePreviouslyRead" /><label class="form-check-label" asp-for="IncludePreviouslyRead">Бұрын оқылған кітаптарды да қосу</label></div><button class="btn btn-sm btn-outline-secondary" type="submit">Қолдану</button><span class="text-muted">Қазір қолдағы кітаптар әрқашан алынып тасталады. Бос даналарға басымдық беріледі.</span></form>
+    @if (Model.CandidateLimitReached) { <p class="text-muted">Каталог үлкен болғандықтан, алдымен қолжетімді және жиі алынатын @Model.CandidateCount кітап қаралды.</p> }
+    <nav class="recommendation-nav" aria-label="Ұсыныс бөлімдері">@foreach (var recommendationSection in Model.Sections) { <a href="#@recommendationSection.Key">@recommendationSection.Title <span>@recommendationSection.Books.Count</span></a> }</nav>
+    @foreach (var recommendationSection in Model.Sections)
+    {
+        <section id="@recommendationSection.Key" class="recommendation-section" aria-labelledby="heading-@recommendationSection.Key"><div class="page-header"><div><h2 id="heading-@recommendationSection.Key">@recommendationSection.Title</h2><p>@recommendationSection.Description</p></div><span class="badge badge-muted">@recommendationSection.Books.Count кітап</span></div>
+        @if (recommendationSection.Books.Count == 0) { <div class="card empty-state recommendation-empty"><i data-lucide="book-open" aria-hidden="true"></i><p>@recommendationSection.EmptyMessage</p></div> }
+        else { <div class="recommendation-grid">@foreach (var book in recommendationSection.Books) { <partial name="_RecommendationCard" model="book" /> }</div> }
+        </section>
+    }
+    <div class="recommendation-method-note"><i data-lucide="shield-check" aria-hidden="true"></i><span>Кітаптарды жергілікті ұсыным алгоритмі таңдайды. LLM режимі қосылғанда тек түсіндірме мәтіні толықтырылады; жеке байланыс деректері сыртқы модельге жіберілмейді.</span></div>
+}

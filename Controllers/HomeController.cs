@@ -41,8 +41,7 @@ namespace EduLibrary.Controllers
         [Microsoft.AspNetCore.Authorization.Authorize]
         public IActionResult Intelligence(string section = "recommendations")
         {
-            ViewData["Title"] = section switch { "analytics"=>"Талдау", "reports"=>"Есептер", _=>"AI ұсыныстары" };
-            return View();
+            return RedirectToAction("Index",section switch {"analytics"=>"Analytics","reports"=>"Reports",_=>"Recommendations"});
         }
 
         [Microsoft.AspNetCore.Authorization.Authorize(Roles="Admin")]

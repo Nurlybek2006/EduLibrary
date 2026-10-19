@@ -8,8 +8,47 @@ using Microsoft.AspNetCore.Mvc;
 namespace EduLibrary.Controllers;
 
 [Authorize(Roles = "Admin,Librarian")]
-public sealed class CopiesController(ICatalogService catalog, ILibraryClock clock) : Controller
+public sealed class CopiesController(ICatalogService catalog, ILibraryClock clock, ICopyLookupService lookup) : Controller
 {
+    [HttpGet]
+    public async Task<IActionResult> Details(int id, CancellationToken ct)
+    {
+        var model = await lookup.GetDetailsAsync(id, ct); return model is null ? NotFound() : View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Lookup(string? code, CancellationToken ct)
+    {
+        var model = new CopyLookupViewModel { Code = code, Searched = !string.IsNullOrWhiteSpace(code) };
+        if (!model.Searched) return View(model);
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                var id = await lookup.FindByCodeAsync(code!, ct);
+                if (id.HasValue) return RedirectToAction(nameof(Details), new { id = id.Value });
+                ModelState.AddModelError("Code", "Бұл кодқа сәйкес кітап данасы табылмады. Штрихкодты немесе түгендеу нөмірін тексеріңіз.");
+            }
+            catch (BusinessException ex) { ModelState.AddModelError("Code", ex.Message); }
+        }
+        return View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Label(int id, CancellationToken ct)
+    {
+        var model = await lookup.GetDetailsAsync(id, ct); return model is null ? NotFound() : View(model);
+    }
+
+    [HttpGet, ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public async Task<IActionResult> Qr(int id, CancellationToken ct)
+    {
+        var svg = await lookup.GetQrSvgAsync(id, ct);
+        if (svg is null) return NotFound();
+        Response.Headers.ContentSecurityPolicy = "default-src 'none'; style-src 'unsafe-inline'; sandbox";
+        return Content(svg, "image/svg+xml", System.Text.Encoding.UTF8);
+    }
+
     [HttpGet]
     public async Task<IActionResult> Index(string? search, int? bookId, CopyStatus? status, int page = 1, CancellationToken ct = default) =>
         View(await catalog.GetCopiesAsync(search, bookId, status, page, ct));

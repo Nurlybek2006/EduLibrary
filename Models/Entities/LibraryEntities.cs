@@ -27,6 +27,7 @@ public class Book
     public ICollection<BookCategory> BookCategories { get; set; } = new List<BookCategory>();
     public ICollection<BookCopy> Copies { get; set; } = new List<BookCopy>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public ICollection<BookSubject> BookSubjects { get; set; } = new List<BookSubject>();
 }
 
 public class Author
@@ -172,6 +173,10 @@ public class Review
     public int Rating { get; set; }
     public string Comment { get; set; } = "";
     public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public bool IsHidden { get; set; }
+    public bool IsDeleted { get; set; }
+    public byte[] RowVersion { get; set; } = [];
     public Book Book { get; set; } = null!;
     public Student Student { get; set; } = null!;
 }

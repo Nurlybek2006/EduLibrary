@@ -47,6 +47,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Analytics/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5hbHl0aWNzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Authors/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aG9yc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -83,6 +87,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va3NcX0Zvcm0uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Books/_Results.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va3NcX1Jlc3VsdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Categories/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmllc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -103,12 +111,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29waWVzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Copies/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29waWVzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Copies/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29waWVzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Copies/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29waWVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Copies/Label.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29waWVzXExhYmVsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Copies/Lookup.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29waWVzXExvb2t1cC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Copies/_Form.cshtml]
@@ -125,10 +145,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Fines/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmluZXNcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Home/Intelligence.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbnRlbGxpZ2VuY2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Home/Privacy.cshtml]
@@ -155,6 +171,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9hbnNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Notifications/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Publishers/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGlzaGVyc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -171,12 +191,48 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGlzaGVyc1xfRm9ybS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Recommendations/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjb21tZW5kYXRpb25zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Recommendations/Preferences.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjb21tZW5kYXRpb25zXFByZWZlcmVuY2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Recommendations/_RecommendationCard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVjb21tZW5kYXRpb25zXF9SZWNvbW1lbmRhdGlvbkNhcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Reports/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Reports/_PeriodFilter.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xfUGVyaW9kRmlsdGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Returns/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmV0dXJuc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Returns/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmV0dXJuc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Reviews/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmV2aWV3c1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Reviews/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmV2aWV3c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Shared/Components/BookReviews/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQm9va1Jldmlld3NcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Shared/Components/NotificationBell/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcTm90aWZpY2F0aW9uQmVsbFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/ENT/Visual-Studio-Projects/EduLibrary/Views/Shared/Error.cshtml]

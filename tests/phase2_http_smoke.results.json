@@ -1,0 +1,1317 @@
+{
+  "base_url": "http://localhost:5298",
+  "passed": 271,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "Anonymous: Phase 2 login challenge /Recommendations",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Recommendations/Preferences",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Analytics",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Analytics/Data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Reports",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Reports/Export",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Reports/Print",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Notifications",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Copies/Lookup",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Copies/Details/1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Copies/Qr/1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Copies/Label/1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Reviews",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Reviews/Create?bookId=1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: Phase 2 login challenge /Reviews/Edit/1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Books",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 fixture: public catalog has real book IDs",
+      "passed": true
+    },
+    {
+      "check": "Anonymous: GET /Books/Details/13",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Catalog: AJAX results accept search Clean",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Catalog: AJAX results accept search 9780001000000",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Catalog: AJAX results accept search Pearson",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Catalog: AJAX results accept search Python",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Catalog: AJAX results accept search English",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Catalog: AJAX results accept search деректер",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Catalog: AJAX results accept search алгоритм",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Books?Sort=rating",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Books?Sort=popularity&AvailableOnly=true",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Books?SubjectId=1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Books?Search=%27%20OR%201%3D1--",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Books?Page=999999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: sign in",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Recommendations",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: profile menu avoids preferences link without selected reader",
+      "passed": true
+    },
+    {
+      "check": "Admin: recommendations selector contains database student records",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Recommendations?studentId=2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: recommendation explanations and factor breakdown render",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Recommendations/Preferences?studentId=2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Recommendations?studentId=2&includePreviouslyRead=true",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Recommendations?studentId=2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Admin: GET /Recommendations/Preferences?studentId=2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Admin: GET /Notifications",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Notifications?unreadOnly=true&page=999999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies/Lookup",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies/Lookup?code=not-a-real-code-4729",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies/Lookup?code=https%3A%2F%2Fevil.example%2Fcopy%2F1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: physical-copy fixture exists",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Copies/Details/34",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: copy details expose its real inventory barcode",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Copies/Label/34",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: inventory label references only its copy QR",
+      "passed": true
+    },
+    {
+      "check": "Admin: QR endpoint returns protected SVG",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies/Lookup?code=EDU000013001",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: barcode lookup resolves exact physical copy",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Copies/Details/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Admin: GET /Copies/Qr/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Admin: GET /Copies/Label/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Admin: GET /Analytics",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: analytics HTML exposes seven chart canvases",
+      "passed": true
+    },
+    {
+      "check": "Admin: analytics JSON period 7",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: chart arrays align with real nonnegative counts 7",
+      "passed": true
+    },
+    {
+      "check": "Admin: analytics JSON period 30",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: chart arrays align with real nonnegative counts 30",
+      "passed": true
+    },
+    {
+      "check": "Admin: analytics JSON period 90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: chart arrays align with real nonnegative counts 90",
+      "passed": true
+    },
+    {
+      "check": "Admin: analytics JSON period year",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: chart arrays align with real nonnegative counts year",
+      "passed": true
+    },
+    {
+      "check": "Admin: equivalent custom analytics range returns same series",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: existing loans produce actual analytics values",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Reports?Type=loans&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: loans report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Reports?Type=loans&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=loans&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: loans CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports/Print?Type=loans&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=popular&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: popular report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Reports?Type=popular&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=popular&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: popular CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports/Print?Type=popular&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=overdue&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: overdue report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Reports?Type=overdue&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=overdue&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: overdue CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports/Print?Type=overdue&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=readers&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: readers report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Reports?Type=readers&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=readers&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: readers CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports/Print?Type=readers&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=ratings&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: ratings report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Reports?Type=ratings&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=ratings&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: ratings CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports/Print?Type=ratings&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reports?Type=readeractivity",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Analytics/Data?Range=custom&StartDate=2026-10-20&EndDate=2026-10-19",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: GET /Reports/Export?Range=custom&StartDate=2026-10-20&EndDate=2026-10-19",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: GET /Analytics/Data?StartDate=bad",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: GET /Reports?Page=bad",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: GET /Reviews",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reviews?Status=visible",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reviews?Status=hidden",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reviews?Status=deleted",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reviews?Search=not-found-4228&Page=9999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Reviews/Create?bookId=13",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Admin: GET /Reviews/Edit/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Admin: rejected POST /Reviews/Moderate/2147483647",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: rejected POST /Notifications/ReadAll",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: rejected POST /Notifications/Read/2147483647",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Librarian: sign in",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Recommendations",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: profile menu avoids preferences link without selected reader",
+      "passed": true
+    },
+    {
+      "check": "Librarian: recommendations selector contains database student records",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Recommendations?studentId=2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: recommendation explanations and factor breakdown render",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Recommendations/Preferences?studentId=2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Recommendations?studentId=2&includePreviouslyRead=true",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Recommendations?studentId=2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Librarian: GET /Recommendations/Preferences?studentId=2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Librarian: GET /Notifications",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Notifications?unreadOnly=true&page=999999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Copies/Lookup",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Copies/Lookup?code=not-a-real-code-4729",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Copies/Lookup?code=https%3A%2F%2Fevil.example%2Fcopy%2F1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Copies",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: physical-copy fixture exists",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Copies/Details/34",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: copy details expose its real inventory barcode",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Copies/Label/34",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: inventory label references only its copy QR",
+      "passed": true
+    },
+    {
+      "check": "Librarian: QR endpoint returns protected SVG",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Copies/Lookup?code=EDU000013001",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: barcode lookup resolves exact physical copy",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Copies/Details/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Librarian: GET /Copies/Qr/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Librarian: GET /Copies/Label/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Librarian: GET /Analytics",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: analytics HTML exposes seven chart canvases",
+      "passed": true
+    },
+    {
+      "check": "Librarian: analytics JSON period 7",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: chart arrays align with real nonnegative counts 7",
+      "passed": true
+    },
+    {
+      "check": "Librarian: analytics JSON period 30",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: chart arrays align with real nonnegative counts 30",
+      "passed": true
+    },
+    {
+      "check": "Librarian: analytics JSON period 90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: chart arrays align with real nonnegative counts 90",
+      "passed": true
+    },
+    {
+      "check": "Librarian: analytics JSON period year",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: chart arrays align with real nonnegative counts year",
+      "passed": true
+    },
+    {
+      "check": "Librarian: equivalent custom analytics range returns same series",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: existing loans produce actual analytics values",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=loans&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: loans report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=loans&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=loans&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: loans CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports/Print?Type=loans&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=popular&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: popular report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=popular&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=popular&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: popular CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports/Print?Type=popular&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=overdue&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: overdue report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=overdue&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=overdue&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: overdue CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports/Print?Type=overdue&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=readers&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: readers report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=readers&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=readers&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: readers CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports/Print?Type=readers&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=ratings&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: ratings report has summaries table or honest empty state",
+      "passed": true
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=ratings&Range=7&Search=not-found-9723&Sort=total&Direction=asc&Page=99999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=ratings&Range=year&CategoryId=1&GroupBy=month&Status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: ratings CSV is BOM UTF8 attachment with report data",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports/Print?Type=ratings&Range=90",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Reports?Type=readeractivity",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian: GET /Analytics/Data?Range=custom&StartDate=2026-10-20&EndDate=2026-10-19",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Librarian: GET /Reports/Export?Range=custom&StartDate=2026-10-20&EndDate=2026-10-19",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Librarian: GET /Analytics/Data?StartDate=bad",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Librarian: GET /Reports?Page=bad",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Librarian: GET /Reviews",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Librarian: GET /Reviews/Create?bookId=13",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Librarian: GET /Reviews/Edit/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Librarian: GET /Account/Profile",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Librarian moderation forbidden: rejected POST /Reviews/Moderate/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Librarian: rejected POST /Notifications/ReadAll",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Librarian: rejected POST /Notifications/Read/2147483647",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Student: sign in",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Students/MyHistory",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: own identity resolves to database student",
+      "passed": true
+    },
+    {
+      "check": "Student: GET /Recommendations",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: real recommendations have six sections and actual book links",
+      "passed": true
+    },
+    {
+      "check": "Student: displayed recommendation scores stay within 0–100",
+      "passed": true
+    },
+    {
+      "check": "Student: local or enhanced recommendation mode is explicit",
+      "passed": true
+    },
+    {
+      "check": "Signed recommendation: real catalog link carries opaque viewer context",
+      "passed": true
+    },
+    {
+      "check": "Signed recommendation: current viewer sees computed score on matching book",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Signed recommendation: anonymous viewer cannot reuse student context",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Signed recommendation: another authenticated viewer cannot reuse student context",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Signed recommendation: tampered signature silently falls back to public details",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Signed recommendation: different existing book fixture available",
+      "passed": true
+    },
+    {
+      "check": "Signed recommendation: context cannot be replayed for another existing book",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Signed recommendation: ordinary public details omit signed recommendation banner",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Books/Details/10",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Books/Details/7",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Books/Details/5",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Recommendations/Preferences",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: preferences form is scoped and CSRF protected",
+      "passed": true
+    },
+    {
+      "check": "Student invalid interests: rejected POST /Recommendations/Preferences",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student missing CSRF: rejected POST /Recommendations/Preferences",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Student: foreign recommendation fixture exists",
+      "passed": true
+    },
+    {
+      "check": "Student IDOR: GET /Recommendations?studentId=2",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student IDOR: GET /Recommendations/Preferences?studentId=2",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student foreign preferences: rejected POST /Recommendations/Preferences",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student: GET /Notifications",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Notifications?unreadOnly=true&page=-1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Account/Profile",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Account/Profile",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin foreign notification: rejected POST /Notifications/Read/1",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student nonexistent notification: rejected POST /Notifications/Read/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student: GET /Reviews/Create?bookId=13",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: review form carries book ID and CSRF",
+      "passed": true
+    },
+    {
+      "check": "Student out-of-range rating: rejected POST /Reviews/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student out-of-range rating: rejected POST /Reviews/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student review missing CSRF: rejected POST /Reviews/Create",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Student: GET /Reviews/Edit/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student: GET /Reviews/Create?bookId=2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student nonexistent review edit: rejected POST /Reviews/Edit/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student role restriction: GET /Analytics",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Analytics/Data",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Reports",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Reports/Export?Type=loans",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Reports/Print",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Copies/Lookup",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Copies/Details/34",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Copies/Qr/34",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Copies/Label/34",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student role restriction: GET /Reviews",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student moderation forbidden: rejected POST /Reviews/Moderate/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Phase 2 static asset: /css/intelligence.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/intelligence.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/recommendations.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/site.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /images/favicon.svg",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/analytics.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/analytics.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/catalog.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/catalog.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/recommendations.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/reports.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/reports.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/scanner.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/scanner.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/site.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /js/theme.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/bootstrap/dist/css/bootstrap.min.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/chartjs/chart.umd.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/chartjs/chart.umd.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/jquery-validation/dist/jquery.validate.min.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/jquery/dist/jquery.min.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/lucide/lucide.min.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /lib/zxing/zxing-browser.min.js",
+      "passed": true,
+      "status": 200
+    }
+  ],
+  "scope": "GET, authentication, and deliberately rejected POSTs only; no successful application-data writes"
+}

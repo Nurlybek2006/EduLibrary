@@ -23,6 +23,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<StudentSubject> StudentSubjects => Set<StudentSubject>();
     public DbSet<StudentInterest> StudentInterests => Set<StudentInterest>();
     public DbSet<SeedHistory> SeedHistory => Set<SeedHistory>();
+    public DbSet<BookSubject> BookSubjects => Set<BookSubject>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

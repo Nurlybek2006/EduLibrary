@@ -9,6 +9,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using System.Text;
 
 // Always replace the database name. A supplied connection can select the server and
 // authentication, but this harness never creates, mutates, or drops that database.
@@ -273,6 +274,63 @@ try
     await Reject(() => catalog.DeleteCategoryAsync(secondCategoryId), "referenced category deletion blocked");
     Check(await catalogDb.Authors.AnyAsync(x => x.Id == secondAuthorId) && await catalogDb.Publishers.AnyAsync(x => x.Id == catalogPublisherId)
         && await catalogDb.Categories.AnyAsync(x => x.Id == secondCategoryId), "blocked lookup deletion preserves referenced records");
+
+    // Deliberately include low hidden/deleted ratings. They must not affect either
+    // public report ranking or analytics, and no main application data is touched.
+    catalogDb.Reviews.AddRange(
+        new Review { BookId = book.Id, StudentId = firstStudentId, Rating = 5, Comment = "Ашық пікір", CreatedAt = clock.UtcNow },
+        new Review { BookId = book.Id, StudentId = secondStudentId, Rating = 1, Comment = "Жасырылған пікір", IsHidden = true, CreatedAt = clock.UtcNow },
+        new Review { BookId = book.Id, StudentId = inactiveStudentId, Rating = 1, Comment = "Жойылған пікір", IsDeleted = true, CreatedAt = clock.UtcNow },
+        new Review { BookId = catalogBookId, StudentId = secondStudentId, Rating = 4, Comment = "Екінші ашық пікір", CreatedAt = clock.UtcNow.AddDays(-10) });
+    await catalogDb.SaveChangesAsync();
+    catalogDb.ChangeTracker.Clear();
+    var reporting = new ReportingService(catalogDb, clock, libraryOptions);
+    foreach (var reportType in new[] { "loans", "popular", "overdue", "readers", "ratings" })
+    {
+        var report = await reporting.GetAsync(new ReportFilterViewModel { Type = reportType, Range = "30" });
+        Check(report.Rows.Count > 0 && report.Columns.Count > 0 && report.Summary.Count > 0
+            && report.Rows.All(row => row.Cells.Count == report.Columns.Count), reportType + " report generates complete SQL-backed rows and summaries");
+        var csv = await reporting.ExportCsvAsync(new ReportFilterViewModel { Type = reportType, Range = "30" });
+        Check(csv.Take(3).SequenceEqual(new byte[] { 0xEF, 0xBB, 0xBF })
+            && Encoding.UTF8.GetString(csv).Contains(report.Title), reportType + " report exports UTF8 BOM CSV with actual report content");
+        var printable = await reporting.GetPrintAsync(new ReportFilterViewModel { Type = reportType, Range = "30", Page = 1000 });
+        Check(printable.Rows.Count == printable.TotalCount, reportType + " print report contains every filtered row");
+    }
+    var loanReport = await reporting.GetAsync(new ReportFilterViewModel { Type = "loans", Range = "30" });
+    Check(loanReport.Summary[0].Value == "3" && loanReport.Summary[1].Value == "1" && loanReport.Summary[2].Value == "2"
+        && loanReport.Summary[3].Value == "1", "loan report SQL summaries match three issues two returns and one historical delay");
+    var monthlyReport = await reporting.GetAsync(new ReportFilterViewModel { Type = "loans", Range = "30", GroupBy = "month" });
+    Check(monthlyReport.TotalCount == 1 && monthlyReport.Rows.Single().Cells[1].Value == "3", "monthly loan grouping aggregates the same source records");
+    var overdueReport = await reporting.GetAsync(new ReportFilterViewModel { Type = "overdue", Range = "30" });
+    Check(overdueReport.TotalCount == 1 && overdueReport.Rows.Single().Cells[4].Value == "5"
+        && overdueReport.Rows.Single().Cells[5].Value.Contains("500"), "overdue report preserves actual return delay and fixed fine");
+    var ratingReport = await reporting.GetAsync(new ReportFilterViewModel { Type = "ratings", Range = "30" });
+    Check(ratingReport.TotalCount == 2 && ratingReport.Rows[0].Cells[1].Id == book.Id
+        && ratingReport.Rows.All(row => row.Cells[3].Value == "1"), "ratings report excludes hidden and deleted reviews and orders real averages");
+    var filteredRating = await reporting.GetAsync(new ReportFilterViewModel { Type = "ratings", Range = "30", CategoryId = secondCategoryId, Search = "Каталогтың жаңартылған" });
+    Check(filteredRating.TotalCount == 1 && filteredRating.Rows.Single().Cells[1].Id == catalogBookId, "rating report search and category filters apply in SQL");
+    var todayLoans = await reporting.GetAsync(new ReportFilterViewModel { Type = "loans", Range = "custom", StartDate = clock.Today, EndDate = clock.Today });
+    Check(todayLoans.Summary[0].Value == "2", "custom report date range excludes older issues");
+
+    var analyticsService = new AnalyticsService(catalogDb, clock);
+    var analytics = await analyticsService.GetAsync(new ReportFilterViewModel { Range = "30" });
+    Check(analytics.Statistics.Count == 10 && analytics.Charts.Count == 7, "analytics supplies ten labeled metrics and seven real chart series");
+    Check(analytics.Charts.Single(x => x.Id == "loans").Values.Sum() == 3
+        && analytics.Charts.Single(x => x.Id == "returns").Values.Sum() == 2
+        && analytics.Charts.Single(x => x.Id == "popular").Values.Single() == 3, "analytics loan return and popularity charts reconcile with SQL history");
+    Check(analytics.Charts.Single(x => x.Id == "overdue").Values.Sum() == 1
+        && analytics.Charts.Single(x => x.Id == "readers").Values.Sum() >= 2,
+        "analytics overdue and reader activity are calculated from actual dates and identities");
+    Check(analytics.Charts.Single(x => x.Id == "ratings").Values.SequenceEqual(new[] { 5d, 4d })
+        && analytics.Statistics.Single(x => x.Label == "Әдебиеттердің орташа бағасы").Value.Contains("4"),
+        "analytics rating charts exclude hidden and deleted fixtures");
+    var todayAnalytics = await analyticsService.GetAsync(new ReportFilterViewModel { Range = "custom", StartDate = clock.Today, EndDate = clock.Today });
+    Check(todayAnalytics.Charts.Single(x => x.Id == "loans").Values.Sum() == 2
+        && todayAnalytics.Charts.Single(x => x.Id == "ratings").Values.SequenceEqual(new[] { 5d })
+        && todayAnalytics.Charts.Single(x => x.Id == "loans").Labels.Length == 1,
+        "analytics custom range updates both calendar loan events and UTC review events");
+    var emptyAnalytics = await analyticsService.GetAsync(new ReportFilterViewModel { Range = "custom", StartDate = clock.Today.AddDays(-100), EndDate = clock.Today.AddDays(-95) });
+    Check(emptyAnalytics.Charts.All(x => !x.HasData), "empty analytics range uses honest zero or empty series without fabricated statistics");
     Console.WriteLine($"SUCCESS: {checks} SQL-backed integration checks passed.");
 }
 catch (Exception exception)

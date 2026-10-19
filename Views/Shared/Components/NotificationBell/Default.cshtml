@@ -1,0 +1,5 @@
+@model EduLibrary.ViewModels.NotificationBellViewModel
+<div class="dropdown notification-menu"><button class="icon-button notification-bell" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Хабарландырулар, @Model.UnreadCount оқылмаған"><i data-lucide="bell"></i>@if(Model.UnreadCount>0){<span class="notification-count">@(Model.UnreadCount>99?"99+":Model.UnreadCount.ToString())</span>}</button><div class="dropdown-menu dropdown-menu-end notification-dropdown"><div class="dropdown-title"><strong>Хабарландырулар</strong><span class="badge badge-primary">@Model.UnreadCount жаңа</span></div>
+@if(Model.Items.Count==0){<div class="notification-empty">Әзірге хабарландырулар жоқ.</div>}
+@foreach(var item in Model.Items){<a class="notification-preview @(item.IsRead?"":"unread")" href="@item.Link"><strong>@item.Title</strong><span>@item.Message</span><small>@item.CreatedAt.ToString("dd.MM HH:mm")</small></a>}
+<a class="notification-all" asp-controller="Notifications" asp-action="Index">Барлық хабарландырулар <i data-lucide="arrow-right"></i></a></div></div>

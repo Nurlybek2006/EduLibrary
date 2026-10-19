@@ -1,0 +1,13 @@
+@model EduLibrary.ViewModels.ReportFilterViewModel
+<div>
+    <label for="Range" class="form-label">Кезең</label>
+    <select id="Range" name="Range" class="form-select" data-period-range>
+        <option value="7" selected="@(Model.Range == "7")">Соңғы 7 күн</option>
+        <option value="30" selected="@(Model.Range == "30")">Соңғы 30 күн</option>
+        <option value="90" selected="@(Model.Range == "90")">Соңғы 90 күн</option>
+        <option value="year" selected="@(Model.Range == "year")">Осы жыл</option>
+        <option value="custom" selected="@(Model.Range == "custom")">Өз кезеңім</option>
+    </select>
+</div>
+<div data-period-custom><label for="StartDate" class="form-label">Басталу күні</label><input id="StartDate" name="StartDate" type="date" class="form-control" value="@Model.StartDate?.ToString("yyyy-MM-dd")" /></div>
+<div data-period-custom><label for="EndDate" class="form-label">Аяқталу күні</label><input id="EndDate" name="EndDate" type="date" class="form-control" value="@Model.EndDate?.ToString("yyyy-MM-dd")" /></div>

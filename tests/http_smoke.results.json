@@ -1,6 +1,6 @@
 {
   "base_url": "http://localhost:5298",
-  "passed": 149,
+  "passed": 151,
   "failed": 0,
   "checks": [
     {
@@ -489,6 +489,11 @@
       "status": 200
     },
     {
+      "check": "Static asset: /css/intelligence.css",
+      "passed": true,
+      "status": 200
+    },
+    {
       "check": "Static asset: /lib/jquery/dist/jquery.min.js",
       "passed": true,
       "status": 200
@@ -505,6 +510,11 @@
     },
     {
       "check": "Static asset: /js/site.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /js/catalog.js",
       "passed": true,
       "status": 200
     },

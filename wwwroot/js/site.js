@@ -1,5 +1,8 @@
 ﻿(() => {
     if (window.lucide) lucide.createIcons();
+    if(window.bootstrap?.Tooltip) document.querySelectorAll('.icon-button[aria-label]:not([data-bs-toggle]),.icon-link[aria-label]').forEach(element=>{
+        bootstrap.Tooltip.getOrCreateInstance(element,{title:element.getAttribute('aria-label'),trigger:'hover focus',container:'body'});
+    });
     document.querySelector('#theme-toggle')?.addEventListener('click', () => {
         const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
         document.documentElement.dataset.theme = theme;
