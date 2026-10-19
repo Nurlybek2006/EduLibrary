@@ -1,0 +1,59 @@
+@model EduLibrary.ViewModels.BookCatalogViewModel
+@{ ViewData["Title"] = "Кітаптар каталогы"; var staff = User.IsInRole("Admin") || User.IsInRole("Librarian"); }
+<div class="page-header">
+    <div><p class="eyebrow">БІЛІМГЕ ЖОЛ АШЫҢЫЗ</p><h1>Кітаптар каталогы</h1><p class="text-muted">Оқуға, зерттеуге және жаңа идеяларға арналған @Model.TotalCount кітап.</p></div>
+    @if (staff) { <a asp-action="Create" class="btn btn-primary"><i data-lucide="plus" aria-hidden="true"></i> Кітап қосу</a> }
+</div>
+<form method="get" class="card filter-card mb-4" role="search" aria-label="Кітаптарды іздеу және сүзу">
+    <div class="form-grid">
+        <div class="form-group"><label for="catalog-search">Кітап іздеу</label><input id="catalog-search" name="Search" value="@Model.Filter.Search" class="form-control" placeholder="Атауы, авторы немесе ISBN" maxlength="200" /></div>
+        <div class="form-group"><label for="catalog-author">Автор</label><select id="catalog-author" name="AuthorId" class="form-select"><option value="">Барлық авторлар</option>@foreach (var option in Model.Authors) { <option value="@option.Value" selected="@(option.Value == Model.Filter.AuthorId?.ToString())">@option.Text</option> }</select></div>
+        <div class="form-group"><label for="catalog-publisher">Баспа</label><select id="catalog-publisher" name="PublisherId" class="form-select"><option value="">Барлық баспалар</option>@foreach (var option in Model.Publishers) { <option value="@option.Value" selected="@(option.Value == Model.Filter.PublisherId?.ToString())">@option.Text</option> }</select></div>
+        <div class="form-group"><label for="catalog-category">Санат</label><select id="catalog-category" name="CategoryId" class="form-select"><option value="">Барлық санаттар</option>@foreach (var option in Model.Categories) { <option value="@option.Value" selected="@(option.Value == Model.Filter.CategoryId?.ToString())">@option.Text</option> }</select></div>
+        <div class="form-group"><label for="catalog-language">Тілі</label><select id="catalog-language" name="Language" class="form-select"><option value="">Барлық тілдер</option>@foreach (var option in Model.Languages) { <option value="@option.Value" selected="@(option.Value == Model.Filter.Language)">@option.Text</option> }</select></div>
+        <div class="form-group"><label for="catalog-sort">Реті</label><select id="catalog-sort" name="Sort" class="form-select"><option value="title" selected="@(Model.Filter.Sort == "title")">Атауы бойынша</option><option value="year" selected="@(Model.Filter.Sort == "year")">Жаңа басылымдар</option><option value="popularity" selected="@(Model.Filter.Sort == "popularity")">Танымалдығы бойынша</option></select></div>
+    </div>
+    <div class="actions mt-3">
+        @if (staff) { <label class="form-check-label"><input name="IncludeArchived" type="checkbox" class="form-check-input" value="true" checked="@Model.Filter.IncludeArchived" /> Мұрағаттағы кітаптармен бірге</label> }
+        <button type="submit" class="btn btn-primary"><i data-lucide="search" aria-hidden="true"></i> Іздеу</button><a asp-action="Index" class="btn btn-outline-secondary">Тазарту</a>
+    </div>
+</form>
+@if (Model.Books.Count == 0)
+{
+    <div class="card empty-state"><i data-lucide="search-x" aria-hidden="true"></i><h2>Кітап табылмады</h2><p>Іздеу сөзін немесе сүзгілерді өзгертіп көріңіз.</p><a asp-action="Index" class="btn btn-primary">Барлық кітаптар</a></div>
+}
+else
+{
+    <div class="book-grid">
+    @foreach (var book in Model.Books)
+    {
+        <article class="book-card card">
+            <a asp-action="Details" asp-route-id="@book.Id" class="book-cover" tabindex="-1" aria-hidden="true">
+                @if (!string.IsNullOrEmpty(book.CoverImageUrl)) { <img src="@book.CoverImageUrl" alt="" loading="lazy" referrerpolicy="no-referrer" /> }
+                else { <div class="book-cover-placeholder" data-tone="@(book.Id % 5)"><span>EDU<br />LIBRARY</span><i data-lucide="book-open" aria-hidden="true"></i><strong>@book.Title</strong><small>@book.PublicationYear</small></div> }
+            </a>
+            <div class="book-card-body">
+                <div class="actions"><span class="badge badge-muted">@book.Language</span><span class="text-muted">@book.PublicationYear</span></div>
+                <h2><a asp-action="Details" asp-route-id="@book.Id">@book.Title</a></h2>
+                <p class="text-muted book-authors">@book.Authors</p>
+                <div class="book-card-footer">
+                    @if (book.IsArchived) { <span class="badge badge-muted">Мұрағатта</span> }
+                    else if (book.AvailableCopies > 0) { <span class="badge badge-success">@book.AvailableCopies / @book.TotalCopies қолжетімді</span> }
+                    else { <span class="badge badge-warning">Қазір қолжетімсіз</span> }
+                    <a asp-action="Details" asp-route-id="@book.Id" class="icon-link" aria-label="@book.Title — толығырақ"><i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </article>
+    }
+    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="pagination mt-4" aria-label="Каталог беттері">
+            @for (var p = Math.Max(1, Model.Filter.Page - 2); p <= Math.Min(Model.TotalPages, Model.Filter.Page + 2); p++)
+            {
+                <a asp-action="Index" asp-route-page="@p" asp-route-search="@Model.Filter.Search" asp-route-authorId="@Model.Filter.AuthorId" asp-route-publisherId="@Model.Filter.PublisherId" asp-route-categoryId="@Model.Filter.CategoryId" asp-route-language="@Model.Filter.Language" asp-route-sort="@Model.Filter.Sort" asp-route-includeArchived="@Model.Filter.IncludeArchived" class="btn @(p == Model.Filter.Page ? "btn-primary" : "btn-outline-secondary")" aria-current="@(p == Model.Filter.Page ? "page" : null)">@p</a>
+            }
+            <span class="text-muted">@Model.Filter.Page / @Model.TotalPages бет</span>
+        </nav>
+    }
+}

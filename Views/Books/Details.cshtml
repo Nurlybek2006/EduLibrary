@@ -1,0 +1,37 @@
+@model EduLibrary.ViewModels.BookDetailsViewModel
+@using EduLibrary.Models.Enums
+@{ ViewData["Title"] = Model.Book.Title; var staff = User.IsInRole("Admin") || User.IsInRole("Librarian"); }
+<div class="page-header"><div><p class="eyebrow">КІТАП ТУРАЛЫ</p><h1>@Model.Book.Title</h1><p class="text-muted">@Model.Book.Authors</p></div><div class="actions"><a asp-action="Index" class="btn btn-outline-secondary">Каталогқа оралу</a>@if (staff) { <a asp-action="Edit" asp-route-id="@Model.Book.Id" class="btn btn-primary"><i data-lucide="pencil" aria-hidden="true"></i> Өзгерту</a> }</div></div>
+@if (Model.Book.IsArchived) { <div class="alert alert-warning" role="status">Кітап мұрағатта. Бұл кітаптың даналары оқырманға берілмейді.</div> }
+<div class="book-detail-layout">
+    <div class="card book-detail-cover">
+        @if (!string.IsNullOrEmpty(Model.Book.CoverImageUrl)) { <img src="@Model.Book.CoverImageUrl" alt="@Model.Book.Title кітабының мұқабасы" referrerpolicy="no-referrer" /> }
+        else { <div class="book-cover-placeholder" data-tone="@(Model.Book.Id % 5)"><span>EDU<br />LIBRARY</span><i data-lucide="book-open" aria-hidden="true"></i><strong>@Model.Book.Title</strong><small>@Model.Book.PublicationYear</small></div> }
+    </div>
+    <div class="card">
+        <div class="actions mb-4"><span class="badge @(Model.Book.AvailableCopies > 0 ? "badge-success" : "badge-warning")">@Model.Book.AvailableCopies қолжетімді</span><span class="badge badge-muted">Барлығы @Model.Book.TotalCopies дана</span></div>
+        <dl class="detail-grid"><div><dt>ISBN</dt><dd>@Model.Book.ISBN</dd></div><div><dt>Баспа</dt><dd>@Model.Book.Publisher</dd></div><div><dt>Басылым жылы</dt><dd>@Model.Book.PublicationYear</dd></div><div><dt>Тілі</dt><dd>@Model.Book.Language</dd></div><div><dt>Беттер саны</dt><dd>@Model.PageCount</dd></div><div><dt>Санаттар</dt><dd>@string.Join(", ", Model.Categories)</dd></div></dl>
+        <h2 class="h5 mt-4">Кітап туралы</h2><p class="preserve-lines">@(string.IsNullOrWhiteSpace(Model.Description) ? "Сипаттама әлі қосылмаған." : Model.Description)</p>
+        @if (staff)
+        {
+            <div class="actions mt-4">
+                @if (Model.Book.IsArchived) { <form asp-action="Restore" asp-route-id="@Model.Book.Id" method="post"><button class="btn btn-outline-primary" type="submit">Каталогқа қалпына келтіру</button></form> }
+                else { <form asp-action="Archive" asp-route-id="@Model.Book.Id" method="post" data-confirm="Кітап мұрағатқа көшірілсін бе? Берілу тарихы сақталады."><button class="btn btn-outline-danger" type="submit"><i data-lucide="archive" aria-hidden="true"></i> Мұрағатқа көшіру</button></form> }
+            </div>
+        }
+    </div>
+</div>
+<section class="card mt-4">
+    <div class="page-header"><div><h2>Физикалық даналар</h2><p class="text-muted">Әр дананың мәртебесі мен сөредегі орны.</p></div>@if (staff && !Model.Book.IsArchived) { <a asp-controller="Copies" asp-action="Create" asp-route-bookId="@Model.Book.Id" class="btn btn-primary"><i data-lucide="plus" aria-hidden="true"></i> Дана қосу</a> }</div>
+    @if (Model.Copies.Count == 0) { <div class="empty-state"><i data-lucide="library" aria-hidden="true"></i><h3>Даналар тіркелмеген</h3><p>Кітапхана қызметкері физикалық даналарды қоса алады.</p></div> }
+    else
+    {
+        <div class="table-responsive"><table class="table"><thead><tr><th>Түгендеу нөмірі</th><th>Сөре</th><th>Жағдайы</th><th>Мәртебесі</th>@if (staff) { <th>Әрекет</th> }</tr></thead><tbody>
+        @foreach (var copy in Model.Copies)
+        {
+            <tr><td><strong>@copy.InventoryNumber</strong></td><td>@copy.ShelfLocation</td><td>@copy.Condition</td><td><span class="badge @(copy.Status == CopyStatus.Available ? "badge-success" : copy.Status == CopyStatus.Lost ? "badge-danger" : "badge-warning")">@copy.StatusLabel</span></td>
+            @if (staff) { <td><div class="actions">@if (copy.Status == CopyStatus.Available && !Model.Book.IsArchived) { <a asp-controller="Loans" asp-action="Create" asp-route-copyId="@copy.Id" class="btn btn-sm btn-primary">Кітап беру</a> }@if (copy.Status != CopyStatus.OnLoan) { <a asp-controller="Copies" asp-action="Edit" asp-route-id="@copy.Id" class="btn btn-sm btn-outline-secondary">Өзгерту</a> }</div></td> }</tr>
+        }
+        </tbody></table></div>
+    }
+</section>

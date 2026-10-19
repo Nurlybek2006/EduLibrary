@@ -1,0 +1,9 @@
+@model EduLibrary.ViewModels.AuthorEditViewModel
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<input asp-for="Id" type="hidden" />
+<div class="form-grid">
+    <div class="form-group"><label asp-for="FirstName"></label><input asp-for="FirstName" class="form-control" /><span asp-validation-for="FirstName" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="LastName"></label><input asp-for="LastName" class="form-control" /><span asp-validation-for="LastName" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="Biography"></label><textarea asp-for="Biography" class="form-control" rows="5"></textarea><span asp-validation-for="Biography" class="text-danger"></span></div>
+</div>
+<div class="form-actions actions mt-4"><button type="submit" class="btn btn-primary"><i data-lucide="check" aria-hidden="true"></i> Сақтау</button><a asp-action="Index" class="btn btn-outline-secondary">Бас тарту</a></div>

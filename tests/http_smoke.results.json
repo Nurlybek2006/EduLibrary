@@ -1,0 +1,739 @@
+{
+  "base_url": "http://localhost:5298",
+  "passed": 149,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "Anonymous: GET /Books",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Books/Details/13",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Home/Privacy",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Account/Login",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Account/Register",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: challenge /Dashboard",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: challenge /Authors",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: challenge /Account/Profile",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Anonymous: GET /Books/Details/2147483647",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Admin: sign in",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Dashboard",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books/Details/13",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Search=Clean",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Search=9780001000000",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?AuthorId=1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?PublisherId=1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?CategoryId=1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Language=English",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Sort=year",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Sort=popularity",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Page=2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Page=-5",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Page=999999",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?IncludeArchived=true",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Search=not-a-real-book-67293",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books?Search=%27%20OR%201%3D1--",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Catalog: normalized ISBN finds exactly Clean Code",
+      "passed": true
+    },
+    {
+      "check": "Catalog: unmatched search returns empty state",
+      "passed": true
+    },
+    {
+      "check": "Catalog: publication years descend",
+      "passed": true
+    },
+    {
+      "check": "Catalog: second page contains distinct books",
+      "passed": true
+    },
+    {
+      "check": "Catalog: negative page clamps to first page",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Books/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Books/Edit/13",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Authors",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Authors?search=not-found-67293",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Authors/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Authors: seeded editable reference",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Authors/Edit/2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Publishers",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Publishers?search=not-found-67293",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Publishers/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Publishers: seeded editable reference",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Publishers/Edit/2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Categories",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Categories?search=not-found-67293",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Categories/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Categories: seeded editable reference",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Categories/Edit/2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies?status=0",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies?status=1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies?bookId=13",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies?search=EL-",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies/Create?bookId=13",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Copies/Edit/34",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Students",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Students?Search=ST2026",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Students?Course=1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Students?GroupName=IT",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Students/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Students/Details/2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Students/Edit/2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans?status=active",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans?status=overdue",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans?status=returned",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans?status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans?search=Clean",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans?page=2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans/Create?copyId=34",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Loans/Details/9",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Returns/Create/9",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Returns",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Returns?search=Clean",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Fines?status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Fines?status=outstanding",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Fines?status=partial",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Fines?status=paid",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Fines/Details/3",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Payment: safe unpaid fixture with CSRF and RowVersion",
+      "passed": true
+    },
+    {
+      "check": "Payment: decimal point reaches balance validation",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Payment: decimal comma reaches balance validation",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Payment: third decimal reaches precision validation",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Payment: all rejected requests preserve balance and version",
+      "passed": true
+    },
+    {
+      "check": "Admin: GET /Staff",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Staff/Create",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Account/Profile",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Home/Settings",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Home/Privacy",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Home/Intelligence?section=recommendations",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Home/Intelligence?section=analytics",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: GET /Home/Intelligence?section=reports",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /images/favicon.svg",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /js/theme.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /lib/bootstrap/dist/css/bootstrap.min.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /css/site.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /lib/jquery/dist/jquery.min.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /lib/lucide/lucide.min.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /js/site.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Admin: rejects POST without CSRF /Books/Archive/13",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: rejects POST without CSRF /Account/Logout",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: rejects POST without CSRF /Fines/Pay",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "check": "Admin: GET /Account/Profile",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: sign in",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Books",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Books/Details/13",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Account/Profile",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Loans",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Fines",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Home/Intelligence?section=recommendations",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Students/MyHistory",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Loans?status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Loans/Details/1",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: GET /Fines?status=all",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: foreign student fixture available",
+      "passed": true
+    },
+    {
+      "check": "Student: foreign loan fixture available",
+      "passed": true
+    },
+    {
+      "check": "Student: foreign fine fixture available",
+      "passed": true
+    },
+    {
+      "check": "Student: GET /Students/Details/2",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student: GET /Loans/Details/2",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student: GET /Fines/Details/3",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "check": "Student: GET /Dashboard",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Authors",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Authors/Create",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Publishers",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Categories",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Books/Create",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Books/Edit/13",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Copies",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Students",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Staff",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Staff/Create",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Home/Settings",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Loans/Create",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Returns",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: GET /Returns/Create/9",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: refuses staff POST /Books/Archive/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: refuses staff POST /Authors/Delete/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: refuses staff POST /Publishers/Delete/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: refuses staff POST /Categories/Delete/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: refuses staff POST /Copies/Delete/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: refuses staff POST /Students/Deactivate/2147483647",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: refuses staff POST /Fines/Pay",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: refuses staff POST /Staff/Deactivate",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "check": "Student: sign out",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: signed-out profile challenged",
+      "passed": true,
+      "status": 200
+    }
+  ]
+}

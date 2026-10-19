@@ -1,0 +1,19 @@
+@model EduLibrary.ViewModels.CatalogLookupViewModel
+@{ ViewData["Title"] = "Баспалар"; }
+<div class="page-header"><div><p class="eyebrow">КАТАЛОГ АНЫҚТАМАЛЫҒЫ</p><h1>Баспалар</h1><p class="text-muted">Кітапхана қорының анықтамалық мәліметтерін басқарыңыз.</p></div><a asp-action="Create" class="btn btn-primary"><i data-lucide="plus" aria-hidden="true"></i> Жаңа баспа</a></div>
+<form method="get" class="card filter-card mb-4" role="search"><div class="actions"><label for="lookup-search" class="visually-hidden">Баспалар іздеу</label><input id="lookup-search" name="search" value="@Model.Search" class="form-control" placeholder="Баспа атауы немесе елі" maxlength="200" /><button class="btn btn-primary" type="submit"><i data-lucide="search" aria-hidden="true"></i> Іздеу</button><a asp-action="Index" class="btn btn-outline-secondary">Тазарту</a></div></form>
+<div class="card">
+@if (Model.Items.Count == 0)
+{
+    <div class="empty-state"><i data-lucide="folder-search" aria-hidden="true"></i><h2>Жазбалар табылмады</h2><p>Іздеу сөзін өзгертіңіз немесе жаңа баспа қосыңыз.</p><a asp-action="Create" class="btn btn-primary">Жаңа баспа</a></div>
+}
+else
+{
+    <div class="table-responsive"><table class="table"><thead><tr><th>Атауы</th><th>Қосымша мәлімет</th><th>Кітаптар</th><th>Әрекеттер</th></tr></thead><tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr><td><strong>@item.Name</strong></td><td><span class="text-muted">@(string.IsNullOrWhiteSpace(item.Description) ? "—" : item.Description.Length > 140 ? item.Description[..140] + "…" : item.Description)</span></td><td><a asp-controller="Books" asp-action="Index" asp-route-publisherId="@item.Id" class="badge badge-muted">@item.BookCount кітап</a></td><td><div class="actions"><a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" aria-label="@item.Name — өзгерту"><i data-lucide="pencil" aria-hidden="true"></i> Өзгерту</a><form asp-action="Delete" asp-route-id="@item.Id" method="post" data-confirm="Бұл жазба жойылсын ба?"><button type="submit" class="btn btn-sm btn-outline-danger" disabled="@(item.BookCount > 0)" title="@(item.BookCount > 0 ? "Кітаптармен байланысқан жазба жойылмайды." : "Жазбаны жою")" aria-label="@item.Name — жою"><i data-lucide="trash-2" aria-hidden="true"></i> Жою</button></form></div></td></tr>
+    }
+    </tbody></table></div>
+}
+</div>

@@ -1,0 +1,18 @@
+@model EduLibrary.ViewModels.StudentEditViewModel
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<input asp-for="Id" type="hidden" />
+<div class="form-grid">
+    <div><label asp-for="StudentNumber"></label><input asp-for="StudentNumber" class="form-control" /><span asp-validation-for="StudentNumber" class="text-danger"></span></div>
+    <div><label asp-for="FullName"></label><input asp-for="FullName" class="form-control" /><span asp-validation-for="FullName" class="text-danger"></span></div>
+    <div><label asp-for="Email"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+    <div><label asp-for="PhoneNumber"></label><input asp-for="PhoneNumber" class="form-control" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+    <div><label asp-for="Faculty"></label><input asp-for="Faculty" class="form-control" /><span asp-validation-for="Faculty" class="text-danger"></span></div>
+    <div><label asp-for="Course"></label><input asp-for="Course" class="form-control" /><span asp-validation-for="Course" class="text-danger"></span></div>
+    <div><label asp-for="GroupName"></label><input asp-for="GroupName" class="form-control" /><span asp-validation-for="GroupName" class="text-danger"></span></div>
+</div>
+<hr /><h2>Оқу бағыты</h2>
+<div class="form-grid">
+    <div><label asp-for="Interests"></label><textarea asp-for="Interests" class="form-control" rows="4" placeholder="Мысалы: бағдарламалау, әдебиет, физика"></textarea><small class="text-muted">Атауларды үтірмен бөліңіз. Ең көбі 20 қызығушылық.</small><span asp-validation-for="Interests" class="text-danger"></span></div>
+    <div><label asp-for="SelectedSubjectIds"></label><select asp-for="SelectedSubjectIds" asp-items="Model.Subjects" class="form-select" multiple size="6"></select><small class="text-muted">Бірнеше пәнді Ctrl / Command пернесімен таңдаңыз.</small><span asp-validation-for="SelectedSubjectIds" class="text-danger"></span></div>
+</div>
+<div class="actions mt-4"><button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Сақтау</button><a asp-action="Index" class="btn btn-outline-secondary">Бас тарту</a></div>

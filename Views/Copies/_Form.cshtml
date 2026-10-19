@@ -1,0 +1,15 @@
+@model EduLibrary.ViewModels.CopyEditViewModel
+@using EduLibrary.ViewModels
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<input asp-for="Id" type="hidden" /><input asp-for="RowVersion" type="hidden" />
+@if (Model.IsOnLoan) { <div class="alert alert-warning">Дана оқырманда. Өзгерту үшін алдымен қайтаруды рәсімдеңіз.</div> }
+<div class="form-grid">
+    <div class="form-group"><label asp-for="BookId"></label>@if (Model.Id == 0) { <select asp-for="BookId" asp-items="Model.Books" class="form-select"><option value="">Кітапты таңдаңыз</option></select> }else { <input asp-for="BookId" type="hidden" /><select asp-for="BookId" asp-items="Model.Books" class="form-select" disabled></select> }<span asp-validation-for="BookId" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="InventoryNumber"></label><input asp-for="InventoryNumber" class="form-control" placeholder="INV-2026-0001" /><span asp-validation-for="InventoryNumber" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="Barcode"></label><input asp-for="Barcode" class="form-control" /><span asp-validation-for="Barcode" class="text-danger"></span><p class="form-text">Бос қалдырсаңыз, бірегей штрихкод автоматты жасалады.</p></div>
+    <div class="form-group"><label asp-for="Status"></label><select asp-for="Status" asp-items="CatalogLabels.CopyStatuses(Model.IsOnLoan)" class="form-select" disabled="@Model.IsOnLoan"></select><span asp-validation-for="Status" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="ShelfLocation"></label><input asp-for="ShelfLocation" class="form-control" placeholder="A-03 / 2-сөре" /><span asp-validation-for="ShelfLocation" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="AcquiredAt"></label><input asp-for="AcquiredAt" type="date" class="form-control" /><span asp-validation-for="AcquiredAt" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="Condition"></label><textarea asp-for="Condition" class="form-control" rows="3"></textarea><span asp-validation-for="Condition" class="text-danger"></span></div>
+</div>
+<div class="form-actions actions mt-4"><button type="submit" class="btn btn-primary" disabled="@Model.IsOnLoan"><i data-lucide="check" aria-hidden="true"></i> Сақтау</button><a asp-action="Index" asp-route-bookId="@Model.BookId" class="btn btn-outline-secondary">Бас тарту</a></div>

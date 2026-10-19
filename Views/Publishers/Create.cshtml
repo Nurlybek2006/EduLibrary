@@ -1,0 +1,5 @@
+@model EduLibrary.ViewModels.PublisherEditViewModel
+@{ ViewData["Title"] = "Жаңа баспа"; }
+<div class="page-header"><div><p class="eyebrow">АНЫҚТАМАЛЫҚТЫ ТОЛЫҚТЫРУ</p><h1>Жаңа баспа</h1><p class="text-muted">Жазбаның мәліметтерін енгізіңіз.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Тізімге оралу</a></div>
+<form asp-action="Create" method="post" class="card"><partial name="_Form" model="Model" /></form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

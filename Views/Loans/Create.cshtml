@@ -1,0 +1,35 @@
+@model EduLibrary.ViewModels.IssueLoanViewModel
+@{ ViewData["Title"] = "Кітап беру"; }
+<div class="page-header"><div><span class="eyebrow">КІТАП АЙНАЛЫМЫ</span><h1>Кітап беру</h1><p>Белсенді оқырман мен қолжетімді физикалық дананы таңдаңыз.</p></div><a class="btn btn-secondary" asp-action="Index">Тізімге оралу</a></div>
+<div class="card form-card">
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div class="form-grid">
+        <div><label asp-for="StudentId" class="form-label"></label><select asp-for="StudentId" asp-items="Model.Students" class="form-select" required><option value="">Студентті таңдаңыз</option></select><span asp-validation-for="StudentId" class="text-danger"></span></div>
+        <div><label for="copy-search" class="form-label">Кітапты іздеу</label><input id="copy-search" class="form-control mb-2" type="search" placeholder="Кітап атауы, дана нөмірі немесе сөре" autocomplete="off" /><label asp-for="BookCopyId" class="form-label"></label><select asp-for="BookCopyId" asp-items="Model.Copies" class="form-select" required><option value="">Кітап данасын таңдаңыз</option></select><span asp-validation-for="BookCopyId" class="text-danger"></span><small id="copy-search-count" class="text-muted" aria-live="polite">@Model.Copies.Count қолжетімді дана</small></div>
+        <div><label asp-for="LoanDate" class="form-label"></label><input asp-for="LoanDate" class="form-control" /><span asp-validation-for="LoanDate" class="text-danger"></span></div>
+        <div><label asp-for="DueDate" class="form-label"></label><input asp-for="DueDate" class="form-control" /><span asp-validation-for="DueDate" class="text-danger"></span><small class="text-muted">Әдепкі мерзім: @Model.DefaultLoanDays күн.</small></div>
+    </div>
+    <div class="mb-4"><label asp-for="Notes" class="form-label"></label><textarea asp-for="Notes" class="form-control" rows="3" maxlength="2000"></textarea><span asp-validation-for="Notes" class="text-danger"></span></div>
+    <div class="actions"><button class="btn btn-primary" type="submit"><i data-lucide="book-up"></i> Беруді растау</button><a class="btn btn-secondary" asp-action="Index">Бас тарту</a></div>
+</form>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            const search = document.getElementById('copy-search');
+            const select = document.getElementById('BookCopyId');
+            const count = document.getElementById('copy-search-count');
+            const choices = Array.from(select.options).slice(1).map(option => ({ value: option.value, text: option.text }));
+            search.addEventListener('input', () => {
+                const previous = select.value;
+                const query = search.value.trim().toLocaleLowerCase('kk-KZ');
+                const matching = choices.filter(option => option.text.toLocaleLowerCase('kk-KZ').includes(query));
+                select.replaceChildren(new Option('Кітап данасын таңдаңыз', ''), ...matching.map(option => new Option(option.text, option.value)));
+                if (matching.some(option => option.value === previous)) select.value = previous;
+                count.textContent = matching.length + ' қолжетімді дана';
+            });
+        })();
+    </script>
+}

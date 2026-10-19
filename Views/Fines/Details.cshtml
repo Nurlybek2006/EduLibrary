@@ -1,0 +1,18 @@
+@model EduLibrary.ViewModels.FineDetailsViewModel
+@{
+    ViewData["Title"] = "Айыппұл ақпараты";
+    var paymentAmount = ViewData.ModelState.TryGetValue("Amount", out var paymentState)
+        ? paymentState.AttemptedValue
+        : Model.Fine.Balance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+}
+<div class="page-header"><div><span class="eyebrow">ЕСЕП ЖӘНЕ ТӨЛЕМ · №@Model.Fine.Id</span><h1>Айыппұл ақпараты</h1><p>@Model.Fine.StudentName · @Model.Fine.BookTitle</p></div><a class="btn btn-secondary" asp-action="Index">Тізімге оралу</a></div>
+<div class="dashboard-grid">
+<div class="card"><div class="card-header"><h2>Есеп ақпараты</h2><span class="badge badge-@Model.Fine.StatusClass">@Model.Fine.StatusLabel</span></div><dl class="detail-grid"><div><dt>Оқырман</dt><dd>@Model.Fine.StudentName</dd></div><div><dt>Студент нөмірі</dt><dd>@Model.Fine.StudentNumber</dd></div><div><dt>Айыппұл сомасы</dt><dd>@Model.Fine.Amount.ToString("N2") ₸</dd></div><div><dt>Төленген сома</dt><dd>@Model.Fine.PaidAmount.ToString("N2") ₸</dd></div><div><dt>Қалған берешек</dt><dd><strong>@Model.Fine.Balance.ToString("N2") ₸</strong></dd></div><div><dt>Есептелген күні</dt><dd>@Model.Fine.CreatedAt.ToString("dd.MM.yyyy")</dd></div></dl><div class="note-block"><h3>Себебі</h3><p>@Model.Fine.Reason</p></div><a class="btn btn-secondary" asp-controller="Loans" asp-action="Details" asp-route-id="@Model.Fine.LoanId">Кітап беру жазбасын ашу</a></div>
+<div class="card"><div class="card-header"><h2>Төлемдер тарихы</h2><i data-lucide="receipt"></i></div>
+@if(Model.Payments.Count == 0) { <div class="empty-state"><i data-lucide="wallet"></i><p>Төлемдер әлі тіркелмеген.</p></div> }
+else { <table class="table"><thead><tr><th>Күні</th><th>Сома</th></tr></thead><tbody>@foreach(var payment in Model.Payments) { <tr><td>@payment.PaidAt.ToString("dd.MM.yyyy")</td><td><strong>@payment.Amount.ToString("N2") ₸</strong></td></tr> }</tbody></table> }
+</div></div>
+@if(Model.IsStaff && Model.Fine.Balance > 0)
+{
+<div class="card mt-4 form-card"><div class="card-header"><h2>Төлемді тіркеу</h2></div><form asp-action="Pay" method="post"><input type="hidden" name="FineId" value="@Model.Fine.Id" /><input type="hidden" name="RowVersion" value="@Model.RowVersion" /><div asp-validation-summary="All" class="text-danger" role="alert"></div><div class="form-grid"><div><label class="form-label" for="fine-amount">Төлем сомасы (₸)</label><input id="fine-amount" class="form-control" type="number" name="Amount" min="0.01" max="@Model.Fine.Balance.ToString(System.Globalization.CultureInfo.InvariantCulture)" step="0.01" value="@paymentAmount" required /><small class="text-muted">Ең көбі: @Model.Fine.Balance.ToString("N2") ₸. Ішінара төлем қабылданады.</small></div></div><button class="btn btn-primary" type="submit"><i data-lucide="circle-check"></i> Төлемді растау</button></form></div>
+}

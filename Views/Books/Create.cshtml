@@ -1,0 +1,5 @@
+@model EduLibrary.ViewModels.BookEditViewModel
+@{ ViewData["Title"] = "Кітап қосу"; }
+<div class="page-header"><div><p class="eyebrow">КАТАЛОГТЫ ТОЛЫҚТЫРУ</p><h1>Жаңа кітап қосу</h1><p class="text-muted">Библиографиялық мәліметтерді енгізіңіз. Физикалық даналар келесі қадамда қосылады.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Каталогқа оралу</a></div>
+<form asp-action="Create" method="post" class="card"><partial name="_Form" model="Model" /></form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

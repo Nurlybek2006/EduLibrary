@@ -1,0 +1,21 @@
+@model EduLibrary.ViewModels.RegisterViewModel
+@{ ViewData["Title"] = "Тіркелу"; }
+<div class="page-header"><div><span class="eyebrow">ОҚУҒА ЖАҢА МҮМКІНДІК</span><h1>Студент аккаунтын ашу</h1><p>Кітапханаға қосылып, оқу әлеміңізді кеңейтіңіз.</p></div><a asp-action="Login" class="btn btn-outline-secondary">Жүйеге кіру</a></div>
+<section class="card"><form asp-action="Register" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div class="form-grid">
+        <div><label asp-for="FullName"></label><input asp-for="FullName" class="form-control" autocomplete="name" /><span asp-validation-for="FullName" class="text-danger"></span></div>
+        <div><label asp-for="StudentNumber"></label><input asp-for="StudentNumber" class="form-control" /><span asp-validation-for="StudentNumber" class="text-danger"></span></div>
+        <div><label asp-for="Email"></label><input asp-for="Email" class="form-control" autocomplete="email" /><span asp-validation-for="Email" class="text-danger"></span></div>
+        <div><label asp-for="PhoneNumber"></label><input asp-for="PhoneNumber" class="form-control" autocomplete="tel" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+        <div><label asp-for="Faculty"></label><input asp-for="Faculty" class="form-control" /><span asp-validation-for="Faculty" class="text-danger"></span></div>
+        <div><label asp-for="Course"></label><input asp-for="Course" class="form-control" /><span asp-validation-for="Course" class="text-danger"></span></div>
+        <div><label asp-for="GroupName"></label><input asp-for="GroupName" class="form-control" /><span asp-validation-for="GroupName" class="text-danger"></span></div>
+        <div></div>
+        <div><label asp-for="Password"></label><input asp-for="Password" class="form-control" autocomplete="new-password" /><small class="text-muted">Кемінде 10 таңба: бас және кіші әріп, сан, арнайы таңба.</small><span asp-validation-for="Password" class="text-danger"></span></div>
+        <div><label asp-for="ConfirmPassword"></label><input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" /><span asp-validation-for="ConfirmPassword" class="text-danger"></span></div>
+    </div>
+    <p class="text-muted mt-4">Нөміріңіз кітапханада бұрын тіркелген болса, кітапханашыға хабарласыңыз.</p>
+    <div class="actions"><button class="btn btn-primary" type="submit">Аккаунт ашу <i data-lucide="arrow-right"></i></button><a asp-action="Login" class="btn btn-outline-secondary">Кіруге оралу</a></div>
+</form></section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

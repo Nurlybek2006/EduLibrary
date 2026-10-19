@@ -1,0 +1,5 @@
+@model EduLibrary.ViewModels.StudentEditViewModel
+@{ ViewData["Title"] = "Студент қосу"; }
+<div class="page-header"><div><span class="eyebrow">ЖАҢА ОҚЫРМАН</span><h1>Студент қосу</h1><p>Оқырманның жеке және академиялық мәліметтерін енгізіңіз.</p></div></div>
+<section class="card"><p class="text-muted">Бұл форма кітапхананың оқырман жазбасын жасайды. Онлайн аккаунт бұрыннан бар жазбаға автоматты түрде байланыстырылмайды.</p><form asp-action="Create" method="post"><partial name="_StudentForm" model="Model" /></form></section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,4 @@
+@model EduLibrary.Helpers.LibraryOptions
+@{ ViewData["Title"]="Баптаулар"; }
+<div class="page-header"><div><div class="eyebrow">ЖҮЙЕ</div><h1>Кітапхана саясаты</h1><p>Кітап беру мен айыппұл есептеудің ағымдағы параметрлері.</p></div></div>
+<section class="card form-card"><dl class="detail-grid"><div><dt>Стандартты беру мерзімі</dt><dd>@Model.DefaultLoanDays күн</dd></div><div><dt>Бір күндік кешігу айыппұлы</dt><dd>@Model.FinePerOverdueDay.ToString("N2") ₸</dd></div><div><dt>Кітапхана уақыты</dt><dd>Asia/Qyzylorda</dd></div></dl><p class="text-muted">Саясатты өзгерту үшін сервердегі Library конфигурациясын жаңартып, қосымшаны қайта іске қосыңыз.</p><a class="btn btn-primary" asp-controller="Staff" asp-action="Index">Қызметкерлерді басқару</a></section>

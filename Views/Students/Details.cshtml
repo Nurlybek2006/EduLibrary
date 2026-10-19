@@ -1,0 +1,25 @@
+@model EduLibrary.ViewModels.StudentDetailsViewModel
+@{ ViewData["Title"] = Model.FullName; }
+<div class="page-header"><div><span class="eyebrow">ОҚЫРМАН ПРОФИЛІ · @Model.StudentNumber</span><h1>@Model.FullName</h1><p>@Model.Faculty · @Model.Course курс · @Model.GroupName</p></div><div class="actions">@if (Model.CanManage) { <a asp-action="Index" class="btn btn-outline-secondary">Студенттер</a><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary"><i data-lucide="pencil"></i> Өңдеу</a> } else { <a asp-controller="Account" asp-action="Profile" class="btn btn-outline-secondary">Профильді өңдеу</a> }</div></div>
+<div class="form-grid mb-4">
+    <section class="card"><span class="text-muted">Байланыс</span><h3>@Model.Email</h3><p>@(string.IsNullOrWhiteSpace(Model.PhoneNumber) ? "Телефон көрсетілмеген" : Model.PhoneNumber)</p><span class="badge @(Model.IsActive ? "badge-success" : "badge-secondary")">@(Model.IsActive ? "Белсенді оқырман" : "Белсенділігі тоқтатылған")</span></section>
+    <section class="card"><span class="text-muted">Қолындағы кітаптар</span><h2>@Model.ActiveLoans.Count</h2><p><span class="badge badge-warning">@Model.ActiveLoans.Count(l => l.OverdueDays > 0) мерзімі өткен</span></p></section>
+    <section class="card"><span class="text-muted">Төленбеген айыппұл</span><h2>@Model.OutstandingFines.ToString("N2") ₸</h2><p class="text-muted">Қайтарылған кітаптар бойынша бекітілген сома.</p></section>
+</div>
+<div class="form-grid mb-4"><section class="card"><h2>Қызығушылықтары</h2>@if (Model.Interests.Count == 0) { <p class="text-muted">Қызығушылықтар көрсетілмеген.</p> } else { <div class="actions">@foreach (var interest in Model.Interests) { <span class="badge badge-secondary">@interest</span> }</div> }</section><section class="card"><h2>Оқитын пәндері</h2>@if (Model.Subjects.Count == 0) { <p class="text-muted">Пәндер таңдалмаған.</p> } else { <div class="actions">@foreach (var subject in Model.Subjects) { <span class="badge badge-secondary">@subject</span> }</div> }</section></div>
+<section class="card mb-4"><h2>Қолындағы кітаптар</h2>
+@if (Model.ActiveLoans.Count == 0) { <div class="empty-state"><i data-lucide="book-open-check"></i><p>Қазіргі уақытта қолында кітап жоқ.</p></div> }
+else { <div class="table-responsive"><table class="table"><thead><tr><th>Кітап / дана</th><th>Берілген күні</th><th>Қайтару мерзімі</th><th>Мәртебе</th></tr></thead><tbody>@foreach (var loan in Model.ActiveLoans) { <tr><td><strong>@loan.BookTitle</strong><div class="text-muted">@loan.InventoryNumber</div></td><td>@loan.LoanDate.ToString("dd.MM.yyyy")</td><td>@loan.DueDate.ToString("dd.MM.yyyy")</td><td>@if (loan.OverdueDays > 0) { <span class="badge badge-danger">@loan.OverdueDays күн кешіккен</span> } else { <span class="badge badge-success">Мерзімі өтпеген</span> }</td></tr> }</tbody></table></div> }
+</section>
+<section class="card mb-4"><h2>Кітап алу тарихы</h2>
+@if (Model.History.Count == 0) { <p class="text-muted">Қайтарылған кітаптар әлі жоқ.</p> }
+else { <div class="table-responsive"><table class="table"><thead><tr><th>Кітап / дана</th><th>Берілген күні</th><th>Мерзімі</th><th>Қайтарылған күні</th></tr></thead><tbody>@foreach (var loan in Model.History) { <tr><td><strong>@loan.BookTitle</strong><div class="text-muted">@loan.InventoryNumber</div></td><td>@loan.LoanDate.ToString("dd.MM.yyyy")</td><td>@loan.DueDate.ToString("dd.MM.yyyy")</td><td>@loan.ReturnedAt?.ToString("dd.MM.yyyy") @if (loan.OverdueDays > 0) { <span class="badge badge-warning">@loan.OverdueDays күн кешіккен</span> }</td></tr> }</tbody></table></div> }
+</section>
+<section class="card mb-4"><h2>Айыппұлдар тарихы</h2>
+@if (Model.Fines.Count == 0) { <p class="text-muted">Айыппұлдар жоқ.</p> }
+else { <div class="table-responsive"><table class="table"><thead><tr><th>Кітап / себеп</th><th>Күні</th><th>Сома</th><th>Төленді</th><th>Қалдық</th></tr></thead><tbody>@foreach (var fine in Model.Fines) { <tr><td>@fine.BookTitle<div class="text-muted">@fine.Reason</div></td><td>@fine.CreatedAt.ToString("dd.MM.yyyy")</td><td>@fine.Amount.ToString("N2") ₸</td><td>@fine.PaidAmount.ToString("N2") ₸</td><td><span class="badge @(fine.Balance > 0 ? "badge-warning" : "badge-success")">@fine.Balance.ToString("N2") ₸</span></td></tr> }</tbody></table></div> }
+</section>
+@if (Model.CanManage && Model.IsActive)
+{
+    <section class="card"><h2>Оқырман белсенділігін тоқтату</h2><p class="text-muted">Кітап алу және төлем тарихы сақталады. Жаңа кітап беру және аккаунтқа кіру тоқтатылады.</p><form asp-action="Deactivate" asp-route-id="@Model.Id" method="post" data-confirm="Студенттің белсенділігін тоқтатасыз ба?"><button type="submit" class="btn btn-outline-danger"><i data-lucide="user-x"></i> Белсенділігін тоқтату</button></form></section>
+}

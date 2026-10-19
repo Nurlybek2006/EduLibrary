@@ -1,0 +1,29 @@
+@model EduLibrary.ViewModels.StudentListViewModel
+@{ ViewData["Title"] = "Студенттер"; }
+<div class="page-header"><div><span class="eyebrow">ОҚЫРМАНДАР ҚАУЫМДАСТЫҒЫ</span><h1>Студенттер</h1><p>Барлығы @Model.TotalCount студент · оқу және кітапхана деректері.</p></div><a asp-action="Create" class="btn btn-primary"><i data-lucide="user-plus"></i> Студент қосу</a></div>
+<section class="card mb-4"><form method="get" class="form-grid">
+    <div><label for="student-search">Іздеу</label><input id="student-search" name="Search" value="@Model.Search" class="form-control" placeholder="Аты-жөні немесе студент нөмірі" /></div>
+    <div><label for="faculty">Факультет</label><select id="faculty" name="Faculty" class="form-select"><option value="">Барлық факультеттер</option>@foreach (var faculty in Model.Faculties) { <option value="@faculty" selected="@(faculty == Model.Faculty)">@faculty</option> }</select></div>
+    <div><label for="course">Курс</label><select id="course" name="Course" class="form-select"><option value="">Барлық курстар</option>@for (var course = 1; course <= 8; course++) { <option value="@course" selected="@(course == Model.Course)">@course курс</option> }</select></div>
+    <div><label for="group">Топ</label><input id="group" name="GroupName" value="@Model.GroupName" class="form-control" placeholder="Топ атауы" /></div>
+    <div class="form-check"><input asp-for="IncludeInactive" class="form-check-input" /><label asp-for="IncludeInactive" class="form-check-label">Белсенді емес студенттерді көрсету</label></div>
+    <div class="actions"><button type="submit" class="btn btn-primary"><i data-lucide="search"></i> Іздеу</button><a asp-action="Index" class="btn btn-outline-secondary">Тазарту</a></div>
+</form></section>
+<section class="card">
+    @if (Model.Students.Count == 0)
+    { <div class="empty-state"><i data-lucide="users"></i><h2>Студенттер табылмады</h2><p>Іздеу шарттарын өзгертіңіз немесе жаңа студент қосыңыз.</p><a asp-action="Create" class="btn btn-primary">Студент қосу</a></div> }
+    else
+    {
+        <div class="table-responsive"><table class="table"><thead><tr><th>Студент</th><th>Байланыс</th><th>Факультет</th><th>Курс / топ</th><th>Мәртебе</th><th><span class="visually-hidden">Әрекеттер</span></th></tr></thead><tbody>
+        @foreach (var student in Model.Students)
+        {
+            <tr><td><a asp-action="Details" asp-route-id="@student.Id"><strong>@student.FullName</strong></a><div class="text-muted">@student.StudentNumber</div></td><td>@student.Email</td><td>@student.Faculty</td><td>@student.Course курс <div class="text-muted">@student.GroupName</div></td><td><span class="badge @(student.IsActive ? "badge-success" : "badge-secondary")">@(student.IsActive ? "Белсенді" : "Тоқтатылған")</span></td><td><a asp-action="Details" asp-route-id="@student.Id" class="btn btn-sm btn-outline-secondary">Ашу <i data-lucide="arrow-up-right"></i></a></td></tr>
+        }
+        </tbody></table></div>
+        <nav class="actions mt-3" aria-label="Студенттер беттері">
+            @if (Model.Page > 1) { <a asp-action="Index" asp-route-page="@(Model.Page - 1)" asp-route-search="@Model.Search" asp-route-faculty="@Model.Faculty" asp-route-course="@Model.Course" asp-route-groupName="@Model.GroupName" asp-route-includeInactive="@Model.IncludeInactive" class="btn btn-outline-secondary">Алдыңғы</a> }
+            <span class="text-muted">@Model.Page / @Model.TotalPages бет</span>
+            @if (Model.Page < Model.TotalPages) { <a asp-action="Index" asp-route-page="@(Model.Page + 1)" asp-route-search="@Model.Search" asp-route-faculty="@Model.Faculty" asp-route-course="@Model.Course" asp-route-groupName="@Model.GroupName" asp-route-includeInactive="@Model.IncludeInactive" class="btn btn-outline-secondary">Келесі</a> }
+        </nav>
+    }
+</section>

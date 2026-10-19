@@ -1,0 +1,17 @@
+@model EduLibrary.ViewModels.BookEditViewModel
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<input asp-for="Id" type="hidden" />
+<div class="form-grid">
+    <div class="form-group"><label asp-for="Title"></label><input asp-for="Title" class="form-control" /><span asp-validation-for="Title" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="ISBN"></label><input asp-for="ISBN" class="form-control" placeholder="9780132350884" /><span asp-validation-for="ISBN" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="PublisherId"></label><select asp-for="PublisherId" asp-items="Model.Publishers" class="form-select"><option value="">Баспаны таңдаңыз</option></select><span asp-validation-for="PublisherId" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="PublicationYear"></label><input asp-for="PublicationYear" class="form-control" /><span asp-validation-for="PublicationYear" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="Language"></label><input asp-for="Language" class="form-control" list="book-languages" /><datalist id="book-languages"><option value="Қазақша"></option><option value="English"></option><option value="Русский"></option></datalist><span asp-validation-for="Language" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="PageCount"></label><input asp-for="PageCount" class="form-control" /><span asp-validation-for="PageCount" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="AuthorIds"></label><select asp-for="AuthorIds" asp-items="Model.Authors" class="form-select" multiple size="6" aria-describedby="multi-select-help"></select><span asp-validation-for="AuthorIds" class="text-danger"></span></div>
+    <div class="form-group"><label asp-for="CategoryIds"></label><select asp-for="CategoryIds" asp-items="Model.Categories" class="form-select" multiple size="6" aria-describedby="multi-select-help"></select><span asp-validation-for="CategoryIds" class="text-danger"></span></div>
+</div>
+<p id="multi-select-help" class="form-text">Бірнеше мәнді таңдау үшін Ctrl (Mac: Command) пернесін басып тұрыңыз. Автор, баспа немесе санат тізімде болмаса, алдымен тиісті анықтамалыққа қосыңыз.</p>
+<div class="form-group mt-3"><label asp-for="Description"></label><textarea asp-for="Description" class="form-control" rows="5"></textarea><span asp-validation-for="Description" class="text-danger"></span></div>
+<div class="form-group mt-3"><label asp-for="CoverImageUrl"></label><input asp-for="CoverImageUrl" class="form-control" placeholder="https://…" /><span asp-validation-for="CoverImageUrl" class="text-danger"></span><p class="form-text">Міндетті емес. Сілтеме көрсетілмесе, кітапқа әдемі мұқаба автоматты көрсетіледі.</p></div>
+<div class="form-actions actions mt-4"><button type="submit" class="btn btn-primary"><i data-lucide="check" aria-hidden="true"></i> Сақтау</button><a asp-action="Index" class="btn btn-outline-secondary">Бас тарту</a></div>

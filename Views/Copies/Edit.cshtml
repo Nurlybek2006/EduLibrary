@@ -1,0 +1,5 @@
+@model EduLibrary.ViewModels.CopyEditViewModel
+@{ ViewData["Title"] = "Кітап данасын өзгерту"; }
+<div class="page-header"><div><p class="eyebrow">ҚОРДЫ БАСҚАРУ</p><h1>Кітап данасын өзгерту</h1><p class="text-muted">@Model.InventoryNumber · @Model.Barcode</p></div><a asp-action="Index" asp-route-bookId="@Model.BookId" class="btn btn-outline-secondary">Даналарға оралу</a></div>
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="card"><partial name="_Form" model="Model" /></form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

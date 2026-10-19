@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+*.user
+*.log
+appsettings.Local.json
+TestResults/
+artifacts/
+.tools/
+tests/**/bin/
+tests/**/obj/
