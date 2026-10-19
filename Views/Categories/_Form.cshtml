@@ -1,6 +1,7 @@
 @model EduLibrary.ViewModels.CategoryEditViewModel
 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 <input asp-for="Id" type="hidden" />
+<div class="form-section-heading"><span>01</span><div><h2>Каталог бағыты</h2><p>Түсінікті атау оқырманға әдебиеттерді оңай табуға көмектеседі.</p></div></div>
 <div class="form-grid">
     <div class="form-group"><label asp-for="Name"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
     <div class="form-group"><label asp-for="Description"></label><textarea asp-for="Description" class="form-control" rows="5"></textarea><span asp-validation-for="Description" class="text-danger"></span></div>

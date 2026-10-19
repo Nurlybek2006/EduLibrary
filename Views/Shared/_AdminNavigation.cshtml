@@ -1,0 +1,31 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    string Current(string name) => controller == name ? "current" : "";
+}
+<aside class="management-rail" id="management-navigation" aria-label="Қызметкер навигациясы">
+    <a class="rail-emblem" asp-controller="Dashboard" asp-action="Index" aria-label="EduLibrary басқару"><span>E<span>.</span></span></a>
+    <nav>
+        <a class="rail-link @Current("Dashboard")" asp-controller="Dashboard" asp-action="Index" aria-label="Басқару шолуы"><i data-lucide="panels-top-left"></i><span>Шолу</span></a>
+        <a class="rail-link @Current("Books")" asp-controller="Books" asp-action="Index" aria-label="Кітаптар каталогы"><i data-lucide="book-open"></i><span>Каталог</span></a>
+        <a class="rail-link @Current("Loans")" asp-controller="Loans" asp-action="Index" aria-label="Кітап беру"><i data-lucide="arrow-up-right"></i><span>Беру</span></a>
+        <a class="rail-link @Current("Returns")" asp-controller="Returns" asp-action="Index" aria-label="Қайтарулар"><i data-lucide="arrow-down-left"></i><span>Қайтару</span></a>
+        <a class="rail-link @Current("Students")" asp-controller="Students" asp-action="Index" aria-label="Студенттер"><i data-lucide="users-round"></i><span>Оқырман</span></a>
+        <a class="rail-link @Current("Fines")" asp-controller="Fines" asp-action="Index" aria-label="Айыппұлдар"><i data-lucide="receipt-text"></i><span>Төлем</span></a>
+        <span class="rail-divider"></span>
+        <a class="rail-link @Current("Copies")" asp-controller="Copies" asp-action="Index" aria-label="Кітап даналары және QR іздеу"><i data-lucide="scan-line"></i><span>Даналар</span></a>
+        <a class="rail-link @Current("Authors")" asp-controller="Authors" asp-action="Index" aria-label="Авторлар"><i data-lucide="feather"></i><span>Автор</span></a>
+        <a class="rail-link @Current("Publishers")" asp-controller="Publishers" asp-action="Index" aria-label="Баспалар"><i data-lucide="building-2"></i><span>Баспа</span></a>
+        <a class="rail-link @Current("Categories")" asp-controller="Categories" asp-action="Index" aria-label="Санаттар"><i data-lucide="tags"></i><span>Санат</span></a>
+        <span class="rail-divider"></span>
+        <a class="rail-link @Current("Recommendations")" asp-controller="Recommendations" asp-action="Index" aria-label="Жеке ұсыныстар"><i data-lucide="sparkles"></i><span>Ұсыныс</span></a>
+        <a class="rail-link @Current("Analytics")" asp-controller="Analytics" asp-action="Index" aria-label="Талдау"><i data-lucide="chart-no-axes-combined"></i><span>Талдау</span></a>
+        <a class="rail-link @Current("Reports")" asp-controller="Reports" asp-action="Index" aria-label="Есептер"><i data-lucide="files"></i><span>Есептер</span></a>
+        @if (User.IsInRole("Admin")) {
+            <span class="rail-divider"></span>
+            <a class="rail-link @Current("Staff")" asp-controller="Staff" asp-action="Index" aria-label="Қызметкерлер"><i data-lucide="shield-check"></i><span>Топ</span></a>
+            <a class="rail-link @Current("Reviews")" asp-controller="Reviews" asp-action="Index" aria-label="Пікірлерді тексеру"><i data-lucide="message-square-text"></i><span>Пікір</span></a>
+            <a class="rail-link @(controller == "Home" ? "current" : "")" asp-controller="Home" asp-action="Settings" aria-label="Кітапхана саясаты"><i data-lucide="settings-2"></i><span>Саясат</span></a>
+        }
+    </nav>
+</aside>
+

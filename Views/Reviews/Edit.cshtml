@@ -1,7 +1,8 @@
 @model EduLibrary.ViewModels.ReviewEditViewModel
 @{ ViewData["Title"] = Model.Id == 0 ? "Пікір жазу" : "Пікірді өзгерту"; }
-<div class="page-header"><div><p class="eyebrow">ОҚУ ТӘЖІРИБЕСІ</p><h1>@ViewData["Title"]</h1><p class="text-muted">@Model.BookTitle</p></div><a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" asp-fragment="reviews" class="btn btn-outline-secondary">Кітапқа оралу</a></div>
-<div class="card form-card">
+<div class="workspace-page reviews-workspace form-workspace">
+<div class="page-header workspace-heading"><div><p class="eyebrow">ОҚУ ТӘЖІРИБЕСІ</p><h1>@ViewData["Title"]</h1><p class="text-muted">@Model.BookTitle</p></div><a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" asp-fragment="reviews" class="btn btn-outline-secondary">Кітапқа оралу</a></div>
+<div class="card ledger-panel form-card sheet-form">
 @if (Model.IsHidden) { <div class="alert alert-warning">Пікірді модератор жасырған. Өзгерістер пікірді автоматты түрде қайта жарияламайды.</div> }
 <form asp-controller="Reviews" asp-action="@(Model.Id == 0 ? "Create" : "Edit")" asp-route-id="@(Model.Id == 0 ? (int?)null : Model.Id)" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div><input asp-for="Id" type="hidden" /><input asp-for="BookId" type="hidden" /><input asp-for="RowVersion" type="hidden" />
@@ -10,5 +11,6 @@
     <div class="actions"><button type="submit" class="btn btn-primary">Пікірді сақтау</button><a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" asp-fragment="reviews" class="btn btn-outline-secondary">Бас тарту</a></div>
 </form>
 @if (Model.Id != 0) { <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="mt-4" data-confirm="Пікіріңіз жойылсын ба? Рейтинг жалпы есептен алынады."><input name="rowVersion" value="@Model.RowVersion" type="hidden" /><button type="submit" class="btn btn-outline-danger"><i data-lucide="trash-2" aria-hidden="true"></i> Пікірді жою</button></form> }
+</div>
 </div>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

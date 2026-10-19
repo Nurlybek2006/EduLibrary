@@ -29,6 +29,9 @@ public sealed class AccountController(IAccountService accounts) : Controller
     [AllowAnonymous, HttpGet]
     public IActionResult Register() => View(new RegisterViewModel());
 
+    [AllowAnonymous, HttpGet]
+    public IActionResult ForgotPassword() => View();
+
     [AllowAnonymous, HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model, CancellationToken cancellationToken)
     {

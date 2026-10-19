@@ -1,5 +1,7 @@
 @model EduLibrary.ViewModels.StudentEditViewModel
 @{ ViewData["Title"] = "Студентті өңдеу"; }
-<div class="page-header"><div><span class="eyebrow">ОҚЫРМАН ДЕРЕКТЕРІ</span><h1>Студентті өңдеу</h1><p>@Model.FullName · @Model.StudentNumber</p></div><a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Профильге оралу</a></div>
-<section class="card"><form asp-action="Edit" asp-route-id="@Model.Id" method="post"><partial name="_StudentForm" model="Model" /></form></section>
+<div class="workspace-page students-workspace form-workspace">
+<div class="page-header workspace-heading"><div><span class="eyebrow">ОҚЫРМАН ДЕРЕКТЕРІ</span><h1>Студентті өңдеу</h1><p>@Model.FullName · @Model.StudentNumber</p></div><a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Профильге оралу</a></div>
+<section class="card ledger-panel"><form asp-action="Edit" asp-route-id="@Model.Id" method="post"><partial name="_StudentForm" model="Model" /></form></section>
+</div>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

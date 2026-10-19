@@ -1,0 +1,2 @@
+@if (TempData["Success"] is string success) { <div class="toast-notice success-notice" role="status"><i data-lucide="circle-check"></i><span>@success</span><button type="button" aria-label="Хабарламаны жабу" data-dismiss-notice>×</button></div> }
+@if (TempData["Error"] is string error) { <div class="toast-notice error-notice" role="alert"><i data-lucide="circle-alert"></i><span>@error</span><button type="button" aria-label="Хабарламаны жабу" data-dismiss-notice>×</button></div> }

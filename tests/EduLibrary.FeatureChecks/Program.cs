@@ -116,6 +116,21 @@ try
     Check(previousFine.Amount == 500m && await db.Notifications.AnyAsync(n => n.UserId == firstUser && n.Type == "Fine" && n.Link == "/Fines/Details/" + previousFine.Id),
         "fine notification links to the committed SQL fine record");
 
+    var readingSpace = new ReadingSpaceService(db, clock, Recommendations(db));
+    var firstShelf = await readingSpace.GetAsync(firstUser);
+    Check(firstShelf.HasStudentProfile && firstShelf.StudentId == first.Id && firstShelf.ActiveLoanCount == 1
+        && firstShelf.CurrentBooks.Single().LoanId == activeLoanId && firstShelf.CurrentBooks.Single().DaysUntilDue == -2,
+        "reading space resolves current Identity reader and calculates real overdue shelf");
+    Check(firstShelf.ReturnedBookCount == 1 && firstShelf.History.Single().LoanId == previousLoanId
+        && firstShelf.OutstandingFines == previousFine.Amount && firstShelf.Interests.SequenceEqual(new[] { "Python" }),
+        "reading space composes actual return history fine balance and interests from SQL");
+    var secondShelf = await readingSpace.GetAsync(secondUser);
+    Check(secondShelf.ActiveLoanCount == 2 && secondShelf.CurrentBooks.All(b => b.LoanId != activeLoanId)
+        && secondShelf.OutstandingFines == 0 && secondShelf.RecentActivity.All(a => !a.Link.Contains("/Fines/")),
+        "reading space isolates other reader loans fines and notifications");
+    Check(!(await readingSpace.GetAsync("unlinked-identity")).HasStudentProfile,
+        "unlinked reading identity receives empty state without another reader data");
+
     var reviews = new ReviewService(db, clock, NullLogger<ReviewService>.Instance);
     await reviews.SaveAsync(new ReviewEditViewModel { BookId = reviewedBook.Id, Rating = 5, Comment = "First review" }, firstUser);
     var initialReview = await db.Reviews.AsNoTracking().SingleAsync();

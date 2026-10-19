@@ -1,6 +1,6 @@
 {
   "base_url": "http://localhost:5298",
-  "passed": 151,
+  "passed": 156,
   "failed": 0,
   "checks": [
     {
@@ -306,12 +306,12 @@
       "status": 200
     },
     {
-      "check": "Admin: GET /Students/Details/2",
+      "check": "Admin: GET /Students/Details/19",
       "passed": true,
       "status": 200
     },
     {
-      "check": "Admin: GET /Students/Edit/2",
+      "check": "Admin: GET /Students/Edit/19",
       "passed": true,
       "status": 200
     },
@@ -479,7 +479,22 @@
       "status": 200
     },
     {
+      "check": "Static asset: /fonts/manrope-cyrillic-ext.woff2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /fonts/manrope-cyrillic.woff2",
+      "passed": true,
+      "status": 200
+    },
+    {
       "check": "Static asset: /lib/bootstrap/dist/css/bootstrap.min.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /css/fonts.css",
       "passed": true,
       "status": 200
     },
@@ -489,7 +504,17 @@
       "status": 200
     },
     {
-      "check": "Static asset: /css/intelligence.css",
+      "check": "Static asset: /css/catalog.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /css/management.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Static asset: /css/account.css",
       "passed": true,
       "status": 200
     },
@@ -606,7 +631,7 @@
       "passed": true
     },
     {
-      "check": "Student: GET /Students/Details/2",
+      "check": "Student: GET /Students/Details/19",
       "passed": true,
       "status": 404
     },

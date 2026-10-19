@@ -1,18 +1,42 @@
 @model EduLibrary.ViewModels.BookEditViewModel
+@{
+    var selectedAuthors = Model.Authors.Where(x => Model.AuthorIds.Any(id => id.ToString() == x.Value)).Select(x => x.Text);
+    var preview = new EduLibrary.ViewModels.BookCoverViewModel { BookId = Model.Id, Title = string.IsNullOrWhiteSpace(Model.Title) ? "Жаңа кітап" : Model.Title, Authors = string.Join(", ", selectedAuthors), CoverImageUrl = Model.CoverImageUrl, PublicationYear = Model.PublicationYear, Category = Model.Categories.FirstOrDefault(x => Model.CategoryIds.Any(id => id.ToString() == x.Value))?.Text, Size = "standard" };
+}
 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 <input asp-for="Id" type="hidden" />
-<div class="form-grid">
-    <div class="form-group"><label asp-for="Title"></label><input asp-for="Title" class="form-control" /><span asp-validation-for="Title" class="text-danger"></span></div>
-    <div class="form-group"><label asp-for="ISBN"></label><input asp-for="ISBN" class="form-control" placeholder="9780132350884" /><span asp-validation-for="ISBN" class="text-danger"></span></div>
-    <div class="form-group"><label asp-for="PublisherId"></label><select asp-for="PublisherId" asp-items="Model.Publishers" class="form-select"><option value="">Баспаны таңдаңыз</option></select><span asp-validation-for="PublisherId" class="text-danger"></span></div>
-    <div class="form-group"><label asp-for="PublicationYear"></label><input asp-for="PublicationYear" class="form-control" /><span asp-validation-for="PublicationYear" class="text-danger"></span></div>
-    <div class="form-group"><label asp-for="Language"></label><input asp-for="Language" class="form-control" list="book-languages" /><datalist id="book-languages"><option value="Қазақша"></option><option value="English"></option><option value="Русский"></option></datalist><span asp-validation-for="Language" class="text-danger"></span></div>
-    <div class="form-group"><label asp-for="PageCount"></label><input asp-for="PageCount" class="form-control" /><span asp-validation-for="PageCount" class="text-danger"></span></div>
-    <div class="form-group"><label asp-for="AuthorIds"></label><select asp-for="AuthorIds" asp-items="Model.Authors" class="form-select" multiple size="6" aria-describedby="multi-select-help"></select><span asp-validation-for="AuthorIds" class="text-danger"></span></div>
-    <div class="form-group"><label asp-for="CategoryIds"></label><select asp-for="CategoryIds" asp-items="Model.Categories" class="form-select" multiple size="6" aria-describedby="multi-select-help"></select><span asp-validation-for="CategoryIds" class="text-danger"></span></div>
+<div class="book-editor-grid">
+    <div class="book-editor-fields">
+        <section class="book-form-section" aria-labelledby="book-identity-heading">
+            <div class="book-form-section-heading"><span>01</span><h2 id="book-identity-heading">Кітаптың негізгі ақпараты</h2></div>
+            <div class="form-grid">
+                <div class="form-group book-form-full"><label asp-for="Title"></label><input asp-for="Title" class="form-control" placeholder="Кітаптың толық атауы" /><span asp-validation-for="Title" class="text-danger"></span></div>
+                <div class="form-group"><label asp-for="ISBN"></label><input asp-for="ISBN" class="form-control" placeholder="9780132350884" /><span asp-validation-for="ISBN" class="text-danger"></span><span class="form-text">10 немесе 13 таңбалы бірегей нөмір.</span></div>
+                <div class="form-group"><label asp-for="PublisherId"></label><select asp-for="PublisherId" asp-items="Model.Publishers" class="form-select"><option value="">Баспаны таңдаңыз</option></select><span asp-validation-for="PublisherId" class="text-danger"></span></div>
+                <div class="form-group"><label asp-for="PublicationYear"></label><input asp-for="PublicationYear" class="form-control" /><span asp-validation-for="PublicationYear" class="text-danger"></span></div>
+                <div class="form-group"><label asp-for="PageCount"></label><input asp-for="PageCount" class="form-control" /><span asp-validation-for="PageCount" class="text-danger"></span></div>
+                <div class="form-group book-form-full"><label asp-for="Language"></label><input asp-for="Language" class="form-control" list="book-languages" /><datalist id="book-languages"><option value="Қазақша"></option><option value="English"></option><option value="Русский"></option></datalist><span asp-validation-for="Language" class="text-danger"></span></div>
+            </div>
+        </section>
+        <section class="book-form-section" aria-labelledby="book-connections-heading">
+            <div class="book-form-section-heading"><span>02</span><h2 id="book-connections-heading">Авторлар мен оқу бағыттары</h2></div>
+            <fieldset class="book-choice-fieldset"><legend>Авторлар</legend><div class="book-choice-list" id="AuthorIds">
+                @foreach (var author in Model.Authors) { <label><input name="AuthorIds" type="checkbox" value="@author.Value" checked="@Model.AuthorIds.Any(id => id.ToString() == author.Value)" /><span>@author.Text</span></label> }
+            </div><span asp-validation-for="AuthorIds" class="text-danger"></span></fieldset>
+            <fieldset class="book-choice-fieldset"><legend>Санаттар</legend><div class="book-choice-list" id="CategoryIds">
+                @foreach (var category in Model.Categories) { <label><input name="CategoryIds" type="checkbox" value="@category.Value" checked="@Model.CategoryIds.Any(id => id.ToString() == category.Value)" /><span>@category.Text</span></label> }
+            </div><span asp-validation-for="CategoryIds" class="text-danger"></span></fieldset>
+            <fieldset class="book-choice-fieldset"><legend>Оқу пәндері <span class="text-muted">· міндетті емес</span></legend><div class="book-choice-list" id="SubjectIds">
+                @foreach (var subject in Model.Subjects) { <label><input name="SubjectIds" type="checkbox" value="@subject.Value" checked="@Model.SubjectIds.Any(id => id.ToString() == subject.Value)" /><span>@subject.Text</span></label> }
+            </div><span asp-validation-for="SubjectIds" class="text-danger"></span><p class="form-text">Пәндік байланыстар каталогтан іздеуге және студенттерге кітап ұсынуға көмектеседі.</p></fieldset>
+            <p class="form-text">Автор, баспа немесе санат тізімде болмаса, алдымен тиісті анықтамалыққа қосыңыз.</p>
+        </section>
+        <section class="book-form-section" aria-labelledby="book-description-heading">
+            <div class="book-form-section-heading"><span>03</span><h2 id="book-description-heading">Оқырманға арналған мәлімет</h2></div>
+            <div class="form-group"><label asp-for="Description"></label><textarea asp-for="Description" class="form-control" rows="6" placeholder="Кітаптың мазмұны, мақсаты және кімге арналғаны туралы қысқаша жазыңыз."></textarea><span asp-validation-for="Description" class="text-danger"></span></div>
+            <div class="form-group mt-4"><label asp-for="CoverImageUrl"></label><input asp-for="CoverImageUrl" class="form-control" placeholder="https://…" /><span asp-validation-for="CoverImageUrl" class="text-danger"></span><p class="form-text">Міндетті емес. Мұқаба жүктелмесе, кітап мәліметтеріне сай типографиялық мұқаба көрсетіледі.</p></div>
+        </section>
+    </div>
+    <aside class="book-editor-preview"><span class="section-caption">Каталогтағы мұқаба</span><partial name="_BookCover" model="preview" /><p>Кітаптың атауы, авторы және санаты сақталған мәліметтер бойынша көрсетіледі.</p></aside>
 </div>
-<div class="form-group mt-3"><label asp-for="SubjectIds"></label><select asp-for="SubjectIds" asp-items="Model.Subjects" class="form-select" multiple size="4" aria-describedby="subject-help"></select><small id="subject-help" class="form-text">Пәндер каталог іздеуіне және жеке кітап ұсыныстарына қолданылады. Міндетті емес.</small></div>
-<p id="multi-select-help" class="form-text">Бірнеше мәнді таңдау үшін Ctrl (Mac: Command) пернесін басып тұрыңыз. Автор, баспа немесе санат тізімде болмаса, алдымен тиісті анықтамалыққа қосыңыз.</p>
-<div class="form-group mt-3"><label asp-for="Description"></label><textarea asp-for="Description" class="form-control" rows="5"></textarea><span asp-validation-for="Description" class="text-danger"></span></div>
-<div class="form-group mt-3"><label asp-for="CoverImageUrl"></label><input asp-for="CoverImageUrl" class="form-control" placeholder="https://…" /><span asp-validation-for="CoverImageUrl" class="text-danger"></span><p class="form-text">Міндетті емес. Сілтеме көрсетілмесе, кітапқа әдемі мұқаба автоматты көрсетіледі.</p></div>
-<div class="form-actions actions mt-4"><button type="submit" class="btn btn-primary"><i data-lucide="check" aria-hidden="true"></i> Сақтау</button><a asp-action="Index" class="btn btn-outline-secondary">Бас тарту</a></div>
+<footer class="book-editor-footer"><span>Физикалық даналар кітап сақталғаннан кейін бөлек тіркеледі.</span><div class="actions"><a asp-action="@(Model.Id == 0 ? "Index" : "Details")" asp-route-id="@(Model.Id == 0 ? (int?)null : Model.Id)" class="btn btn-outline-secondary">Бас тарту</a><button type="submit" class="btn btn-primary"><i data-lucide="check" aria-hidden="true"></i> Кітапты сақтау</button></div></footer>

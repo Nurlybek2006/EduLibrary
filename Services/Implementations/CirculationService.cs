@@ -29,6 +29,11 @@ public sealed class CirculationService(
         StudentName = loan.Student.FullName,
         StudentNumber = loan.Student.StudentNumber,
         BookTitle = loan.BookCopy.Book.Title,
+        BookId = loan.BookCopy.BookId,
+        CoverImageUrl = loan.BookCopy.Book.CoverImageUrl,
+        PublicationYear = loan.BookCopy.Book.PublicationYear,
+        BookAuthors = loan.BookCopy.Book.BookAuthors.OrderBy(a => a.Author.LastName)
+            .Select(a => a.Author.FirstName + " " + a.Author.LastName).ToList(),
         InventoryNumber = loan.BookCopy.InventoryNumber,
         LoanDate = loan.LoanDate,
         DueDate = loan.DueDate,

@@ -151,10 +151,10 @@ def run():
     _, _, empty_source = admin.request("/Books?Search=not-a-real-book-67293")
     record("Catalog: unmatched search returns empty state", not ids(Page(empty_source), "/Books/Details") and "Кітап табылмады" in html.unescape(empty_source))
     _, _, year_source = admin.request("/Books?Sort=year")
-    # Phase 2 cards render their publication year in the cover's <small> element.
-    # Keep checking the displayed seed-card order rather than a removed CSS class.
-    cards = re.findall(r'<article class="book-card card">(.*?)</article>', year_source, re.DOTALL)
-    years = [int(match.group(1)) for card in cards if (match := re.search(r'<small>(\d{4})</small>', card))]
+    # The editorial cover keeps publication year visible in its edition line.
+    # Verify actual rendered metadata order, independently of the former card CSS.
+    cards = re.findall(r'<article class="editorial-book-card"[^>]*>(.*?)</article>', year_source, re.DOTALL)
+    years = [int(match.group(1)) for card in cards if (match := re.search(r'class="book-jacket-edition">(\d{4})', card))]
     record("Catalog: publication years descend", len(years) > 1 and years == sorted(years, reverse=True))
     _, _, page_two_source = admin.request("/Books?Page=2")
     record("Catalog: second page contains distinct books", bool(ids(Page(page_two_source), "/Books/Details")) and not set(ids(full_catalog, "/Books/Details")).intersection(ids(Page(page_two_source), "/Books/Details")))

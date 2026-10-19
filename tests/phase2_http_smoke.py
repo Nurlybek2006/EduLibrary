@@ -98,10 +98,18 @@ def recommendation_context(client, path, label, expected, expected_score=None):
     record("Signed recommendation: " + label, okay, status)
 
 
+def reading_identity(source):
+    # Compare reader content, excluding changing CSRF and signed book-link tokens.
+    greeting = re.search(r'<span class="eyebrow">(Қош келдіңіз,[^<]+)</span>', source)
+    page = Page(source)
+    return (html.unescape(greeting.group(1)) if greeting else None,
+            tuple(baseline.ids(page, "/Loans/Details")), tuple(baseline.ids(page, "/Books/Details")))
+
+
 def run():
     credentials = json.loads((ROOT / "appsettings.Local.json").read_text(encoding="utf-8-sig"))["SeedUsers"]
     anonymous = Client()
-    for path in ["/Recommendations", "/Recommendations/Preferences", "/Analytics", "/Analytics/Data", "/Reports", "/Reports/Export", "/Reports/Print", "/Notifications", "/Copies/Lookup", "/Copies/Details/1", "/Copies/Qr/1", "/Copies/Label/1", "/Reviews", "/Reviews/Create?bookId=1", "/Reviews/Edit/1"]:
+    for path in ["/ReadingSpace", "/Recommendations", "/Recommendations/Preferences", "/Analytics", "/Analytics/Data", "/Reports", "/Reports/Export", "/Reports/Print", "/Notifications", "/Copies/Lookup", "/Copies/Details/1", "/Copies/Qr/1", "/Copies/Label/1", "/Reviews", "/Reviews/Create?bookId=1", "/Reviews/Edit/1"]:
         status, url, _ = anonymous.request(path)
         record("Anonymous: Phase 2 login challenge " + path, status == 200 and "/Account/Login" in url, status)
     source, catalog, _ = visit(anonymous, "/Books", "Anonymous")
@@ -127,6 +135,7 @@ def run():
         if not client.login(role, credentials[role]):
             continue
         clients[role] = client
+        visit(client, "/ReadingSpace", role, status=403)
         _, staff_recs, _ = visit(client, "/Recommendations", role, contains="Студентті таңдаңыз")
         missing_reader_preferences = [link for link in staff_recs.links
             if urllib.parse.urlparse(link).path.lower() == "/recommendations/preferences"
@@ -138,8 +147,8 @@ def run():
         if selected_students:
             selected_id = selected_students[0]
             recommendations, rec_page, _ = visit(client, f"/Recommendations?studentId={selected_id}", role)
-            record(role + ": recommendation explanations and factor breakdown render", "Неліктен осы кітап?" in html.unescape(recommendations) and "Сәйкестік қалай есептелді?" in html.unescape(recommendations))
-            visit(client, f"/Recommendations/Preferences?studentId={selected_id}", role, contains="Оқу бағытыңыз")
+            record(role + ": recommendation explanations and factor breakdown render", "Неліктен ұсынылды?" in html.unescape(recommendations) and "Сәйкестік факторлары" in html.unescape(recommendations) and "recommendation-excerpt" in recommendations)
+            visit(client, f"/Recommendations/Preferences?studentId={selected_id}", role, contains="Қызығушылықтарыңыз")
             visit(client, f"/Recommendations?studentId={selected_id}&includePreviouslyRead=true", role)
             all_assets.update(rec_page.assets)
         visit(client, "/Recommendations?studentId=2147483647", role, status=404)
@@ -220,10 +229,16 @@ def run():
     own_match = re.search(r"/Students/Details/(\d+)", history_url, re.I)
     own_id = int(own_match.group(1)) if own_match else None
     record("Student: own identity resolves to database student", bool(own_id))
+    reading_source, reading_page, _ = visit(student, "/ReadingSpace", "Student", contains="Менің оқу кеңістігім")
+    ignored_foreign_id = next((value for value in staff_students if value != own_id), 2147483647)
+    _, _, attempted_foreign_reading = student.request("/ReadingSpace?" + query({"studentId": ignored_foreign_id}))
+    own_reading = reading_identity(reading_source)
+    record("Student: reading space ignores arbitrary reader selection and stays identity scoped", bool(own_reading[0]) and own_reading == reading_identity(attempted_foreign_reading))
+    all_assets.update(reading_page.assets)
     rec_source, rec_page, _ = visit(student, "/Recommendations", "Student")
     own_book_ids = baseline.ids(rec_page, "/Books/Details")
-    record("Student: real recommendations have six sections and actual book links", len(re.findall(r'class="recommendation-section"', rec_source)) == 6 and bool(own_book_ids))
-    scores = [float(value.replace(",", ".")) for value in re.findall(r'class="recommendation-score"><strong>([\d.,]+)<small>%', rec_source)]
+    record("Student: real recommendations have six sections and actual book links", len(re.findall(r'class="curated-shelf"', rec_source)) == 6 and bool(own_book_ids))
+    scores = [float(value.replace(",", ".")) for value in re.findall(r'class="recommendation-match">([\d.,]+)<span>%', rec_source)]
     record("Student: displayed recommendation scores stay within 0–100", bool(scores) and all(0 <= value <= 100 for value in scores))
     record("Student: local or enhanced recommendation mode is explicit", "Local Recommendation Engine" in rec_source or "LLM-enhanced explanations" in rec_source)
     signed_link = next((link for link in rec_page.links
@@ -290,7 +305,7 @@ def run():
         visit(student, path, "Student role restriction", status=403)
     post_rejected(student, "/Reviews/Moderate/2147483647", {"__RequestVerificationToken": profile.token, "hidden": "true", "rowVersion": "bad"}, "Student moderation forbidden", expected=403)
     all_assets.update(review_page.assets)
-    for asset in sorted(all_assets | {"/js/analytics.js", "/js/reports.js", "/js/scanner.js", "/js/catalog.js", "/css/intelligence.css", "/lib/chartjs/chart.umd.js", "/lib/zxing/zxing-browser.min.js"}):
+    for asset in sorted(all_assets | {"/js/analytics.js", "/js/reports.js", "/js/scanner.js", "/js/catalog.js", "/css/management.css", "/css/reading-space.css", "/lib/chartjs/chart.umd.js", "/lib/zxing/zxing-browser.min.js"}):
         status, _, raw, _ = anonymous.raw(asset)
         record("Phase 2 static asset: " + asset.split("?")[0], status == 200 and len(raw) > 0, status)
 

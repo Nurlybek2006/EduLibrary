@@ -4,7 +4,8 @@
     var isPrint = ViewData["Print"] is true;
     var reportTypes = new[] { ("loans", "Кітап беру"), ("popular", "Танымал кітаптар"), ("overdue", "Кешіктірулер"), ("readers", "Оқырмандар"), ("ratings", "Әдебиеттер рейтингі") };
 }
-<div class="page-header"><div><span class="eyebrow">ДЕРЕКТЕРГЕ НЕГІЗДЕЛГЕН ЕСЕП</span><h1>@Model.Title</h1><p>@Model.StartDate.ToString("dd.MM.yyyy") – @Model.EndDate.ToString("dd.MM.yyyy")</p></div><div class="actions no-print"><a class="btn btn-secondary" asp-action="Export" asp-all-route-data="Model.RouteValues()"><i data-lucide="download"></i> CSV жүктеу</a><a class="btn btn-secondary" asp-action="Print" asp-all-route-data="Model.RouteValues()"><i data-lucide="printer"></i> Басып шығару</a></div></div>
+<div class="workspace-page reports-workspace index-workspace">
+<div class="page-header workspace-heading"><div><span class="eyebrow">ДЕРЕКТЕРГЕ НЕГІЗДЕЛГЕН ЕСЕП</span><h1>@Model.Title</h1><p>@Model.StartDate.ToString("dd.MM.yyyy") – @Model.EndDate.ToString("dd.MM.yyyy")</p></div><div class="actions no-print"><a class="btn btn-secondary" asp-action="Export" asp-all-route-data="Model.RouteValues()"><i data-lucide="download"></i> CSV жүктеу</a><a class="btn btn-secondary" asp-action="Print" asp-all-route-data="Model.RouteValues()"><i data-lucide="printer"></i> Басып шығару</a></div></div>
 @if (isPrint)
 {
     <div class="alert alert-info no-print">Барлық @Model.TotalCount жазба басып шығаруға дайын. <button type="button" class="btn btn-primary" data-print-report>Басып шығару</button> <a asp-action="Index" asp-all-route-data="Model.RouteValues()">Есепке оралу</a></div>
@@ -12,7 +13,7 @@
 else
 {
 <nav class="report-tabs no-print" aria-label="Есеп түрлері">@foreach (var item in reportTypes) { <a class="btn @(Model.Filter.Type == item.Item1 ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-all-route-data="Model.RouteValues(type: item.Item1)">@item.Item2</a> }</nav>
-<form method="get" class="card report-filter no-print" data-report-filter>
+<form method="get" class="card ledger-panel report-filter no-print" data-report-filter>
     <input type="hidden" name="Type" value="@Model.Filter.Type" />
     <div class="form-grid"><partial name="_PeriodFilter" model="Model.Filter" />
         <div><label for="Search" class="form-label">Іздеу</label><input id="Search" class="form-control" name="Search" value="@Model.Filter.Search" maxlength="200" placeholder="Кітап, автор немесе оқырман" /></div>
@@ -26,14 +27,15 @@ else
 }
 <p class="text-muted report-description">@Model.Description</p>
 <div class="stat-grid report-summary">@foreach(var metric in Model.Summary) { <div class="stat-card"><span>@metric.Label</span><strong>@metric.Value</strong>@if(metric.Hint is not null) { <small class="text-muted">@metric.Hint</small> }</div> }</div>
-<section class="card report-table">
-<div class="card-header"><h2>Есеп нәтижесі</h2><span class="text-muted">@Model.TotalCount жазба</span></div>
+<section class="card ledger-panel report-table">
+<div class="card-header section-heading"><h2>Есеп нәтижесі</h2><span class="text-muted">@Model.TotalCount жазба</span></div>
 @if(Model.Rows.Count == 0) { <div class="empty-state"><i data-lucide="file-search"></i><h2>Деректер табылмады</h2><p>Кезеңді немесе сүзгілерді өзгертіңіз. Пікірсіз кітаптарға рейтинг ойдан есептелмейді.</p></div> }
 else
 {
-<div class="table-responsive"><table class="table"><thead><tr>@foreach(var column in Model.Columns) { <th scope="col">@if(!isPrint && column.Sort.Length > 0) { <a asp-action="Index" asp-all-route-data="Model.RouteValues(sort: column.Sort)">@column.Label <span aria-hidden="true">@(Model.Filter.Sort == column.Sort ? Model.Filter.Direction == "asc" ? "↑" : "↓" : "↕")</span></a> } else { @column.Label }</th> }</tr></thead><tbody>@foreach(var row in Model.Rows) { <tr>@foreach(var cell in row.Cells) { <td>@if(cell.Controller is not null && !isPrint) { <a asp-controller="@cell.Controller" asp-action="@cell.Action" asp-route-id="@cell.Id">@cell.Value</a> } else { @cell.Value }</td> }</tr> }</tbody></table></div>
+<div class="table-responsive"><table class="table data-ledger"><thead><tr>@foreach(var column in Model.Columns) { <th scope="col">@if(!isPrint && column.Sort.Length > 0) { <a asp-action="Index" asp-all-route-data="Model.RouteValues(sort: column.Sort)">@column.Label <span aria-hidden="true">@(Model.Filter.Sort == column.Sort ? Model.Filter.Direction == "asc" ? "↑" : "↓" : "↕")</span></a> } else { @column.Label }</th> }</tr></thead><tbody>@foreach(var row in Model.Rows) { <tr>@foreach(var cell in row.Cells) { <td>@if(cell.Controller is not null && !isPrint) { <a asp-controller="@cell.Controller" asp-action="@cell.Action" asp-route-id="@cell.Id">@cell.Value</a> } else { @cell.Value }</td> }</tr> }</tbody></table></div>
 }
 @if(!isPrint) { <div class="pagination-bar no-print"><span class="text-muted">@Model.Filter.Page / @Model.TotalPages бет</span><div class="actions">@if(Model.Filter.Page > 1) { <a class="btn btn-secondary btn-sm" asp-action="Index" asp-all-route-data="Model.RouteValues(page: Model.Filter.Page - 1)">Алдыңғы</a> }@if(Model.Filter.Page < Model.TotalPages) { <a class="btn btn-secondary btn-sm" asp-action="Index" asp-all-route-data="Model.RouteValues(page: Model.Filter.Page + 1)">Келесі</a> }</div></div> }
 </section>
 <p class="text-muted mt-3">Дереккөзі: EduLibrary SQL Server · Уақыт белдеуі: Asia/Qyzylorda · CSV барлық сүзілген жолды қамтиды.</p>
+</div>
 @section Scripts { <script src="~/js/reports.js" asp-append-version="true"></script> }

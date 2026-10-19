@@ -1,0 +1,5 @@
+@model IReadOnlyList<EduLibrary.ViewModels.BookCardPresentationViewModel>
+<section id="related-books" class="related-books-section"><header class="book-section-heading"><div><span class="section-caption">Сөредегі көршілер</span><h2>Ұқсас әдебиеттер</h2></div><a asp-controller="Books" asp-action="Index">Каталогты қарау <i data-lucide="arrow-right" aria-hidden="true"></i></a></header>
+@if (Model.Count == 0) { <p class="text-muted">Осы авторлар мен санаттар бойынша басқа кітаптар әзірге жоқ.</p> }
+else { <div class="editorial-book-grid related-books-grid">@foreach (var book in Model) { <partial name="_BookCard" model="book" /> }</div> }
+</section>

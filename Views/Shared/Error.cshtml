@@ -1,3 +1,3 @@
 ﻿@model ErrorViewModel
 @{ ViewData["Title"]="Қате орын алды"; }
-<div class="card empty-state"><i data-lucide="circle-alert"></i><h1>Сұрауды орындау мүмкін болмады</h1><p>Кейінірек қайталап көріңіз. Мәселе қайталанса, кітапхана әкімшісіне хабарласыңыз.</p>@if(Model.ShowRequestId){<p>Сұрау нөмірі: <code>@Model.RequestId</code></p>}<a class="btn btn-primary" asp-controller="Home" asp-action="Index">Басты бетке оралу</a></div>
+<section class="status-page"><div class="status-number">…</div><span class="eyebrow">EDULIBRARY</span><h1>Сұрауды орындау мүмкін болмады</h1><p>Кейінірек қайталап көріңіз. Мәселе қайталанса, кітапхана әкімшісіне хабарласыңыз.</p>@if(Model.ShowRequestId){<p class="request-reference">Сұрау нөмірі: <code>@Model.RequestId</code></p>}<a class="btn btn-primary" asp-controller="Home" asp-action="Index"><i data-lucide="arrow-left"></i>Басты бетке оралу</a></section>

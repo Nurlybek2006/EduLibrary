@@ -1,17 +1,21 @@
 @model EduLibrary.ViewModels.LoginViewModel
 @{ ViewData["Title"] = "Жүйеге кіру"; }
-<div class="auth-shell">
-    <div class="auth-intro"><span class="eyebrow">EDULIBRARY · АКАДЕМИЯЛЫҚ КІТАПХАНА</span><h1>Білімге бастайтын<br />бір қадам.</h1><p>Кітаптарыңыз, оқу тарихыңыз және академиялық әлеміңіз — бір кеңістікте.</p><div class="auth-decoration"><i data-lucide="library-big"></i></div></div>
-    <section class="card auth-card"><span class="eyebrow">ҚАЙТА ҚОШ КЕЛДІҢІЗ</span><h2>Жүйеге кіру</h2><p class="text-muted">Жеке кітапхана кеңістігіңізді ашыңыз.</p>
-        <form asp-action="Login" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <input type="hidden" asp-for="ReturnUrl" />
-            <div class="mb-3"><label asp-for="Email"></label><input asp-for="Email" class="form-control" autocomplete="username" placeholder="name@university.kz" /><span asp-validation-for="Email" class="text-danger"></span></div>
-            <div class="mb-3"><label asp-for="Password"></label><input asp-for="Password" class="form-control" autocomplete="current-password" /><span asp-validation-for="Password" class="text-danger"></span></div>
-            <div class="mb-3 form-check"><input asp-for="RememberMe" class="form-check-input" /><label asp-for="RememberMe" class="form-check-label"></label></div>
-            <button class="btn btn-primary w-100" type="submit">Кіру <i data-lucide="arrow-right"></i></button>
+<div class="account-stage">
+    <aside class="account-editorial" aria-label="EduLibrary оқу кеңістігі">
+        <a asp-controller="Books" asp-action="Index" class="account-wordmark"><i data-lucide="book-open" aria-hidden="true"></i> EduLibrary</a>
+        <div class="account-editorial-copy"><span class="account-kicker">Ойға орын. Білімге жол.</span><h1>Әр кітап —<br /> жаңа мүмкіндік.</h1><p>Іздеген әдебиетіңізді табыңыз. Оқу жолыңызды жалғастырыңыз. Жаңа ойларға орын беріңіз.</p></div>
+        <div class="account-editorial-footer"><span>Университеттің цифрлық кітапханасы</span><span>Оқу · Іздену · Даму</span></div>
+    </aside>
+    <section class="account-form-panel" aria-labelledby="account-login-title">
+        <div class="account-form-heading"><span class="account-kicker">Қайта қош келдіңіз</span><h2 id="account-login-title">Жүйеге кіру</h2><p>Жеке кітап сөреңізге оралыңыз.</p></div>
+        <form asp-action="Login" method="post" class="account-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div><input type="hidden" asp-for="ReturnUrl" />
+            <div class="account-field"><label asp-for="Email"></label><input asp-for="Email" class="form-control" autocomplete="username" placeholder="name@university.kz" /><span asp-validation-for="Email" class="text-danger"></span></div>
+            <div class="account-field"><label asp-for="Password"></label><div class="password-field"><input asp-for="Password" class="form-control" autocomplete="current-password" /><button type="button" data-password-toggle="Password" aria-controls="Password" aria-pressed="false" aria-label="Құпиясөзді көрсету"><i data-lucide="eye" aria-hidden="true"></i></button></div><span asp-validation-for="Password" class="text-danger"></span></div>
+            <div class="account-form-options"><div class="form-check"><input asp-for="RememberMe" class="form-check-input" /><label asp-for="RememberMe" class="form-check-label"></label></div><a asp-action="ForgotPassword">Құпиясөзді ұмыттыңыз ба?</a></div>
+            <button class="btn btn-primary account-submit" type="submit">Кіру <i data-lucide="arrow-right" aria-hidden="true"></i></button>
         </form>
-        <p class="mt-4 text-muted">Аккаунтыңыз жоқ па? <a asp-action="Register">Тіркелу</a></p>
+        <p class="account-switch">Алғаш рет келдіңіз бе? <a asp-action="Register">Студент ретінде тіркелу</a></p><a asp-controller="Books" asp-action="Index" class="account-catalog-link"><i data-lucide="arrow-left" aria-hidden="true"></i> Каталогты қарау</a>
     </section>
 </div>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

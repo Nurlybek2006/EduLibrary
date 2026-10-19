@@ -1,0 +1,16 @@
+@model EduLibrary.ViewModels.BookCoverViewModel
+@{ var palette = Math.Abs(Model.BookId % 6); var size = Model.Size is "large" or "small" or "shelf" or "compact" ? Model.Size : "standard"; }
+<div class="book-jacket book-jacket--@size" data-palette="@palette">
+    <div class="book-jacket-art" aria-hidden="true">
+        <span class="book-jacket-author">@(string.IsNullOrWhiteSpace(Model.Authors) ? "Оқу әдебиеті" : Model.Authors)</span>
+        <strong class="book-jacket-title">@Model.Title</strong>
+        <span class="book-jacket-rule"></span>
+        <span class="book-jacket-category">@(string.IsNullOrWhiteSpace(Model.Category) ? "Академиялық кітапхана" : Model.Category)</span>
+        <span class="book-jacket-edition">@Model.PublicationYear <span>Оқу жинағы</span></span>
+        <span class="book-jacket-mark"></span>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl))
+    {
+        <img class="book-jacket-image" data-cover-image src="@Model.CoverImageUrl" alt="@Model.Title кітабының мұқабасы" loading="@(Model.EagerLoad ? "eager" : "lazy")" decoding="async" referrerpolicy="no-referrer" />
+    }
+</div>

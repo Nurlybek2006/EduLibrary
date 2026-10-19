@@ -1,1 +1,1 @@
-(() => { try { const value = localStorage.getItem('edulibrary-theme'); document.documentElement.dataset.theme = value || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch { } })();
+﻿(() => { try { const theme = localStorage.getItem('edulibrary-theme'); document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light'; } catch { document.documentElement.dataset.theme = 'light'; } })();

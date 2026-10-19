@@ -1,82 +1,35 @@
-@{
-    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
-    var staff = User.IsInRole("Admin") || User.IsInRole("Librarian");
-    string Active(string name) => controller == name ? "active" : "";
-}
+﻿@{ var staff = User.IsInRole("Admin") || User.IsInRole("Librarian"); }
 <!DOCTYPE html>
 <html lang="kk" data-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#18382F" />
     <title>@ViewData["Title"] · EduLibrary</title>
     <link rel="icon" type="image/svg+xml" href="~/images/favicon.svg" />
     <script src="~/js/theme.js" asp-append-version="true"></script>
+    <link rel="preload" href="~/fonts/manrope-cyrillic-ext.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="~/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/intelligence.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/catalog.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/management.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
 </head>
-<body>
+<body class="@(staff ? "staff-workspace" : "reader-workspace")">
 <a class="skip-link" href="#main-content">Мазмұнға өту</a>
-<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
-<aside class="sidebar" id="sidebar" aria-label="Негізгі мәзір">
-    <a class="brand" asp-controller="Home" asp-action="Index"><span class="brand-icon"><i data-lucide="library-big"></i></span><span>EduLibrary<small>УНИВЕРСИТЕТ КІТАПХАНАСЫ</small></span></a>
-    <div class="workspace-label"><span class="workspace-dot"></span> Академиялық кеңістік <i data-lucide="chevrons-up-down"></i></div>
-    <nav class="sidebar-nav">
-        <span class="nav-section">КІТАПХАНА</span>
-        @if(staff) { <a class="@Active("Dashboard")" asp-controller="Dashboard" asp-action="Index"><i data-lucide="layout-dashboard"></i>Басқару тақтасы</a> }
-        <a class="@Active("Books")" asp-controller="Books" asp-action="Index"><i data-lucide="book-open"></i>Кітаптар каталогы</a>
-        @if(staff) {
-            <a class="@Active("Authors")" asp-controller="Authors" asp-action="Index"><i data-lucide="feather"></i>Авторлар</a>
-            <a class="@Active("Publishers")" asp-controller="Publishers" asp-action="Index"><i data-lucide="building-2"></i>Баспалар</a>
-            <a class="@Active("Categories")" asp-controller="Categories" asp-action="Index"><i data-lucide="shapes"></i>Санаттар</a>
-            <a class="@Active("Copies")" asp-controller="Copies" asp-action="Index"><i data-lucide="layers"></i>Кітап даналары</a>
-        }
-        @if(User.Identity?.IsAuthenticated == true) {
-            <span class="nav-section">БАСҚАРУ</span>
-            @if(staff) { <a class="@Active("Students")" asp-controller="Students" asp-action="Index"><i data-lucide="graduation-cap"></i>Студенттер</a> }
-            <a class="@Active("Loans")" asp-controller="Loans" asp-action="Index"><i data-lucide="arrow-up-right"></i>@(staff ? "Кітап беру" : "Менің кітаптарым")</a>
-            @if(staff) { <a class="@Active("Returns")" asp-controller="Returns" asp-action="Index"><i data-lucide="arrow-down-left"></i>Қайтарулар</a> }
-            <a class="@Active("Fines")" asp-controller="Fines" asp-action="Index"><i data-lucide="wallet"></i>Айыппұлдар</a>
-            <span class="nav-section">ИНТЕЛЛЕКТ</span>
-            <a class="@Active("Recommendations")" asp-controller="Recommendations" asp-action="Index"><i data-lucide="sparkles"></i>AI ұсыныстары<span class="soon-tag">AI</span></a>
-            @if(staff) {
-                <a class="@Active("Analytics")" asp-controller="Analytics" asp-action="Index"><i data-lucide="chart-no-axes-combined"></i>Талдау</a>
-                <a class="@Active("Reports")" asp-controller="Reports" asp-action="Index"><i data-lucide="file-chart-column"></i>Есептер</a>
-                <a asp-controller="Copies" asp-action="Lookup"><i data-lucide="scan-line"></i>QR / штрихкод іздеу</a>
-            }
-        }
-    </nav>
-    <div class="sidebar-bottom">
-        @if(User.IsInRole("Admin")) {
-            <a class="@Active("Staff")" asp-controller="Staff" asp-action="Index"><i data-lucide="shield-check"></i>Қызметкерлер</a>
-            <a class="@Active("Reviews")" asp-controller="Reviews" asp-action="Index"><i data-lucide="message-square-text"></i>Пікірлерді тексеру</a>
-            <a asp-controller="Home" asp-action="Settings"><i data-lucide="settings-2"></i>Баптаулар</a>
-        }
-        @if(User.Identity?.IsAuthenticated == true) {
-            <a class="profile-link" asp-controller="Account" asp-action="Profile"><span class="avatar"><i data-lucide="user-round"></i></span><span>Жеке кабинет<small>@User.Identity.Name</small></span><i data-lucide="chevron-right"></i></a>
-            <form asp-controller="Account" asp-action="Logout" method="post"><button class="logout-button" type="submit"><i data-lucide="log-out"></i>Шығу</button></form>
-        } else { <a asp-controller="Account" asp-action="Login"><i data-lucide="log-in"></i>Жүйеге кіру</a> }
-    </div>
-</aside>
-<div class="app-shell">
-    <header class="topbar">
-        <div class="topbar-location"><button class="icon-button mobile-menu" id="menu-toggle" type="button" aria-label="Мәзірді ашу" aria-controls="sidebar" aria-expanded="false"><i data-lucide="menu"></i></button><span class="breadcrumb-home">Кітапхана</span><i data-lucide="chevron-right"></i><strong>@ViewData["Title"]</strong></div>
-        <div class="topbar-actions"><form class="topbar-search" asp-controller="Books" asp-action="Index" method="get"><i data-lucide="search"></i><input name="Search" aria-label="Каталогтан іздеу" placeholder="Каталогтан іздеу…" maxlength="200"/></form><button type="button" class="icon-button" id="theme-toggle" aria-label="Түс режимін ауыстыру"><i data-lucide="sun-moon"></i></button>
-        @if(User.Identity?.IsAuthenticated==true){
-            @await Component.InvokeAsync("NotificationBell")
-            <div class="dropdown"><button class="avatar profile-menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Жеке кабинет мәзірі"><i data-lucide="user-round"></i></button><div class="dropdown-menu dropdown-menu-end profile-dropdown"><span class="dropdown-title">Жеке кеңістік</span><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i data-lucide="user-round"></i>Профиль</a><a class="dropdown-item" asp-controller="Recommendations" asp-action="@(staff ? "Index" : "Preferences")"><i data-lucide="sliders-horizontal"></i>Қызығушылықтар</a><a class="dropdown-item" asp-controller="Notifications" asp-action="Index"><i data-lucide="bell"></i>Хабарландырулар</a><div class="dropdown-divider"></div><form asp-controller="Account" asp-action="Logout" method="post"><button class="dropdown-item" type="submit"><i data-lucide="log-out"></i>Шығу</button></form></div></div>
-        }
-        @if(User.Identity?.IsAuthenticated != true) { <a class="btn btn-sm btn-primary" asp-controller="Account" asp-action="Login">Кіру <i data-lucide="arrow-right"></i></a> }
-        </div>
-    </header>
-    <main id="main-content" class="main-content">
-        @if(TempData["Success"] is string success) { <div class="toast-notice success-notice" role="status"><i data-lucide="circle-check"></i>@success<button type="button" aria-label="Хабарламаны жабу" data-dismiss-notice>×</button></div> }
-        @if(TempData["Error"] is string error) { <div class="toast-notice error-notice" role="alert"><i data-lucide="circle-alert"></i>@error<button type="button" aria-label="Хабарламаны жабу" data-dismiss-notice>×</button></div> }
+@if (staff) { <partial name="_AdminNavigation" /> }
+<div class="workspace-shell">
+    <partial name="_AppHeader" />
+    <main id="main-content" class="main-content" tabindex="-1">
+        <partial name="_FlashMessages" />
         @RenderBody()
-        <footer class="app-footer"><span>EduLibrary <span class="footer-dot">·</span> Білімге ашылған жол</span><span>Академиялық кітапхана жүйесі</span></footer>
+        <footer class="library-footer"><a asp-controller="Books" asp-action="Index">EduLibrary<span>Білімге құштар қауымдастық.</span></a><div><a asp-controller="Home" asp-action="Privacy">Құпиялылық</a><span>Университеттің цифрлық кітапханасы</span></div></footer>
     </main>
 </div>
+<button class="navigation-backdrop" id="navigation-backdrop" type="button" aria-label="Мәзірді жабу" tabindex="-1"></button>
 <dialog id="confirm-dialog" class="confirm-dialog"><form method="dialog"><span class="confirm-icon"><i data-lucide="circle-help"></i></span><h2>Әрекетті растау</h2><p id="confirm-message">Жалғастырғыңыз келе ме?</p><div class="actions"><button class="btn btn-light" value="cancel">Бас тарту</button><button class="btn btn-primary" value="confirm">Растау</button></div></form></dialog>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

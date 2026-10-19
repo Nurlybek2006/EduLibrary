@@ -77,6 +77,11 @@ public sealed class StudentLoanItem
 {
     public int Id { get; set; }
     public string BookTitle { get; set; } = "";
+    public int BookId { get; set; }
+    public string? CoverImageUrl { get; set; }
+    public int PublicationYear { get; set; }
+    public List<string> BookAuthors { get; set; } = [];
+    public string Authors => string.Join(", ", BookAuthors);
     public string InventoryNumber { get; set; } = "";
     public DateTime LoanDate { get; set; }
     public DateTime DueDate { get; set; }

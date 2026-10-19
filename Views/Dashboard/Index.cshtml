@@ -1,32 +1,39 @@
 @model EduLibrary.ViewModels.DashboardViewModel
 @{ ViewData["Title"] = "Басқару тақтасы"; }
-<div class="page-header"><div><span class="eyebrow">КІТАПХАНАҒА ШОЛУ</span><h1>Басқару тақтасы</h1><p>Кітапхана қоры мен оқырман белсенділігі бір жерде.</p></div><div class="actions"><span class="text-muted">@Model.Today.ToString("dd MMMM yyyy")</span><a class="btn btn-primary" asp-controller="Loans" asp-action="Create"><i data-lucide="plus"></i> Кітап беру</a></div></div>
-<div class="stat-grid">
-    <div class="stat-card"><div class="stat-icon"><i data-lucide="library-big"></i></div><span>Кітап атаулары</span><strong>@Model.TotalBooks.ToString("N0")</strong><small class="text-muted">Белсенді каталог</small></div>
-    <div class="stat-card"><div class="stat-icon"><i data-lucide="layers"></i></div><span>Физикалық даналар</span><strong>@Model.TotalCopies.ToString("N0")</strong><small class="text-muted">Кітапхананың толық қоры</small></div>
-    <div class="stat-card"><div class="stat-icon success"><i data-lucide="book-check"></i></div><span>Қолжетімді даналар</span><strong>@Model.AvailableCopies.ToString("N0")</strong><small class="text-muted">Беруге дайын</small></div>
-    <div class="stat-card"><div class="stat-icon"><i data-lucide="book-up"></i></div><span>Оқырмандағы кітаптар</span><strong>@Model.ActiveLoans.ToString("N0")</strong><small class="text-muted">Белсенді беру жазбалары</small></div>
-    <div class="stat-card"><div class="stat-icon danger"><i data-lucide="alarm-clock"></i></div><span>Мерзімі өткен</span><strong>@Model.OverdueLoans.ToString("N0")</strong><small><a asp-controller="Loans" asp-action="Index" asp-route-status="overdue">Қарап шығу →</a></small></div>
-    <div class="stat-card"><div class="stat-icon"><i data-lucide="graduation-cap"></i></div><span>Тіркелген студенттер</span><strong>@Model.TotalStudents.ToString("N0")</strong><small class="text-muted">Оқырмандар базасы</small></div>
-    <div class="stat-card"><div class="stat-icon success"><i data-lucide="users"></i></div><span>Белсенді оқырмандар</span><strong>@Model.ActiveReaders.ToString("N0")</strong><small class="text-muted">Қазір кітап алған студенттер</small></div>
-    <div class="stat-card"><div class="stat-icon warning"><i data-lucide="wallet"></i></div><span>Төленбеген айыппұлдар</span><strong>@Model.OutstandingFines.ToString("N2") <small>₸</small></strong><small><a asp-controller="Fines" asp-action="Index">Төлемдерге өту →</a></small></div>
+<div class="workspace-page overview-workspace">
+<header class="overview-masthead">
+    <div><p class="workspace-kicker">Кітапханашының жұмыс кеңістігі</p><h1>Кітапханаға бір көзқарас.</h1><p class="overview-intro">Қор, оқырмандар және бүгін назар аударатын кітаптар.</p></div>
+    <div class="overview-date"><span>@Model.Today.ToString("dd MMMM")</span><span>@Model.Today.ToString("yyyy") · Кітапхана есебі</span></div>
+</header>
+<div class="overview-commandbar"><div class="actions"><a class="btn btn-primary" asp-controller="Loans" asp-action="Create"><i data-lucide="arrow-up-right"></i> Кітап беру</a><a class="btn btn-outline-secondary" asp-controller="Copies" asp-action="Lookup"><i data-lucide="scan-line"></i> Код оқу</a><a class="btn btn-outline-secondary" asp-controller="Loans" asp-action="Index">Кітап қабылдау</a></div><a class="quiet-link" asp-controller="Reports" asp-action="Index">Есептерді ашу <i data-lucide="arrow-right"></i></a></div>
+<dl class="overview-metrics" aria-label="Кітапхананың негізгі көрсеткіштері">
+    <div><dt>Кітап атаулары</dt><dd>@Model.TotalBooks.ToString("N0")</dd><span>Белсенді каталог</span></div>
+    <div><dt>Физикалық даналар</dt><dd>@Model.TotalCopies.ToString("N0")</dd><span>Кітапхананың толық қоры</span></div>
+    <div><dt>Қолжетімді</dt><dd>@Model.AvailableCopies.ToString("N0")</dd><span>Оқырманын күтіп тұр</span></div>
+    <div><dt>Оқырманда</dt><dd>@Model.ActiveLoans.ToString("N0")</dd><span>Белсенді берулер</span></div>
+    <div class="metric-attention"><dt>Мерзімі өткен</dt><dd>@Model.OverdueLoans.ToString("N0")</dd><a asp-controller="Loans" asp-action="Index" asp-route-status="overdue">Қарап шығу →</a></div>
+    <div><dt>Студенттер</dt><dd>@Model.TotalStudents.ToString("N0")</dd><span>Тіркелген оқырмандар</span></div>
+    <div><dt>Белсенді оқырмандар</dt><dd>@Model.ActiveReaders.ToString("N0")</dd><span>Қазір кітап алғандар</span></div>
+    <div><dt>Төленбеген айыппұл</dt><dd>@Model.OutstandingFines.ToString("N0") <small>₸</small></dd><a asp-controller="Fines" asp-action="Index">Төлемдерді қарау →</a></div>
+</dl>
+<div class="operations-layout">
+    <section class="ledger-panel operations-ledger"><header class="section-heading"><div><p class="workspace-kicker">Кітап айналымы</p><h2>Соңғы берілген кітаптар</h2></div><a class="quiet-link" asp-controller="Loans" asp-action="Index" asp-route-status="all">Барлық жазба <i data-lucide="arrow-up-right"></i></a></header>
+    @if(Model.RecentLoans.Count == 0) { <div class="empty-state"><i data-lucide="book-open"></i><h3>Алғашқы оқырманын күтуде</h3><p>Кітап берілгеннен кейін оның жазбасы осында көрінеді.</p></div> }
+    else { <div class="table-responsive"><table class="table data-ledger"><thead><tr><th>Кітап пен оқырман</th><th>Қайтару мерзімі</th><th>Мәртебе</th><th><span class="visually-hidden">Жазбаны ашу</span></th></tr></thead><tbody>@foreach(var item in Model.RecentLoans) { <tr><td><a asp-controller="Loans" asp-action="Details" asp-route-id="@item.Id"><strong>@item.BookTitle</strong></a><small class="record-secondary">@item.StudentName · @item.InventoryNumber</small></td><td class="numeric-cell">@item.DueDate.ToString("dd.MM.yyyy")</td><td><span class="badge badge-@item.StatusClass">@item.StatusLabel</span></td><td><a class="row-open" asp-controller="Loans" asp-action="Details" asp-route-id="@item.Id" aria-label="@item.BookTitle — беру жазбасын ашу"><i data-lucide="arrow-up-right"></i></a></td></tr> }</tbody></table></div> }
+    </section>
+    <aside class="overdue-agenda"><header class="section-heading"><div><p class="workspace-kicker">Назарда ұстаңыз</p><h2>Қайтару күн тәртібі</h2></div><span class="agenda-count">@Model.OverdueLoans</span></header>
+    @if(Model.OverdueAlerts.Count == 0) { <div class="agenda-clear"><i data-lucide="check"></i><h3>Барлығы уақытында.</h3><p>Мерзімі өткен белсенді кітаптар жоқ.</p></div> }
+    else { <ol class="agenda-list">@foreach(var item in Model.OverdueAlerts) { <li><a asp-controller="Loans" asp-action="Details" asp-route-id="@item.Id"><div><span class="agenda-delay">@item.OverdueDays күн кешікті</span><h3>@item.BookTitle</h3><p>@item.StudentName</p></div><i data-lucide="arrow-up-right"></i></a></li> }</ol><a class="quiet-link" asp-controller="Loans" asp-action="Index" asp-route-status="overdue">Кешіккен кітаптарды ашу <i data-lucide="arrow-right"></i></a> }
+    </aside>
 </div>
-<div class="card quick-actions"><span class="text-muted">Жылдам әрекеттер</span><div class="actions"><a class="btn btn-primary" asp-controller="Loans" asp-action="Create"><i data-lucide="book-up"></i> Кітап беру</a><a class="btn btn-secondary" asp-controller="Loans" asp-action="Index"><i data-lucide="book-down"></i> Кітап қабылдау</a><a class="btn btn-secondary" asp-controller="Books" asp-action="Create"><i data-lucide="plus"></i> Кітап қосу</a><a class="btn btn-secondary" asp-controller="Students" asp-action="Create"><i data-lucide="user-plus"></i> Студент қосу</a></div></div>
-<div class="dashboard-grid">
-<section class="card"><div class="card-header"><div><h2>Соңғы берілген кітаптар</h2><p class="text-muted">Кітап айналымының соңғы жазбалары</p></div><a asp-controller="Loans" asp-action="Index" asp-route-status="all">Барлығы →</a></div>
-@if(Model.RecentLoans.Count == 0) { <div class="empty-state"><i data-lucide="book-open"></i><p>Кітап беру жазбалары әлі жоқ.</p></div> }
-else { <div class="table-responsive"><table class="table"><thead><tr><th>Кітап / оқырман</th><th>Мерзімі</th><th>Мәртебесі</th></tr></thead><tbody>@foreach(var item in Model.RecentLoans) { <tr><td><a asp-controller="Loans" asp-action="Details" asp-route-id="@item.Id"><strong>@item.BookTitle</strong></a><small class="d-block text-muted">@item.StudentName</small></td><td>@item.DueDate.ToString("dd.MM.yyyy")</td><td><span class="badge badge-@item.StatusClass">@item.StatusLabel</span></td></tr> }</tbody></table></div> }
-</section>
-<section class="card"><div class="card-header"><div><h2>Назар аударыңыз</h2><p class="text-muted">Мерзімі ең көп өткен кітаптар</p></div><span class="badge badge-danger">@Model.OverdueLoans</span></div>
-@if(Model.OverdueAlerts.Count == 0) { <div class="empty-state"><i data-lucide="circle-check"></i><h3>Барлығы уақытында</h3><p>Мерзімі өткен белсенді кітаптар жоқ.</p></div> }
-else { <div class="compact-list">@foreach(var item in Model.OverdueAlerts) { <a class="list-row" asp-controller="Loans" asp-action="Details" asp-route-id="@item.Id"><div><strong>@item.BookTitle</strong><small class="d-block text-muted">@item.StudentName</small></div><div class="text-end"><span class="badge badge-danger">@item.OverdueDays күн</span><small class="d-block text-muted">@item.EstimatedFine.ToString("N2") ₸ болжам</small></div></a> }</div><a class="btn btn-secondary" asp-controller="Loans" asp-action="Index" asp-route-status="overdue">Кешіккен кітаптарды ашу</a> }
-</section>
-<section class="card"><div class="card-header"><h2>Соңғы қайтарылған кітаптар</h2><a asp-controller="Returns" asp-action="Index">Барлығы →</a></div>
-@if(Model.RecentReturns.Count == 0) { <div class="empty-state"><i data-lucide="book-check"></i><p>Қайтару жазбалары әлі жоқ.</p></div> }
-else { <div class="compact-list">@foreach(var item in Model.RecentReturns) { <a class="list-row" asp-controller="Loans" asp-action="Details" asp-route-id="@item.LoanId"><div><strong>@item.BookTitle</strong><small class="d-block text-muted">@item.StudentName · @item.ReturnCondition</small></div><span class="text-muted">@item.ReturnDate.ToString("dd.MM.yyyy")</span></a> }</div> }
-</section>
-<section class="card"><div class="card-header"><div><h2>Танымал кітаптар</h2><p class="text-muted">Барлық беру тарихы бойынша</p></div><i data-lucide="trending-up"></i></div>
-@if(Model.PopularBooks.Count == 0) { <div class="empty-state"><i data-lucide="library-big"></i><p>Каталогқа алғашқы кітапты қосыңыз.</p></div> }
-else { <div class="compact-list">@foreach(var book in Model.PopularBooks) { <a class="list-row" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"><div><strong>@book.Title</strong><small class="d-block text-muted">@book.AvailableCopies қолжетімді дана</small></div><span class="badge badge-primary">@book.LoanCount рет</span></a> }</div> }
-</section>
+<div class="workspace-columns overview-bottom">
+    <section class="record-section"><header class="section-heading"><div><p class="workspace-kicker">Сөреге қайта оралды</p><h2>Соңғы қайтарылғандар</h2></div><a class="quiet-link" asp-controller="Returns" asp-action="Index">Барлығы →</a></header>
+    @if(Model.RecentReturns.Count == 0) { <div class="empty-state"><p>Қайтару жазбалары әлі жоқ.</p></div> }
+    else { <div class="return-notebook">@foreach(var item in Model.RecentReturns) { <a class="notebook-row" asp-controller="Loans" asp-action="Details" asp-route-id="@item.LoanId"><time>@item.ReturnDate.ToString("dd.MM")</time><div><strong>@item.BookTitle</strong><span>@item.StudentName</span></div><span class="badge badge-secondary">@item.ReturnCondition</span></a> }</div> }
+    </section>
+    <section class="record-section"><header class="section-heading"><div><p class="workspace-kicker">Оқырмандар таңдауы</p><h2>Жиі оқылатын әдебиеттер</h2></div><a class="quiet-link" asp-controller="Reports" asp-action="Index" asp-route-Type="popular">Есеп →</a></header>
+    @if(Model.PopularBooks.Count == 0) { <div class="empty-state"><p>Каталогқа алғашқы кітапты қосыңыз.</p></div> }
+    else { <ol class="popular-ledger">@foreach(var book in Model.PopularBooks) { <li><a asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"><div><strong>@book.Title</strong><span>@book.AvailableCopies қолжетімді дана</span></div><span class="popular-count">@book.LoanCount <small>рет</small></span></a></li> }</ol> }
+    </section>
+</div>
 </div>

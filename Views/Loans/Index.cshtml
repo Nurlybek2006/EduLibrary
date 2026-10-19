@@ -1,11 +1,12 @@
 @model EduLibrary.ViewModels.LoanListViewModel
 @{ ViewData["Title"] = Model.IsStaff ? "Кітап беру" : "Менің кітаптарым"; }
-<div class="page-header">
+<div class="workspace-page loans-workspace index-workspace">
+<div class="page-header workspace-heading">
     <div><span class="eyebrow">КІТАП АЙНАЛЫМЫ</span><h1>@ViewData["Title"]</h1><p>Берілген кітаптар, қайтару мерзімдері және толық тарих.</p></div>
     @if (Model.IsStaff) { <a class="btn btn-primary" asp-action="Create"><i data-lucide="plus"></i> Кітап беру</a> }
 </div>
-<div class="card">
-    <form method="get" class="filter-bar" role="search">
+<div class="card ledger-panel">
+    <form method="get" class="filter-bar ledger-toolbar" role="search">
         <div class="search-field"><label class="visually-hidden" for="loan-search">Іздеу</label><input id="loan-search" class="form-control" name="Search" value="@Model.Filter.Search" placeholder="Кітап, студент немесе инвентарлық нөмір" /></div>
         <label class="visually-hidden" for="loan-status">Мәртебесі</label>
         <select id="loan-status" name="Status" class="form-select">
@@ -20,9 +21,24 @@
     {
         <div class="empty-state"><i data-lucide="book-open"></i><h2>Жазбалар табылмады</h2><p>Іздеу шарттарын өзгертіңіз немесе жаңа кітап беріңіз.</p></div>
     }
+    else if (!Model.IsStaff)
+    {
+        <div class="reading-ledger-grid">
+        @foreach (var loan in Model.Items)
+        {
+            <article class="reading-loan">
+                <a class="reading-cover-link" asp-action="Details" asp-route-id="@loan.Id" tabindex="-1" aria-hidden="true"><partial name="_BookCover" model='new EduLibrary.ViewModels.BookCoverViewModel { BookId = loan.BookId, Title = loan.BookTitle, Authors = loan.Authors, CoverImageUrl = loan.CoverImageUrl, PublicationYear = loan.PublicationYear, Size = "compact" }'  /></a>
+                <div><span class="badge badge-@loan.StatusClass">@loan.StatusLabel</span><h2 class="mt-3"><a asp-action="Details" asp-route-id="@loan.Id">@loan.BookTitle</a></h2><p>@loan.InventoryNumber</p><p>@(loan.ReturnedAt.HasValue ? "Қайтарылған күні" : "Қайтару мерзімі"): <strong>@((loan.ReturnedAt ?? loan.DueDate).ToString("dd.MM.yyyy"))</strong></p>
+                @if(!loan.ReturnedAt.HasValue && loan.OverdueDays > 0) { <p class="text-danger">@loan.OverdueDays күн кешікті · @loan.EstimatedFine.ToString("N0") ₸ болжамды айыппұл</p> }
+                <a class="quiet-link" asp-action="Details" asp-route-id="@loan.Id">Оқу жазбасын ашу <i data-lucide="arrow-up-right"></i></a></div>
+            </article>
+        }
+        </div>
+    }
     else
     {
-        <div class="table-responsive"><table class="table"><thead><tr><th>Кітап / дана</th><th>Оқырман</th><th>Берілді</th><th>Қайтару мерзімі</th><th>Мәртебесі</th><th>Болжамды айыппұл</th><th></th></tr></thead><tbody>
+        <div class="ledger-caption"><div><span class="workspace-kicker">Кітап пен оқырман арасындағы байланыс</span><h2>Беру жазбалары</h2></div><span class="ledger-total">@Model.TotalCount жазба</span></div>
+        <div class="table-responsive"><table class="table data-ledger"><thead><tr><th>Кітап / дана</th><th>Оқырман</th><th>Берілді</th><th>Қайтару мерзімі</th><th>Мәртебесі</th><th>Болжамды айыппұл</th><th></th></tr></thead><tbody>
         @foreach (var loan in Model.Items)
         {
             <tr><td><a asp-action="Details" asp-route-id="@loan.Id"><strong>@loan.BookTitle</strong></a><small class="d-block text-muted">@loan.InventoryNumber</small></td><td>@loan.StudentName<small class="d-block text-muted">@loan.StudentNumber</small></td><td>@loan.LoanDate.ToString("dd.MM.yyyy")</td><td>@loan.DueDate.ToString("dd.MM.yyyy")</td><td><span class="badge badge-@loan.StatusClass">@loan.StatusLabel</span>@if(loan.OverdueDays > 0 && !loan.ReturnedAt.HasValue) { <small class="d-block text-danger">@loan.OverdueDays күн</small> }</td><td>@(loan.ReturnedAt.HasValue ? "—" : loan.EstimatedFine.ToString("N0") + " ₸")</td><td><div class="actions"><a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@loan.Id">Толығырақ</a>@if (Model.IsStaff && !loan.ReturnedAt.HasValue) { <a class="btn btn-sm btn-primary" asp-controller="Returns" asp-action="Create" asp-route-id="@loan.Id">Қабылдау</a> }</div></td></tr>
@@ -30,4 +46,5 @@
         </tbody></table></div>
     }
     <div class="pagination-bar"><span class="text-muted">Барлығы: @Model.TotalCount жазба</span><div class="actions">@if(Model.Filter.Page > 1) { <a class="btn btn-secondary btn-sm" asp-route-Search="@Model.Filter.Search" asp-route-Status="@Model.Filter.Status" asp-route-Page="@(Model.Filter.Page - 1)">Алдыңғы</a> }<span>@Model.Filter.Page / @Math.Max(1, Model.TotalPages)</span>@if(Model.Filter.Page < Model.TotalPages) { <a class="btn btn-secondary btn-sm" asp-route-Search="@Model.Filter.Search" asp-route-Status="@Model.Filter.Status" asp-route-Page="@(Model.Filter.Page + 1)">Келесі</a> }</div></div>
+</div>
 </div>

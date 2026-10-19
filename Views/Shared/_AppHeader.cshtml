@@ -1,0 +1,12 @@
+@{ var staff = User.IsInRole("Admin") || User.IsInRole("Librarian"); }
+<header class="library-header">
+    <button class="icon-button navigation-toggle" id="menu-toggle" type="button" aria-label="Мәзірді ашу" aria-controls="@(staff ? "management-navigation" : "reader-navigation")" aria-expanded="false"><i data-lucide="menu"></i></button>
+    @if (staff) { <div class="staff-location"><a asp-controller="Dashboard" asp-action="Index">Кітапхана кеңсесі</a><span>/</span><strong>@ViewData["Title"]</strong></div> }
+    else { <partial name="_Brand" /><partial name="_StudentNavigation" /> }
+    <div class="header-tools">
+        @if (staff) { <form class="header-search" asp-controller="Books" asp-action="Index" method="get"><i data-lucide="search"></i><input name="Search" aria-label="Каталогтан іздеу" placeholder="Кітап іздеу" maxlength="200" /></form><span class="staff-role">@(User.IsInRole("Admin") ? "Әкімші" : "Кітапханашы")</span> }
+        <button type="button" class="icon-button" id="theme-toggle" aria-label="Түс режимін ауыстыру"><i data-lucide="sun-moon"></i></button>
+        @if (User.Identity?.IsAuthenticated == true) { @await Component.InvokeAsync("NotificationBell")<partial name="_UserMenu" /> }
+        else { <a class="btn btn-primary header-login" asp-controller="Account" asp-action="Login">Кіру <i data-lucide="arrow-right"></i></a> }
+    </div>
+</header>

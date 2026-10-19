@@ -1,0 +1,20 @@
+@model EduLibrary.ViewModels.BookCardPresentationViewModel
+@{ var detailsUrl = Model.DetailsUrl ?? Url.Action("Details", "Books", new { id = Model.BookId }); }
+<article class="editorial-book-card" data-book-id="@Model.BookId">
+    <a href="@detailsUrl" class="editorial-book-art" tabindex="-1" aria-hidden="true">
+        <partial name="_BookCover" model="new EduLibrary.ViewModels.BookCoverViewModel { BookId = Model.BookId, Title = Model.Title, Authors = Model.Authors, CoverImageUrl = Model.CoverImageUrl, PublicationYear = Model.PublicationYear, Category = Model.Category }" />
+        <span class="book-art-action"><i data-lucide="arrow-up-right" aria-hidden="true"></i></span>
+    </a>
+    <div class="editorial-book-info">
+        <div class="editorial-book-category">@(string.IsNullOrWhiteSpace(Model.Category) ? "Оқу әдебиеті" : Model.Category)</div>
+        <h2 class="editorial-book-title"><a href="@detailsUrl">@Model.Title</a></h2>
+        <p class="editorial-book-author">@(string.IsNullOrWhiteSpace(Model.Authors) ? "Автор көрсетілмеген" : Model.Authors)</p>
+        <div class="editorial-book-rating"><span aria-hidden="true">★</span><strong>@(Model.ReviewCount > 0 ? Model.AverageRating.ToString("0.0") : "—")</strong><span class="rating-review-count">@(Model.ReviewCount > 0 ? $"{Model.ReviewCount} пікір" : "Әзірге пікір жоқ")</span></div>
+        <div class="editorial-book-bottom">
+            @if (Model.IsArchived) { <span class="book-availability is-archived"><span></span>Мұрағатта</span> }
+            else if (Model.AvailableCopies > 0) { <span class="book-availability is-available"><span></span>@Model.AvailableCopies дана қолжетімді</span> }
+            else { <span class="book-availability is-unavailable"><span></span>Қазір қолжетімсіз</span> }
+            <a class="book-card-detail-link" href="@detailsUrl" aria-label="@Model.Title — кітап туралы">Толығырақ <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+        </div>
+    </div>
+</article>

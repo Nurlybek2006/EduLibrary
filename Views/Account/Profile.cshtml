@@ -1,22 +1,22 @@
 @model EduLibrary.ViewModels.ProfileViewModel
 @{ ViewData["Title"] = "Жеке профиль"; }
-<div class="page-header"><div><span class="eyebrow">ЖЕКЕ КЕҢІСТІК</span><h1>Менің профилім</h1><p>Байланыс деректеріңіз бен оқу қызығушылықтарыңыз.</p></div>@if (Model.StudentId.HasValue) { <a asp-controller="Students" asp-action="Details" asp-route-id="@Model.StudentId" class="btn btn-outline-secondary"><i data-lucide="history"></i> Кітап алу тарихы</a> }</div>
-@if (Model.StudentId.HasValue)
-{
-    <section class="card mb-4"><div class="form-grid"><div><span class="text-muted">Студент нөмірі</span><h3>@Model.StudentNumber</h3></div><div><span class="text-muted">Факультет</span><h3>@Model.Faculty</h3></div><div><span class="text-muted">Курс / топ</span><h3>@Model.Course курс · @Model.GroupName</h3></div></div><small class="text-muted">Академиялық деректерді өзгерту үшін кітапханашыға хабарласыңыз.</small></section>
-}
-<section class="card"><h2>Жеке мәліметтер</h2><form asp-action="Profile" method="post">
+<div class="page-header"><div><span class="eyebrow">Өзіңіз туралы</span><h1>Менің профилім</h1><p>Оқу жолыңызға қажет мәліметтерді бір жерден басқарыңыз.</p></div>@if (Model.StudentId.HasValue) { <a asp-controller="ReadingSpace" asp-action="Index" class="btn btn-outline-secondary"><i data-lucide="book-open" aria-hidden="true"></i> Оқу кеңістігі</a> }</div>
+<div class="profile-layout"><aside class="profile-index"><div class="profile-monogram" aria-hidden="true"><i data-lucide="user-round"></i></div><h2>@Model.FullName</h2><p>@(Model.Faculty ?? "EduLibrary қатысушысы")</p><nav aria-label="Профиль бөлімдері"><a href="#profile-contact">Байланыс деректері <i data-lucide="arrow-down-right" aria-hidden="true"></i></a>@if (Model.StudentId.HasValue) { <a href="#profile-academic">Академиялық мәлімет</a><a href="#profile-interests">Оқу бағыты</a> }</nav></aside>
+<form asp-action="Profile" method="post" class="profile-form">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <section id="profile-contact" class="profile-section"><div class="profile-section-heading"><span>01</span><div><h2>Байланыс деректері</h2><p>Кітапхана аккаунтыңыздың жеке мәліметтері.</p></div></div>
     <div class="form-grid">
         <div><label asp-for="FullName"></label><input asp-for="FullName" class="form-control" autocomplete="name" /><span asp-validation-for="FullName" class="text-danger"></span></div>
         <div><label asp-for="Email"></label><input asp-for="Email" class="form-control" autocomplete="email" /><span asp-validation-for="Email" class="text-danger"></span></div>
         <div><label asp-for="PhoneNumber"></label><input asp-for="PhoneNumber" class="form-control" autocomplete="tel" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
     </div>
+    </section>
     @if (Model.StudentId.HasValue)
     {
-        <hr /><h2>Оқу бағыты</h2><p class="text-muted">Бұл мәліметтер болашақ жеке кітап ұсыныстарының негізі болады.</p>
-        <div class="form-grid"><div><label asp-for="Interests"></label><textarea asp-for="Interests" class="form-control" rows="4" placeholder="Бағдарламалау, экономика, тарих"></textarea><small class="text-muted">Атауларды үтірмен бөліңіз. Ең көбі 20 қызығушылық.</small><span asp-validation-for="Interests" class="text-danger"></span></div><div><label asp-for="SelectedSubjectIds"></label><select asp-for="SelectedSubjectIds" asp-items="Model.Subjects" class="form-select" multiple size="6"></select><small class="text-muted">Бірнеше пәнді Ctrl / Command пернесімен таңдаңыз.</small><span asp-validation-for="SelectedSubjectIds" class="text-danger"></span></div></div>
+        <section id="profile-academic" class="profile-section"><div class="profile-section-heading"><span>02</span><div><h2>Академиялық мәлімет</h2><p>Бұл деректерді өзгерту үшін кітапханашыға хабарласыңыз.</p></div></div><dl class="profile-academic"><div><dt>Студент нөмірі</dt><dd>@Model.StudentNumber</dd></div><div><dt>Факультет</dt><dd>@Model.Faculty</dd></div><div><dt>Курс</dt><dd>@Model.Course курс</dd></div><div><dt>Топ</dt><dd>@Model.GroupName</dd></div></dl></section>
+        <section id="profile-interests" class="profile-section"><div class="profile-section-heading"><span>03</span><div><h2>Оқу бағыты</h2><p>Жеке кітап ұсыныстары осы қызығушылықтар мен пәндерге сүйенеді.</p></div></div>
+        <div class="form-grid"><div><label asp-for="Interests"></label><textarea asp-for="Interests" class="form-control" rows="5" maxlength="1000" placeholder="Бағдарламалау, экономика, тарих"></textarea><small class="text-muted">Атауларды үтірмен бөліңіз. Ең көбі 20 қызығушылық.</small><span asp-validation-for="Interests" class="text-danger"></span></div><div><label asp-for="SelectedSubjectIds"></label><select asp-for="SelectedSubjectIds" asp-items="Model.Subjects" class="form-select" multiple size="6"></select><small class="text-muted">Бірнеше пәнді Ctrl / Command пернесімен таңдаңыз.</small><span asp-validation-for="SelectedSubjectIds" class="text-danger"></span></div></div></section>
     }
-    <div class="actions mt-4"><button class="btn btn-primary" type="submit"><i data-lucide="check"></i> Өзгерістерді сақтау</button></div>
-</form></section>
+    <div class="profile-save"><span>Өзгерістер сақталғаннан кейін қолданылады.</span><button class="btn btn-primary" type="submit"><i data-lucide="check" aria-hidden="true"></i> Өзгерістерді сақтау</button></div>
+</form></div>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

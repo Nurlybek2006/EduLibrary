@@ -1,5 +1,7 @@
 @model EduLibrary.ViewModels.CategoryEditViewModel
 @{ ViewData["Title"] = "Жаңа санат"; }
-<div class="page-header"><div><p class="eyebrow">АНЫҚТАМАЛЫҚТЫ ТОЛЫҚТЫРУ</p><h1>Жаңа санат</h1><p class="text-muted">Жазбаның мәліметтерін енгізіңіз.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Тізімге оралу</a></div>
-<form asp-action="Create" method="post" class="card"><partial name="_Form" model="Model" /></form>
+<div class="workspace-page categories-workspace form-workspace">
+<div class="page-header workspace-heading"><div><p class="eyebrow">АНЫҚТАМАЛЫҚТЫ ТОЛЫҚТЫРУ</p><h1>Жаңа санат</h1><p class="text-muted">Жазбаның мәліметтерін енгізіңіз.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Тізімге оралу</a></div>
+<form asp-action="Create" method="post" class="card ledger-panel"><partial name="_Form" model="Model" /></form>
+</div>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

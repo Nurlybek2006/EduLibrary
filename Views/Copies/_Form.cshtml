@@ -2,6 +2,7 @@
 @using EduLibrary.ViewModels
 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 <input asp-for="Id" type="hidden" /><input asp-for="RowVersion" type="hidden" />
+<div class="form-section-heading"><span>01</span><div><h2>Дананың жеке деректері</h2><p>Әр физикалық дана түгендеу нөмірі, сөресі және бірегей кодымен тіркеледі.</p></div></div>
 @if (Model.IsOnLoan) { <div class="alert alert-warning">Дана оқырманда. Өзгерту үшін алдымен қайтаруды рәсімдеңіз.</div> }
 <div class="form-grid">
     <div class="form-group"><label asp-for="BookId"></label>@if (Model.Id == 0) { <select asp-for="BookId" asp-items="Model.Books" class="form-select"><option value="">Кітапты таңдаңыз</option></select> }else { <input asp-for="BookId" type="hidden" /><select asp-for="BookId" asp-items="Model.Books" class="form-select" disabled></select> }<span asp-validation-for="BookId" class="text-danger"></span></div>

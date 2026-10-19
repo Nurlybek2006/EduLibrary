@@ -1,6 +1,6 @@
 @model EduLibrary.ViewModels.BookReviewsViewModel
-<section id="reviews" class="card mt-4 reviews-section" aria-labelledby="reviews-heading">
-    <div class="page-header"><div><p class="eyebrow">ОҚЫРМАНДАР ДАУЫСЫ</p><h2 id="reviews-heading">Пікірлер мен бағалар</h2><p class="text-muted">Оқу тәжірибеңізбен бөлісіп, басқа оқырмандарға таңдау жасауға көмектесіңіз.</p></div><div class="rating-summary"><strong>@Model.AverageRating.ToString("0.0") <span aria-hidden="true">★</span></strong><span class="text-muted">@Model.ReviewCount пікір</span></div></div>
+<section id="reviews" class="reviews-section" aria-labelledby="reviews-heading">
+    <div class="section-heading"><div><p class="workspace-kicker">Оқырмандар дауысы</p><h2 id="reviews-heading">Пікірлер мен бағалар</h2><p class="text-muted">Бір кітап. Әртүрлі көзқарас. Өз оқу тәжірибеңізбен бөлісіңіз.</p></div><div class="rating-summary">@if(Model.ReviewCount > 0) { <strong>@Model.AverageRating.ToString("0.0") <span aria-hidden="true">★</span></strong> }<span class="text-muted">@(Model.ReviewCount > 0 ? Model.ReviewCount + " пікір" : "Әлі баға жоқ")</span></div></div>
     @if (Model.OwnReview is not null)
     {
         <div class="note-block mb-4"><div class="actions"><strong>Сіздің пікіріңіз</strong><span class="badge @(Model.OwnReview.IsHidden ? "badge-warning" : "badge-success")">@(Model.OwnReview.IsHidden ? "Модератор жасырған" : "Жарияланған")</span><a asp-controller="Reviews" asp-action="Edit" asp-route-id="@Model.OwnReview.Id" class="btn btn-sm btn-outline-secondary">Өзгерту</a></div>

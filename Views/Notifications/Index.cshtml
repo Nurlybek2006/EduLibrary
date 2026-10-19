@@ -1,7 +1,18 @@
 @model EduLibrary.ViewModels.NotificationPageViewModel
-@{ViewData["Title"]="Хабарландырулар";}
-<div class="page-header"><div><span class="eyebrow">СІЗДІҢ КІТАПХАНАҢЫЗ</span><h1>Хабарландырулар</h1><p>Кітаптарыңыздың мерзімі мен кітапхана жаңалықтарын қадағалаңыз.</p></div>@if(Model.UnreadCount>0){<form asp-action="ReadAll" method="post"><button class="btn btn-primary" type="submit"><i data-lucide="check-check"></i>Барлығын оқу</button></form>}</div>
-<div class="tab-bar"><a class="@(!Model.UnreadOnly?"active":"")" asp-action="Index">Барлығы <span>@Model.TotalCount</span></a><a class="@(Model.UnreadOnly?"active":"")" asp-action="Index" asp-route-unreadOnly="true">Оқылмаған <span>@Model.UnreadCount</span></a></div>
-<section class="card notification-list">@if(Model.Items.Count==0){<div class="empty-state"><i data-lucide="bell-off"></i><h2>@(Model.UnreadOnly?"Барлық хабарландыру оқылды":"Хабарландырулар әлі жоқ")</h2><p>Кітап беру, қайтару және мерзім туралы хабарламалар осында сақталады.</p></div>}
-@foreach(var item in Model.Items){<article class="notification-item @(item.IsRead?"":"unread")"><span class="notification-symbol"><i data-lucide="@(item.Type=="Overdue"?"alarm-clock":item.Type=="Fine"?"wallet":"bell")"></i></span><div><h2>@item.Title</h2><p>@item.Message</p><time>@item.CreatedAt.ToString("dd MMMM yyyy, HH:mm")</time><div class="actions mt-2"><a class="btn btn-sm btn-outline-secondary" href="@item.Link">Жазбаны ашу <i data-lucide="arrow-up-right"></i></a>@if(!item.IsRead){<form asp-action="Read" asp-route-id="@item.Id" method="post"><button class="btn btn-sm btn-link" type="submit">Оқылды деп белгілеу</button></form>}</div></div>@if(!item.IsRead){<span class="unread-dot" aria-label="Оқылмаған"></span>}</article>}</section>
-@if(Model.TotalPages>1){<nav class="pagination" aria-label="Хабарландыру беттері">@for(var page=Math.Max(1,Model.Page-2);page<=Math.Min(Model.TotalPages,Model.Page+2);page++){<a class="btn @(page==Model.Page?"btn-primary":"btn-outline-secondary")" asp-action="Index" asp-route-page="@(page)" asp-route-unreadOnly="@Model.UnreadOnly">@(page)</a>}</nav>}
+@{ ViewData["Title"] = "Хабарландырулар"; }
+<div class="workspace-page notifications-workspace">
+<header class="page-header workspace-heading"><div><p class="workspace-kicker">Кітапханамен байланыста</p><h1>Хабарландырулар</h1><p>Оқу жолыңыздағы маңызды күндер мен кітапхана жаңалықтары.</p></div>@if(Model.UnreadCount > 0) { <form asp-action="ReadAll" method="post"><button class="btn btn-outline-secondary" type="submit"><i data-lucide="check-check"></i> Барлығын оқу</button></form> }</header>
+<nav class="tab-bar" aria-label="Хабарландыру көрінісі"><a class="@(!Model.UnreadOnly ? "active" : "")" asp-action="Index">Барлық хаттар <span>@Model.TotalCount</span></a><a class="@(Model.UnreadOnly ? "active" : "")" asp-action="Index" asp-route-unreadOnly="true">Оқылмаған <span>@Model.UnreadCount</span></a></nav>
+<section class="notification-list" aria-label="Кітапхана хабарлары">
+@if(Model.Items.Count == 0) { <div class="empty-state"><i data-lucide="bell-off"></i><h2>@(Model.UnreadOnly ? "Барлық хабарландыру оқылды" : "Хабарландырулар әлі жоқ")</h2><p>Кітап беру, қайтару және мерзім туралы хабарламалар осында сақталады.</p><a class="btn btn-outline-secondary" asp-controller="Books" asp-action="Index">Кітаптарға оралу</a></div> }
+@foreach(var item in Model.Items)
+{
+    <article class="notification-item @(item.IsRead ? "" : "unread")">
+        <span class="notification-symbol" aria-hidden="true"><i data-lucide="@(item.Type == "Overdue" ? "alarm-clock" : item.Type == "Fine" ? "receipt" : "mail-open")"></i></span>
+        <div><time datetime="@item.CreatedAt.ToString("yyyy-MM-ddTHH:mm")">@item.CreatedAt.ToString("dd MMMM yyyy") · @item.CreatedAt.ToString("HH:mm")</time><h2>@item.Title</h2><p>@item.Message</p><div class="actions"><a class="btn btn-outline-secondary" href="@item.Link">Жазбаны ашу <i data-lucide="arrow-up-right"></i></a>@if(!item.IsRead) { <form asp-action="Read" asp-route-id="@item.Id" method="post"><button class="btn btn-link" type="submit">Оқылды деп белгілеу</button></form> }</div></div>
+        @if(!item.IsRead) { <span class="unread-dot" aria-label="Оқылмаған"></span> }
+    </article>
+}
+</section>
+@if(Model.TotalPages > 1) { <nav class="pagination" aria-label="Хабарландыру беттері">@for(var page = Math.Max(1, Model.Page - 2); page <= Math.Min(Model.TotalPages, Model.Page + 2); page++) { <a class="btn @(page == Model.Page ? "btn-primary" : "btn-outline-secondary")" asp-action="Index" asp-route-page="@(page)" asp-route-unreadOnly="@Model.UnreadOnly">@(page)</a> }</nav> }
+</div>

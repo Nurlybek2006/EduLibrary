@@ -1,8 +1,13 @@
 {
   "base_url": "http://localhost:5298",
-  "passed": 271,
+  "passed": 283,
   "failed": 0,
   "checks": [
+    {
+      "check": "Anonymous: Phase 2 login challenge /ReadingSpace",
+      "passed": true,
+      "status": 200
+    },
     {
       "check": "Anonymous: Phase 2 login challenge /Recommendations",
       "passed": true,
@@ -158,6 +163,11 @@
       "status": 200
     },
     {
+      "check": "Admin: GET /ReadingSpace",
+      "passed": true,
+      "status": 403
+    },
+    {
       "check": "Admin: GET /Recommendations",
       "passed": true,
       "status": 200
@@ -171,7 +181,7 @@
       "passed": true
     },
     {
-      "check": "Admin: GET /Recommendations?studentId=2",
+      "check": "Admin: GET /Recommendations?studentId=19",
       "passed": true,
       "status": 200
     },
@@ -180,12 +190,12 @@
       "passed": true
     },
     {
-      "check": "Admin: GET /Recommendations/Preferences?studentId=2",
+      "check": "Admin: GET /Recommendations/Preferences?studentId=19",
       "passed": true,
       "status": 200
     },
     {
-      "check": "Admin: GET /Recommendations?studentId=2&includePreviouslyRead=true",
+      "check": "Admin: GET /Recommendations?studentId=19&includePreviouslyRead=true",
       "passed": true,
       "status": 200
     },
@@ -560,6 +570,11 @@
       "status": 200
     },
     {
+      "check": "Librarian: GET /ReadingSpace",
+      "passed": true,
+      "status": 403
+    },
+    {
       "check": "Librarian: GET /Recommendations",
       "passed": true,
       "status": 200
@@ -573,7 +588,7 @@
       "passed": true
     },
     {
-      "check": "Librarian: GET /Recommendations?studentId=2",
+      "check": "Librarian: GET /Recommendations?studentId=19",
       "passed": true,
       "status": 200
     },
@@ -582,12 +597,12 @@
       "passed": true
     },
     {
-      "check": "Librarian: GET /Recommendations/Preferences?studentId=2",
+      "check": "Librarian: GET /Recommendations/Preferences?studentId=19",
       "passed": true,
       "status": 200
     },
     {
-      "check": "Librarian: GET /Recommendations?studentId=2&includePreviouslyRead=true",
+      "check": "Librarian: GET /Recommendations?studentId=19&includePreviouslyRead=true",
       "passed": true,
       "status": 200
     },
@@ -956,6 +971,15 @@
       "passed": true
     },
     {
+      "check": "Student: GET /ReadingSpace",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Student: reading space ignores arbitrary reader selection and stays identity scoped",
+      "passed": true
+    },
+    {
       "check": "Student: GET /Recommendations",
       "passed": true,
       "status": 200
@@ -1188,12 +1212,37 @@
       "status": 403
     },
     {
-      "check": "Phase 2 static asset: /css/intelligence.css",
+      "check": "Phase 2 static asset: /css/account.css",
       "passed": true,
       "status": 200
     },
     {
-      "check": "Phase 2 static asset: /css/intelligence.css",
+      "check": "Phase 2 static asset: /css/catalog.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/fonts.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/management.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/management.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/reading-space.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /css/reading-space.css",
       "passed": true,
       "status": 200
     },
@@ -1204,6 +1253,16 @@
     },
     {
       "check": "Phase 2 static asset: /css/site.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /fonts/manrope-cyrillic-ext.woff2",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "check": "Phase 2 static asset: /fonts/manrope-cyrillic.woff2",
       "passed": true,
       "status": 200
     },

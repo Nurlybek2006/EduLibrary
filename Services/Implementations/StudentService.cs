@@ -50,7 +50,10 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
             .AsSplitQuery().SingleOrDefaultAsync(cancellationToken);
         if (student is null) return null;
         var loans = await db.Loans.AsNoTracking().Where(l => l.StudentId == id).OrderByDescending(l => l.LoanDate).ThenByDescending(l => l.Id)
-            .Select(l => new StudentLoanItem { Id = l.Id, BookTitle = l.BookCopy.Book.Title, InventoryNumber = l.BookCopy.InventoryNumber, LoanDate = l.LoanDate, DueDate = l.DueDate, ReturnedAt = l.ReturnedAt })
+            .Select(l => new StudentLoanItem { Id = l.Id, BookTitle = l.BookCopy.Book.Title, BookId = l.BookCopy.BookId,
+                CoverImageUrl = l.BookCopy.Book.CoverImageUrl, PublicationYear = l.BookCopy.Book.PublicationYear,
+                BookAuthors = l.BookCopy.Book.BookAuthors.OrderBy(a => a.Author.LastName).Select(a => a.Author.FirstName + " " + a.Author.LastName).ToList(),
+                InventoryNumber = l.BookCopy.InventoryNumber, LoanDate = l.LoanDate, DueDate = l.DueDate, ReturnedAt = l.ReturnedAt })
             .ToListAsync(cancellationToken);
         foreach (var loan in loans)
             loan.OverdueDays = Math.Max(0, ((loan.ReturnedAt ?? clock.Today).Date - loan.DueDate.Date).Days);

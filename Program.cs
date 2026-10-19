@@ -44,6 +44,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+builder.Services.AddScoped<IReadingSpaceService, ReadingSpaceService>();
 builder.Services.AddScoped<RecommendationContextService>();
 builder.Services.AddScoped<IRecommendationExplanationService, RecommendationExplanationService>();
 builder.Services.AddScoped<TemplateExplanationProvider>();
