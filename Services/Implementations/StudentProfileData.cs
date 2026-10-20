@@ -11,12 +11,12 @@ internal static class StudentProfileData
     {
         var ids = subjectIds.Distinct().ToArray();
         if (ids.Length > 30 || ids.Any(id => id <= 0) || await db.Subjects.CountAsync(s => ids.Contains(s.Id), ct) != ids.Length)
-            throw new BusinessException("Пәндер тізімі дұрыс емес. Тізімнен қайта таңдаңыз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Пәндер тізімі дұрыс емес. Тізімнен қайта таңдаңыз."));
 
         var names = (interests ?? "").Split([',', ';', '\n'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
         if (names.Length > 20 || names.Any(n => n.Length > 100))
-            throw new BusinessException("Ең көбі 20 қызығушылық енгізіңіз. Әр атау 100 таңбадан аспасын.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Ең көбі 20 қызығушылық енгізіңіз. Әр атау 100 таңбадан аспасын."));
 
         foreach (var link in student.StudentSubjects.Where(s => !ids.Contains(s.SubjectId)).ToList())
         {

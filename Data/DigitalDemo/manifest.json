@@ -1,0 +1,112 @@
+[
+  {
+    "slug": "csharp-basics",
+    "title": "C# бағдарламалау негіздері",
+    "isbn": "9789947000100",
+    "category": "Бағдарламалау",
+    "subject": "Бағдарламалау негіздері",
+    "description": "Айнымалылар, шарттар, циклдер, әдістер және объектілер арқылы шағын, тексерілетін C# бағдарламасын құруға арналған түпнұсқа қысқаша сабақтар.",
+    "pageCount": 8,
+    "coverImageUrl": "/images/digital-demo/csharp-basics.png",
+    "files": [
+      {
+        "format": "PDF",
+        "fileName": "csharp-basics.pdf",
+        "sha256": "a45541755cef753f8d7fe63bab25b158d495062e33b507fb3f149c7ac74f09b6"
+      },
+      {
+        "format": "EPUB",
+        "fileName": "csharp-basics.epub",
+        "sha256": "bc4dd69d07cee82fa440527245a31933b787e4b41923383d70c3b9a4597b30ab"
+      }
+    ]
+  },
+  {
+    "slug": "sql-introduction",
+    "title": "SQL және деректер базасына кіріспе",
+    "isbn": "9789947000117",
+    "category": "Деректер қоры",
+    "subject": "Деректер қоры",
+    "description": "Кестелерді модельдеу, SELECT сұраулары, JOIN, шектеулер және транзакциялар туралы кітапхана мысалдарына негізделген түпнұсқа практикалық кіріспе.",
+    "pageCount": 8,
+    "coverImageUrl": "/images/digital-demo/sql-introduction.png",
+    "files": [
+      {
+        "format": "PDF",
+        "fileName": "sql-introduction.pdf",
+        "sha256": "11f2d59f684aa0ee1e7197a4464cc7d6b64c0e17f4baeb7548310a2b188bffe8"
+      },
+      {
+        "format": "EPUB",
+        "fileName": "sql-introduction.epub",
+        "sha256": "07d601e87d941e51f82ed028ebdf4ba0aec37dd9a745d9b65e70e0eb71ac9a40"
+      }
+    ]
+  },
+  {
+    "slug": "algorithms-structures",
+    "title": "Алгоритмдер және деректер құрылымдары",
+    "isbn": "9789947000124",
+    "category": "Алгоритмдер",
+    "subject": "Деректер құрылымдары",
+    "description": "Алгоритм дұрыстығы, күрделілік, массив, стек, сөздік және граф туралы шағын есептер мен түсіндірмелерден тұратын түпнұсқа оқу материалы.",
+    "pageCount": 8,
+    "coverImageUrl": "/images/digital-demo/algorithms-structures.png",
+    "files": [
+      {
+        "format": "PDF",
+        "fileName": "algorithms-structures.pdf",
+        "sha256": "f9463ef1b2620c7af41f3474d29c6b73ea1c689bff6842bddfb6bdf084086aeb"
+      },
+      {
+        "format": "EPUB",
+        "fileName": "algorithms-structures.epub",
+        "sha256": "f7c3ca2fe2ace64f5e20e9c5dabbbdf3ccc407a1f9469a90c7b3c6f0118fb84d"
+      }
+    ]
+  },
+  {
+    "slug": "web-fundamentals",
+    "title": "Веб-бағдарламалау негіздері",
+    "isbn": "9789947000131",
+    "category": "Бағдарламалау",
+    "subject": "Веб-бағдарламалау",
+    "description": "HTTP, семантикалық HTML, бейімделетін CSS, JavaScript және сервер тексеруі арқылы қолжетімді шағын веб-қосымша жасауға кіріспе.",
+    "pageCount": 8,
+    "coverImageUrl": "/images/digital-demo/web-fundamentals.png",
+    "files": [
+      {
+        "format": "PDF",
+        "fileName": "web-fundamentals.pdf",
+        "sha256": "3829fb032a64071d5971ac60de1aa71c76c6f923b830b30bc93c481bc2fe4fa9"
+      },
+      {
+        "format": "EPUB",
+        "fileName": "web-fundamentals.epub",
+        "sha256": "696719ed22b17d1ba8fe4c0a9b263c70c40bb5cdc1025fa2672f546ef83b77ac"
+      }
+    ]
+  },
+  {
+    "slug": "cybersecurity-basics",
+    "title": "Киберқауіпсіздік негіздері",
+    "isbn": "9789947000148",
+    "category": "Желілер",
+    "subject": "Ақпараттық қауіпсіздік",
+    "description": "Қауіп моделін құру, есептік жазбаны қорғау, қауіпсіз файлдар, енгізуді тексеру және оқиғаға жауап беру туралы қорғанысқа бағытталған түпнұсқа сабақтар.",
+    "pageCount": 8,
+    "coverImageUrl": "/images/digital-demo/cybersecurity-basics.png",
+    "files": [
+      {
+        "format": "PDF",
+        "fileName": "cybersecurity-basics.pdf",
+        "sha256": "02e462190d066fa9d25b8e027691437b8dcbc2644f0643de4cf560faec9c8124"
+      },
+      {
+        "format": "EPUB",
+        "fileName": "cybersecurity-basics.epub",
+        "sha256": "345cb0d7e9d867e820e4e74e5054925dadec0ee4a49e4aae35e01c3637a178ab"
+      }
+    ]
+  }
+]

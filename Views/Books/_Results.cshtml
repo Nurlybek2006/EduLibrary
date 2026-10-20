@@ -1,8 +1,8 @@
 @model EduLibrary.ViewModels.BookCatalogViewModel
-<div class="catalog-results-summary" data-result-count="@Model.TotalCount"><div><h2>@(string.IsNullOrWhiteSpace(Model.Filter.Search) ? "Кітапхана сөресі" : "Іздеу нәтижелері")</h2><span><strong>@Model.TotalCount</strong> кітап</span></div><span>@Model.Filter.Page / @Model.TotalPages бет</span></div>
+<div class="catalog-results-summary" data-result-count="@Model.TotalCount"><div><h2>@(string.IsNullOrWhiteSpace(Model.Filter.Search) ? UiText.Get("Кітапхана сөресі") : UiText.Get("Іздеу нәтижелері"))</h2><span><strong>@Model.TotalCount</strong> @T["Кітап"]</span></div><span>@Model.Filter.Page / @Model.TotalPages @T["бет"]</span></div>
 @if (Model.Books.Count == 0)
 {
-    <div class="catalog-empty-state"><span class="catalog-empty-symbol"><i data-lucide="search-x" aria-hidden="true"></i></span><h2>Кітап табылмады.</h2><p>Басқа іздеу сөзін қолданып немесе сүзгілерді өзгертіп көріңіз.</p><a asp-action="Index" class="btn btn-primary">Барлық кітапты көру</a></div>
+    <div class="catalog-empty-state"><span class="catalog-empty-symbol"><i data-lucide="search-x" aria-hidden="true"></i></span><h2>@T["Кітап табылмады."]</h2><p>@T["Басқа іздеу сөзін қолданып немесе сүзгілерді өзгертіп көріңіз."]</p><a asp-action="Index" class="btn btn-primary">@T["Барлық кітапты көру"]</a></div>
 }
 else
 {
@@ -14,12 +14,12 @@ else
     </div>
     @if (Model.TotalPages > 1)
     {
-        <nav class="pagination catalog-pagination" aria-label="Каталог беттері">
+        <nav class="pagination catalog-pagination" aria-label="@T["Каталог беттері"]">
         @for (var pageNumber = Math.Max(1, Model.Filter.Page - 2); pageNumber <= Math.Min(Model.TotalPages, Model.Filter.Page + 2); pageNumber++)
         {
             <a asp-action="Index" asp-route-page="@pageNumber" asp-route-search="@Model.Filter.Search" asp-route-authorId="@Model.Filter.AuthorId" asp-route-publisherId="@Model.Filter.PublisherId" asp-route-categoryId="@Model.Filter.CategoryId" asp-route-subjectId="@Model.Filter.SubjectId" asp-route-language="@Model.Filter.Language" asp-route-sort="@Model.Filter.Sort" asp-route-availableOnly="@Model.Filter.AvailableOnly" asp-route-includeArchived="@Model.Filter.IncludeArchived" class="@(pageNumber == Model.Filter.Page ? "is-current" : "")" aria-current="@(pageNumber == Model.Filter.Page ? "page" : null)">@pageNumber</a>
         }
-        <span>@Model.TotalCount кітаптың @(((Model.Filter.Page - 1) * 12) + 1)–@(Math.Min(Model.Filter.Page * 12, Model.TotalCount)) аралығы</span>
+        <span>@Model.TotalCount @T["кітаптың"] @(((Model.Filter.Page - 1) * 12) + 1)–@(Math.Min(Model.Filter.Page * 12, Model.TotalCount)) @T["аралығы"]</span>
         </nav>
     }
 }

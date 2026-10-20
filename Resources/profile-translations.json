@@ -1,0 +1,602 @@
+[
+  {
+    "key": "My profile",
+    "kk": "Менің профилім",
+    "ru": "Мой профиль",
+    "en": "My profile"
+  },
+  {
+    "key": "A space of your own",
+    "kk": "Өзіңіздің жеке кеңістігіңіз",
+    "ru": "Ваше личное пространство",
+    "en": "A space of your own"
+  },
+  {
+    "key": "Your reading identity, preferences, and activity in one place.",
+    "kk": "Оқырман профиліңіз, қалауыңыз және оқу белсенділігіңіз бір жерде.",
+    "ru": "Ваш профиль читателя, предпочтения и активность в одном месте.",
+    "en": "Your reading identity, preferences, and activity in one place."
+  },
+  {
+    "key": "My reading space",
+    "kk": "Менің оқу кеңістігім",
+    "ru": "Моё читательское пространство",
+    "en": "My reading space"
+  },
+  {
+    "key": "EduLibrary member",
+    "kk": "EduLibrary қатысушысы",
+    "ru": "Участник EduLibrary",
+    "en": "EduLibrary member"
+  },
+  {
+    "key": "Profile sections",
+    "kk": "Профиль бөлімдері",
+    "ru": "Разделы профиля",
+    "en": "Profile sections"
+  },
+  {
+    "key": "Profile photo",
+    "kk": "Профиль суреті",
+    "ru": "Фотография профиля",
+    "en": "Profile photo"
+  },
+  {
+    "key": "Personal information",
+    "kk": "Жеке мәліметтер",
+    "ru": "Личные данные",
+    "en": "Personal information"
+  },
+  {
+    "key": "Academic information",
+    "kk": "Академиялық мәлімет",
+    "ru": "Учебные данные",
+    "en": "Academic information"
+  },
+  {
+    "key": "Reading interests",
+    "kk": "Оқу қызығушылықтары",
+    "ru": "Читательские интересы",
+    "en": "Reading interests"
+  },
+  {
+    "key": "Account settings",
+    "kk": "Аккаунт баптаулары",
+    "ru": "Настройки аккаунта",
+    "en": "Account settings"
+  },
+  {
+    "key": "Reading activity",
+    "kk": "Оқу белсенділігі",
+    "ru": "Читательская активность",
+    "en": "Reading activity"
+  },
+  {
+    "key": "A familiar face across your library.",
+    "kk": "Кітапханадағы профиліңізді өз суретіңізбен толықтырыңыз.",
+    "ru": "Ваше лицо на страницах библиотеки.",
+    "en": "A familiar face across your library."
+  },
+  {
+    "key": "Make this space yours",
+    "kk": "Кеңістігіңізді даралаңыз",
+    "ru": "Добавьте индивидуальности",
+    "en": "Make this space yours"
+  },
+  {
+    "key": "JPG, PNG, or WebP · Up to 2 MB · Saved as a 256 × 256 image",
+    "kk": "JPG, PNG немесе WebP · 2 МБ дейін · 256 × 256 өлшемінде сақталады",
+    "ru": "JPG, PNG или WebP · До 2 МБ · Сохраняется в размере 256 × 256",
+    "en": "JPG, PNG, or WebP · Up to 2 MB · Saved as a 256 × 256 image"
+  },
+  {
+    "key": "Your photo is visible wherever your library profile appears.",
+    "kk": "Суретіңіз кітапхана профиліңіз көрсетілетін жерлерде көрінеді.",
+    "ru": "Фотография видна там, где отображается ваш библиотечный профиль.",
+    "en": "Your photo is visible wherever your library profile appears."
+  },
+  {
+    "key": "Upload a photo",
+    "kk": "Сурет жүктеу",
+    "ru": "Загрузить фотографию",
+    "en": "Upload a photo"
+  },
+  {
+    "key": "Change photo",
+    "kk": "Суретті ауыстыру",
+    "ru": "Изменить фотографию",
+    "en": "Change photo"
+  },
+  {
+    "key": "Use a JPG, PNG, or WebP photo.",
+    "kk": "JPG, PNG немесе WebP суретін таңдаңыз.",
+    "ru": "Выберите фотографию в формате JPG, PNG или WebP.",
+    "en": "Use a JPG, PNG, or WebP photo."
+  },
+  {
+    "key": "The photo must be no larger than 2 MB.",
+    "kk": "Сурет көлемі 2 МБ-тан аспауы тиіс.",
+    "ru": "Размер фотографии не должен превышать 2 МБ.",
+    "en": "The photo must be no larger than 2 MB."
+  },
+  {
+    "key": "The photo cannot be decoded safely.",
+    "kk": "Суретті қауіпсіз өңдеу мүмкін болмады.",
+    "ru": "Не удалось безопасно обработать фотографию.",
+    "en": "The photo cannot be decoded safely."
+  },
+  {
+    "key": "The photo dimensions must not exceed 4096 pixels or 16 megapixels.",
+    "kk": "Сурет өлшемі әр жағынан 4096 пиксельден және жалпы 16 мегапиксельден аспасын.",
+    "ru": "Размер фотографии не должен превышать 4096 пикселей по каждой стороне и 16 мегапикселей в целом.",
+    "en": "The photo dimensions must not exceed 4096 pixels or 16 megapixels."
+  },
+  {
+    "key": "Photo preview is ready. Adjust the crop, then confirm upload.",
+    "kk": "Сурет көрінісі дайын. Қию аймағын реттеп, жүктеуді растаңыз.",
+    "ru": "Предпросмотр готов. Настройте кадрирование и подтвердите загрузку.",
+    "en": "Photo preview is ready. Adjust the crop, then confirm upload."
+  },
+  {
+    "key": "Saving photo…",
+    "kk": "Сурет сақталуда…",
+    "ru": "Сохранение фотографии…",
+    "en": "Saving photo…"
+  },
+  {
+    "key": "Square photo crop. Drag to reposition, or use the controls below.",
+    "kk": "Шаршы қию аймағы. Суретті жылжытыңыз немесе төмендегі реттегіштерді пайдаланыңыз.",
+    "ru": "Квадратная область кадрирования. Перетащите фотографию или используйте элементы управления ниже.",
+    "en": "Square photo crop. Drag to reposition, or use the controls below."
+  },
+  {
+    "key": "Circular avatar preview",
+    "kk": "Дөңгелек аватар көрінісі",
+    "ru": "Предпросмотр круглого аватара",
+    "en": "Circular avatar preview"
+  },
+  {
+    "key": "Drag the photo to reposition it. Arrow keys also move the crop.",
+    "kk": "Суретті сүйреп жылжытыңыз. Бағыт пернелерімен де реттеуге болады.",
+    "ru": "Перетащите фотографию. Клавиши со стрелками также перемещают область кадрирования.",
+    "en": "Drag the photo to reposition it. Arrow keys also move the crop."
+  },
+  {
+    "key": "Zoom",
+    "kk": "Масштаб",
+    "ru": "Масштаб",
+    "en": "Zoom"
+  },
+  {
+    "key": "Horizontal position",
+    "kk": "Көлденең орналасуы",
+    "ru": "Горизонтальное положение",
+    "en": "Horizontal position"
+  },
+  {
+    "key": "Vertical position",
+    "kk": "Тік орналасуы",
+    "ru": "Вертикальное положение",
+    "en": "Vertical position"
+  },
+  {
+    "key": "Without JavaScript, your photo will be cropped to a centered square.",
+    "kk": "JavaScript өшірулі болса, сурет ортасынан шаршы етіп қиылады.",
+    "ru": "Без JavaScript фотография будет обрезана по центру до квадрата.",
+    "en": "Without JavaScript, your photo will be cropped to a centered square."
+  },
+  {
+    "key": "Confirm upload",
+    "kk": "Жүктеуді растау",
+    "ru": "Подтвердить загрузку",
+    "en": "Confirm upload"
+  },
+  {
+    "key": "Cancel upload",
+    "kk": "Жүктеуден бас тарту",
+    "ru": "Отменить загрузку",
+    "en": "Cancel upload"
+  },
+  {
+    "key": "Remove your profile photo and use initials instead?",
+    "kk": "Профиль суретін өшіріп, аты-жөніңіздің бас әріптерін көрсету керек пе?",
+    "ru": "Удалить фотографию профиля и использовать инициалы?",
+    "en": "Remove your profile photo and use initials instead?"
+  },
+  {
+    "key": "Remove photo",
+    "kk": "Суретті өшіру",
+    "ru": "Удалить фотографию",
+    "en": "Remove photo"
+  },
+  {
+    "key": "Keep your library contact details up to date.",
+    "kk": "Кітапханадағы байланыс деректеріңізді жаңартып отырыңыз.",
+    "ru": "Поддерживайте контактные данные библиотеки в актуальном состоянии.",
+    "en": "Keep your library contact details up to date."
+  },
+  {
+    "key": "Full name",
+    "kk": "Аты-жөні",
+    "ru": "Полное имя",
+    "en": "Full name"
+  },
+  {
+    "key": "Email address",
+    "kk": "Электрондық пошта",
+    "ru": "Электронная почта",
+    "en": "Email address"
+  },
+  {
+    "key": "Phone number",
+    "kk": "Телефон нөмірі",
+    "ru": "Номер телефона",
+    "en": "Phone number"
+  },
+  {
+    "key": "Contact a librarian to update your academic record.",
+    "kk": "Академиялық мәліметтерді өзгерту үшін кітапханашыға хабарласыңыз.",
+    "ru": "Для изменения учебных данных обратитесь к библиотекарю.",
+    "en": "Contact a librarian to update your academic record."
+  },
+  {
+    "key": "Student number",
+    "kk": "Студент нөмірі",
+    "ru": "Номер студента",
+    "en": "Student number"
+  },
+  {
+    "key": "Faculty",
+    "kk": "Факультет",
+    "ru": "Факультет",
+    "en": "Faculty"
+  },
+  {
+    "key": "Year of study",
+    "kk": "Оқу курсы",
+    "ru": "Курс обучения",
+    "en": "Year of study"
+  },
+  {
+    "key": "Group",
+    "kk": "Топ",
+    "ru": "Группа",
+    "en": "Group"
+  },
+  {
+    "key": "Your recommendations use these interests and subjects.",
+    "kk": "Жеке ұсыныстар осы қызығушылықтар мен пәндерге сүйенеді.",
+    "ru": "Персональные рекомендации учитывают эти интересы и учебные предметы.",
+    "en": "Your recommendations use these interests and subjects."
+  },
+  {
+    "key": "Interests",
+    "kk": "Қызығушылықтар",
+    "ru": "Интересы",
+    "en": "Interests"
+  },
+  {
+    "key": "Programming, economics, history",
+    "kk": "Бағдарламалау, экономика, тарих",
+    "ru": "Программирование, экономика, история",
+    "en": "Programming, economics, history"
+  },
+  {
+    "key": "Separate names with commas. Up to 20 interests.",
+    "kk": "Атауларды үтірмен бөліңіз. Ең көбі 20 қызығушылық.",
+    "ru": "Разделяйте названия запятыми. Не более 20 интересов.",
+    "en": "Separate names with commas. Up to 20 interests."
+  },
+  {
+    "key": "Subjects",
+    "kk": "Пәндер",
+    "ru": "Учебные предметы",
+    "en": "Subjects"
+  },
+  {
+    "key": "Use Ctrl / Command to select multiple subjects.",
+    "kk": "Бірнеше пәнді Ctrl / Command пернесімен таңдаңыз.",
+    "ru": "Для выбора нескольких предметов используйте Ctrl / Command.",
+    "en": "Use Ctrl / Command to select multiple subjects."
+  },
+  {
+    "key": "Choose how EduLibrary feels to you.",
+    "kk": "EduLibrary көрінісін қалауыңызға сай таңдаңыз.",
+    "ru": "Настройте внешний вид EduLibrary по своему вкусу.",
+    "en": "Choose how EduLibrary feels to you."
+  },
+  {
+    "key": "Preferred language",
+    "kk": "Қалаған тіл",
+    "ru": "Предпочитаемый язык",
+    "en": "Preferred language"
+  },
+  {
+    "key": "Preferred theme",
+    "kk": "Қалаған көрініс",
+    "ru": "Предпочитаемая тема",
+    "en": "Preferred theme"
+  },
+  {
+    "key": "Match device",
+    "kk": "Құрылғыға сай",
+    "ru": "Как на устройстве",
+    "en": "Match device"
+  },
+  {
+    "key": "Light",
+    "kk": "Ашық",
+    "ru": "Светлая",
+    "en": "Light"
+  },
+  {
+    "key": "Dark",
+    "kk": "Қараңғы",
+    "ru": "Тёмная",
+    "en": "Dark"
+  },
+  {
+    "key": "Your preferences apply after you save.",
+    "kk": "Таңдауыңыз сақталғаннан кейін қолданылады.",
+    "ru": "Предпочтения применятся после сохранения.",
+    "en": "Your preferences apply after you save."
+  },
+  {
+    "key": "Save changes",
+    "kk": "Өзгерістерді сақтау",
+    "ru": "Сохранить изменения",
+    "en": "Save changes"
+  },
+  {
+    "key": "Your real library activity, saved to your account.",
+    "kk": "Аккаунтыңызда сақталған нақты оқу белсенділігі.",
+    "ru": "Ваша реальная библиотечная активность, сохранённая в аккаунте.",
+    "en": "Your real library activity, saved to your account."
+  },
+  {
+    "key": "Current loans",
+    "kk": "Қолымдағы кітаптар",
+    "ru": "Книги на руках",
+    "en": "Current loans"
+  },
+  {
+    "key": "Returned books",
+    "kk": "Қайтарылған кітаптар",
+    "ru": "Возвращённые книги",
+    "en": "Returned books"
+  },
+  {
+    "key": "Digital books opened",
+    "kk": "Ашылған электрондық кітаптар",
+    "ru": "Открытые электронные книги",
+    "en": "Digital books opened"
+  },
+  {
+    "key": "Digital books completed",
+    "kk": "Аяқталған электрондық кітаптар",
+    "ru": "Прочитанные электронные книги",
+    "en": "Digital books completed"
+  },
+  {
+    "key": "Digital books",
+    "kk": "Электрондық кітаптар",
+    "ru": "Электронные книги",
+    "en": "Digital books"
+  },
+  {
+    "key": "My digital books",
+    "kk": "Менің электрондық кітаптарым",
+    "ru": "Мои электронные книги",
+    "en": "My digital books"
+  },
+  {
+    "key": "Open a digital book to begin your reading history.",
+    "kk": "Оқу тарихын бастау үшін электрондық кітапты ашыңыз.",
+    "ru": "Откройте электронную книгу, чтобы начать историю чтения.",
+    "en": "Open a digital book to begin your reading history."
+  },
+  {
+    "key": "Completed",
+    "kk": "Оқылды",
+    "ru": "Прочитано",
+    "en": "Completed"
+  },
+  {
+    "key": "In progress",
+    "kk": "Оқылуда",
+    "ru": "В процессе",
+    "en": "In progress"
+  },
+  {
+    "key": "Reading progress",
+    "kk": "Оқу прогресі",
+    "ru": "Прогресс чтения",
+    "en": "Reading progress"
+  },
+  {
+    "key": "Continue reading",
+    "kk": "Оқуды жалғастыру",
+    "ru": "Продолжить чтение",
+    "en": "Continue reading"
+  },
+  {
+    "key": "Borrowing history",
+    "kk": "Кітап алу тарихы",
+    "ru": "История выдач",
+    "en": "Borrowing history"
+  },
+  {
+    "key": "View all loans",
+    "kk": "Барлық берілімді көру",
+    "ru": "Посмотреть все выдачи",
+    "en": "View all loans"
+  },
+  {
+    "key": "Your physical borrowing history will appear here.",
+    "kk": "Физикалық кітаптарды алу тарихы осында көрсетіледі.",
+    "ru": "Здесь появится история выдачи печатных книг.",
+    "en": "Your physical borrowing history will appear here."
+  },
+  {
+    "key": "Returned",
+    "kk": "Қайтарылды",
+    "ru": "Возвращено",
+    "en": "Returned"
+  },
+  {
+    "key": "On loan",
+    "kk": "Қолда",
+    "ru": "На руках",
+    "en": "On loan"
+  },
+  {
+    "key": "Due date",
+    "kk": "Қайтару мерзімі",
+    "ru": "Срок возврата",
+    "en": "Due date"
+  },
+  {
+    "key": "Account menu",
+    "kk": "Жеке кабинет мәзірі",
+    "ru": "Меню аккаунта",
+    "en": "Account menu"
+  },
+  {
+    "key": "Profile",
+    "kk": "Профиль",
+    "ru": "Профиль",
+    "en": "Profile"
+  },
+  {
+    "key": "Manage reservations",
+    "kk": "Броньдарды басқару",
+    "ru": "Управление бронированиями",
+    "en": "Manage reservations"
+  },
+  {
+    "key": "My reservations",
+    "kk": "Менің броньдарым",
+    "ru": "Мои бронирования",
+    "en": "My reservations"
+  },
+  {
+    "key": "Notifications",
+    "kk": "Хабарландырулар",
+    "ru": "Уведомления",
+    "en": "Notifications"
+  },
+  {
+    "key": "Fines",
+    "kk": "Айыппұлдар",
+    "ru": "Штрафы",
+    "en": "Fines"
+  },
+  {
+    "key": "Sign out",
+    "kk": "Шығу",
+    "ru": "Выйти",
+    "en": "Sign out"
+  },
+  {
+    "key": "Choose a supported language.",
+    "kk": "Қолжетімді тілді таңдаңыз.",
+    "ru": "Выберите поддерживаемый язык.",
+    "en": "Choose a supported language."
+  },
+  {
+    "key": "Choose a supported theme.",
+    "kk": "Қолжетімді көріністі таңдаңыз.",
+    "ru": "Выберите поддерживаемую тему.",
+    "en": "Choose a supported theme."
+  },
+  {
+    "key": "Choose a photo to upload.",
+    "kk": "Жүктейтін суретті таңдаңыз.",
+    "ru": "Выберите фотографию для загрузки.",
+    "en": "Choose a photo to upload."
+  },
+  {
+    "key": "The photo crop is invalid.",
+    "kk": "Суретті қию аймағы дұрыс емес.",
+    "ru": "Недопустимая область кадрирования.",
+    "en": "The photo crop is invalid."
+  },
+  {
+    "key": "The photo format does not match its content type.",
+    "kk": "Сурет пішімі оның MIME түріне сәйкес емес.",
+    "ru": "Формат фотографии не соответствует её типу содержимого.",
+    "en": "The photo format does not match its content type."
+  },
+  {
+    "key": "The photo signature is invalid.",
+    "kk": "Сурет файлының сигнатурасы дұрыс емес.",
+    "ru": "Недопустимая сигнатура файла фотографии.",
+    "en": "The photo signature is invalid."
+  },
+  {
+    "key": "Use a still photo instead of an animated image.",
+    "kk": "Анимацияның орнына қимылсыз суретті таңдаңыз.",
+    "ru": "Выберите неподвижную фотографию вместо анимации.",
+    "en": "Use a still photo instead of an animated image."
+  },
+  {
+    "key": "Photo uploads are temporarily unavailable.",
+    "kk": "Сурет жүктеу уақытша қолжетімсіз.",
+    "ru": "Загрузка фотографий временно недоступна.",
+    "en": "Photo uploads are temporarily unavailable."
+  },
+  {
+    "key": "Account not found.",
+    "kk": "Аккаунт табылмады.",
+    "ru": "Аккаунт не найден.",
+    "en": "Account not found."
+  },
+  {
+    "key": "This account is inactive.",
+    "kk": "Бұл аккаунт белсенді емес.",
+    "ru": "Этот аккаунт неактивен.",
+    "en": "This account is inactive."
+  },
+  {
+    "key": "Your profile changed. Refresh the page and try again.",
+    "kk": "Профиль өзгертілген. Бетті жаңартып, қайта көріңіз.",
+    "ru": "Профиль изменился. Обновите страницу и повторите попытку.",
+    "en": "Your profile changed. Refresh the page and try again."
+  },
+  {
+    "key": "The photo could not be saved. Please try again.",
+    "kk": "Суретті сақтау мүмкін болмады. Қайта көріңіз.",
+    "ru": "Не удалось сохранить фотографию. Повторите попытку.",
+    "en": "The photo could not be saved. Please try again."
+  },
+  {
+    "key": "The photo could not be removed. Please try again.",
+    "kk": "Суретті өшіру мүмкін болмады. Қайта көріңіз.",
+    "ru": "Не удалось удалить фотографию. Повторите попытку.",
+    "en": "The photo could not be removed. Please try again."
+  },
+  {
+    "key": "Profile updated.",
+    "kk": "Профиль жаңартылды.",
+    "ru": "Профиль обновлён.",
+    "en": "Profile updated."
+  },
+  {
+    "key": "Choose a valid JPG, PNG, or WebP photo no larger than 2 MB.",
+    "kk": "2 МБ-тан аспайтын жарамды JPG, PNG немесе WebP суретін таңдаңыз.",
+    "ru": "Выберите корректную фотографию JPG, PNG или WebP размером до 2 МБ.",
+    "en": "Choose a valid JPG, PNG, or WebP photo no larger than 2 MB."
+  },
+  {
+    "key": "Profile photo updated.",
+    "kk": "Профиль суреті жаңартылды.",
+    "ru": "Фотография профиля обновлена.",
+    "en": "Profile photo updated."
+  },
+  {
+    "key": "Profile photo removed.",
+    "kk": "Профиль суреті өшірілді.",
+    "ru": "Фотография профиля удалена.",
+    "en": "Profile photo removed."
+  }
+]

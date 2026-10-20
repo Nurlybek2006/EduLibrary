@@ -1,0 +1,13 @@
+@using System.Globalization
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer V
+@{ var culture = CultureInfo.CurrentUICulture.Name; }
+<form asp-controller="Culture" asp-action="Set" method="post" class="language-switcher">
+    <input type="hidden" name="returnUrl" value="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" />
+    <label class="visually-hidden" for="site-language">@V["Choose language"]</label>
+    <select id="site-language" name="culture" aria-label="@T["Choose language"]" data-language-select>
+        <option value="kk-KZ" selected="@(culture == "kk-KZ")">ҚАЗ</option>
+        <option value="ru-RU" selected="@(culture == "ru-RU")">РУС</option>
+        <option value="en-US" selected="@(culture == "en-US")">ENG</option>
+    </select>
+    <button type="submit" class="visually-hidden-focusable">@T["Apply language"]</button>
+</form>

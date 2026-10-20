@@ -8,7 +8,7 @@ namespace EduLibrary.Services.Implementations;
 public sealed record ReportingPeriod(DateTime Start, DateTime EndExclusive, DateTime UtcStart, DateTime UtcEnd)
 {
     public DateTime End => EndExclusive.AddDays(-1);
-    public string Label => $"{Start:dd.MM.yyyy} – {End:dd.MM.yyyy}";
+    public string Label => $"{Start:d} – {End:d}";
 }
 
 public static class ReportingRules
@@ -27,7 +27,7 @@ public static class ReportingRules
         if (filter.Range == "custom") end = filter.EndDate?.Date ?? today;
         else if (filter.Range is not ("7" or "30" or "90" or "year")) filter.Range = "30";
         if (start.Year < 1900 || end > today || end < start || (end - start).Days > 3660)
-            throw new BusinessException("Кезеңді 1900 жылдан бүгінге дейін таңдаңыз. Аяқталу күні басталу күнінен ерте болмауы және кезең 10 жылдан аспауы тиіс.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кезеңді 1900 жылдан бүгінге дейін таңдаңыз. Аяқталу күні басталу күнінен ерте болмауы және кезең 10 жылдан аспауы тиіс."));
         filter.StartDate = start;
         filter.EndDate = end;
         var exclusive = end.AddDays(1);
@@ -60,5 +60,5 @@ public static class ReportingRules
 
     internal static string Number(int number) => number.ToString("N0", CultureInfo.CurrentCulture);
     internal static string Money(decimal amount) => amount.ToString("N2", CultureInfo.CurrentCulture) + " ₸";
-    internal static string Rating(double? rating) => rating.HasValue ? rating.Value.ToString("0.00", CultureInfo.CurrentCulture) + " / 5" : "Баға жоқ";
+    internal static string Rating(double? rating) => rating.HasValue ? rating.Value.ToString("0.00", CultureInfo.CurrentCulture) + " / 5" : global::EduLibrary.Localization.UiText.Get("Баға жоқ");
 }

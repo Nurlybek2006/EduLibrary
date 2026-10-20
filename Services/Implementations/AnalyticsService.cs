@@ -20,16 +20,16 @@ public sealed class AnalyticsService(ApplicationDbContext db, ILibraryClock cloc
         // period flows; the UI names both explicitly instead of mixing semantics.
         var statistics = new List<ReportMetricViewModel>
         {
-            new("Кітап атаулары", Number(await db.Books.CountAsync(x => !x.IsArchived, ct)), "Қазіргі белсенді каталог"),
-            new("Физикалық даналар", Number(await db.BookCopies.CountAsync(ct)), "Қазіргі толық қор"),
-            new("Қолжетімді даналар", Number(await db.BookCopies.CountAsync(x => x.Status == CopyStatus.Available && !x.Book.IsArchived, ct)), "Қазіргі қолжетімді қор"),
-            new("Белсенді берулер", Number(await db.Loans.CountAsync(x => x.ReturnedAt == null, ct)), "Қазіргі мәртебе"),
-            new("Мерзімі өткен", Number(await db.Loans.CountAsync(x => x.ReturnedAt == null && x.DueDate < today, ct)), "Бүгінге қайтарылмаған"),
-            new("Тіркелген студенттер", Number(await db.Students.CountAsync(ct)), "Қазіргі оқырмандар базасы"),
-            new("Белсенді оқырмандар", Number(await loans.Select(x => x.StudentId).Distinct().CountAsync(ct)), "Таңдалған кезеңде кітап алғандар"),
-            new("Төленбеген айыппұлдар", Money(await db.Fines.SumAsync(x => (decimal?)(x.Amount - x.PaidAmount), ct) ?? 0m), "Қазіргі бекітілген берешек"),
-            new("Төленген айыппұлдар", Money(await db.FinePayments.Where(x => x.PaidAt >= period.UtcStart && x.PaidAt < period.UtcEnd).SumAsync(x => (decimal?)x.Amount, ct) ?? 0m), "Кезеңде тіркелген төлемдер"),
-            new("Әдебиеттердің орташа бағасы", Rating(await reviews.Select(x => (double?)x.Rating).AverageAsync(ct)), "Кезеңде жарияланған ашық пікірлер")
+            new(global::EduLibrary.Localization.UiText.Get("Кітап атаулары"), Number(await db.Books.CountAsync(x => !x.IsArchived, ct)), global::EduLibrary.Localization.UiText.Get("Қазіргі белсенді каталог")),
+            new(global::EduLibrary.Localization.UiText.Get("Физикалық даналар"), Number(await db.BookCopies.CountAsync(ct)), global::EduLibrary.Localization.UiText.Get("Қазіргі толық қор")),
+            new(global::EduLibrary.Localization.UiText.Get("Қолжетімді даналар"), Number(await db.BookCopies.CountAsync(x => x.Status == CopyStatus.Available && !x.Book.IsArchived, ct)), global::EduLibrary.Localization.UiText.Get("Қазіргі қолжетімді қор")),
+            new(global::EduLibrary.Localization.UiText.Get("Белсенді берулер"), Number(await db.Loans.CountAsync(x => x.ReturnedAt == null, ct)), global::EduLibrary.Localization.UiText.Get("Қазіргі мәртебе")),
+            new(global::EduLibrary.Localization.UiText.Get("Мерзімі өткен"), Number(await db.Loans.CountAsync(x => x.ReturnedAt == null && x.DueDate < today, ct)), global::EduLibrary.Localization.UiText.Get("Бүгінге қайтарылмаған")),
+            new(global::EduLibrary.Localization.UiText.Get("Тіркелген студенттер"), Number(await db.Students.CountAsync(ct)), global::EduLibrary.Localization.UiText.Get("Қазіргі оқырмандар базасы")),
+            new(global::EduLibrary.Localization.UiText.Get("Белсенді оқырмандар"), Number(await loans.Select(x => x.StudentId).Distinct().CountAsync(ct)), global::EduLibrary.Localization.UiText.Get("Таңдалған кезеңде кітап алғандар")),
+            new(global::EduLibrary.Localization.UiText.Get("Төленбеген айыппұлдар"), Money(await db.Fines.SumAsync(x => (decimal?)(x.Amount - x.PaidAmount), ct) ?? 0m), global::EduLibrary.Localization.UiText.Get("Қазіргі бекітілген берешек")),
+            new(global::EduLibrary.Localization.UiText.Get("Төленген айыппұлдар"), Money(await db.FinePayments.Where(x => x.PaidAt >= period.UtcStart && x.PaidAt < period.UtcEnd).SumAsync(x => (decimal?)x.Amount, ct) ?? 0m), global::EduLibrary.Localization.UiText.Get("Кезеңде тіркелген төлемдер")),
+            new(global::EduLibrary.Localization.UiText.Get("Әдебиеттердің орташа бағасы"), Rating(await reviews.Select(x => (double?)x.Rating).AverageAsync(ct)), global::EduLibrary.Localization.UiText.Get("Кезеңде жарияланған ашық пікірлер"))
         };
         var monthly = (period.End - period.Start).Days > 90;
         var loanTimeline = await TimelineAsync(loans.Select(x => new CalendarEvent { Date = x.LoanDate, ReaderId = x.StudentId }), period, monthly, false, ct);
@@ -45,19 +45,19 @@ public sealed class AnalyticsService(ApplicationDbContext db, ILibraryClock cloc
         var ratings = await reviews.GroupBy(x => new { x.BookId, x.Book.Title })
             .Select(g => new { g.Key.BookId, g.Key.Title, Average = g.Average(x => (double)x.Rating) })
             .OrderByDescending(x => x.Average).ThenBy(x => x.BookId).Take(10).ToListAsync(ct);
-        var interval = monthly ? "Айлар бойынша" : "Күндер бойынша";
+        var interval = monthly ? global::EduLibrary.Localization.UiText.Get("Айлар бойынша") : global::EduLibrary.Localization.UiText.Get("Күндер бойынша");
         return new AnalyticsViewModel
         {
             Filter = filter, StartDate = period.Start, EndDate = period.End, Today = today, Statistics = statistics,
             Charts =
             [
-                new() { Id = "loans", Title = "Кітап беру динамикасы", Description = interval + ": кезеңде берілген кітаптар.", Labels = loanTimeline.Labels, Values = loanTimeline.Values },
-                new() { Id = "returns", Title = "Кітап қайтару динамикасы", Description = interval + ": қайтарылған күні кезеңге түскен кітаптар.", Labels = returnTimeline.Labels, Values = returnTimeline.Values },
-                new() { Id = "popular", Title = "Ең танымал 10 кітап", Description = "Таңдалған кезеңдегі беру саны.", Type = "bar", Horizontal = true, Labels = popular.Select(x => x.Title).ToArray(), Values = popular.Select(x => (double)x.Count).ToArray() },
-                new() { Id = "categories", Title = "Кітаптардың санаттар бойынша таралуы", Description = "Кезеңде берілген бірегей кітап атаулары. Көп санатты кітап әр санатында саналады.", Type = "doughnut", Labels = categories.Select(x => x.Name).ToArray(), Values = categories.Select(x => (double)x.Count).ToArray() },
-                new() { Id = "overdue", Title = "Кешіктіру динамикасы", Description = interval + ": қайтару мерзімі кезеңге түскен, кешіккен жазбалар. Бұл өткен күндегі қор қалдығы емес.", Type = "bar", Labels = overdueTimeline.Labels, Values = overdueTimeline.Values },
-                new() { Id = "readers", Title = "Оқырман белсенділігі", Description = interval + ": кітап алған бірегей студенттер. Бір оқырман әр кезең ұяшығында бір рет саналады.", Fill = true, Labels = readerTimeline.Labels, Values = readerTimeline.Values },
-                new() { Id = "ratings", Title = "Әдебиеттер рейтингі", Description = "Кезеңде жарияланған ашық пікірлердің орташа бағасы: 1–5. Пікірсіз кітаптар көрсетілмейді.", Type = "bar", IsRating = true, Labels = ratings.Select(x => x.Title).ToArray(), Values = ratings.Select(x => x.Average).ToArray() }
+                new() { Id = "loans", Title = global::EduLibrary.Localization.UiText.Get("Кітап беру динамикасы"), Description = interval + global::EduLibrary.Localization.UiText.Get(": кезеңде берілген кітаптар."), Labels = loanTimeline.Labels, Values = loanTimeline.Values },
+                new() { Id = "returns", Title = global::EduLibrary.Localization.UiText.Get("Кітап қайтару динамикасы"), Description = interval + global::EduLibrary.Localization.UiText.Get(": қайтарылған күні кезеңге түскен кітаптар."), Labels = returnTimeline.Labels, Values = returnTimeline.Values },
+                new() { Id = "popular", Title = global::EduLibrary.Localization.UiText.Get("Ең танымал 10 кітап"), Description = global::EduLibrary.Localization.UiText.Get("Таңдалған кезеңдегі беру саны."), Type = "bar", Horizontal = true, Labels = popular.Select(x => x.Title).ToArray(), Values = popular.Select(x => (double)x.Count).ToArray() },
+                new() { Id = "categories", Title = global::EduLibrary.Localization.UiText.Get("Кітаптардың санаттар бойынша таралуы"), Description = global::EduLibrary.Localization.UiText.Get("Кезеңде берілген бірегей кітап атаулары. Көп санатты кітап әр санатында саналады."), Type = "doughnut", Labels = categories.Select(x => x.Name).ToArray(), Values = categories.Select(x => (double)x.Count).ToArray() },
+                new() { Id = "overdue", Title = global::EduLibrary.Localization.UiText.Get("Кешіктіру динамикасы"), Description = interval + global::EduLibrary.Localization.UiText.Get(": қайтару мерзімі кезеңге түскен, кешіккен жазбалар. Бұл өткен күндегі қор қалдығы емес."), Type = "bar", Labels = overdueTimeline.Labels, Values = overdueTimeline.Values },
+                new() { Id = "readers", Title = global::EduLibrary.Localization.UiText.Get("Оқырман белсенділігі"), Description = interval + global::EduLibrary.Localization.UiText.Get(": кітап алған бірегей студенттер. Бір оқырман әр кезең ұяшығында бір рет саналады."), Fill = true, Labels = readerTimeline.Labels, Values = readerTimeline.Values },
+                new() { Id = "ratings", Title = global::EduLibrary.Localization.UiText.Get("Әдебиеттер рейтингі"), Description = global::EduLibrary.Localization.UiText.Get("Кезеңде жарияланған ашық пікірлердің орташа бағасы: 1–5. Пікірсіз кітаптар көрсетілмейді."), Type = "bar", IsRating = true, Labels = ratings.Select(x => x.Title).ToArray(), Values = ratings.Select(x => x.Average).ToArray() }
             ]
         };
     }
@@ -72,7 +72,7 @@ public sealed class AnalyticsService(ApplicationDbContext db, ILibraryClock cloc
         for (var date = monthly ? new DateTime(period.Start.Year, period.Start.Month, 1) : period.Start;
             date < period.EndExclusive; date = monthly ? date.AddMonths(1) : date.AddDays(1))
         {
-            labels.Add(date.ToString(monthly ? "MM.yyyy" : "dd.MM.yyyy"));
+            labels.Add(date.ToString(monthly ? "Y" : "d"));
             values.Add(counts.GetValueOrDefault(date));
         }
         return (labels.ToArray(), values.ToArray());

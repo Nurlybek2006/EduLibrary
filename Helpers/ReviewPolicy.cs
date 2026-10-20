@@ -4,8 +4,8 @@ public static class ReviewPolicy
 {
     public static void ValidateContent(int rating, string? comment)
     {
-        if (rating is < 1 or > 5) throw new BusinessException("Баға 1–5 жұлдыз аралығында болуы тиіс.");
-        if (comment?.Length > 3000) throw new BusinessException("Пікір 3000 таңбадан аспауы тиіс.");
+        if (rating is < 1 or > 5) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Баға 1–5 жұлдыз аралығында болуы тиіс."));
+        if (comment?.Length > 3000) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Пікір 3000 таңбадан аспауы тиіс."));
     }
 
     public static byte[] ParseVersion(string? value)
@@ -18,7 +18,7 @@ public static class ReviewPolicy
         }
         catch (FormatException)
         {
-            throw new BusinessException("Жазба нұсқасы жарамсыз. Бетті жаңартып, қайта көріңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Жазба нұсқасы жарамсыз. Бетті жаңартып, қайта көріңіз."));
         }
     }
 }

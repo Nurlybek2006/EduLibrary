@@ -6,6 +6,12 @@ namespace EduLibrary.Models.Entities;
 public class ApplicationUser : IdentityUser
 {
     public string FullName { get; set; } = "";
+    [System.ComponentModel.DataAnnotations.StringLength(100)]
+    public string? AvatarPath { get; set; }
+    [System.ComponentModel.DataAnnotations.StringLength(10)]
+    public string PreferredLanguage { get; set; } = "kk-KZ";
+    [System.ComponentModel.DataAnnotations.StringLength(10)]
+    public string PreferredTheme { get; set; } = "system";
 }
 
 public class Book

@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using EduLibrary.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EduLibrary.ViewModels;
 
@@ -38,6 +40,17 @@ public sealed class RegisterViewModel
 
 public sealed class ProfileViewModel
 {
+    public string? AvatarPath { get; set; }
+    [Required(ErrorMessage = "Choose a supported language.")]
+    public string PreferredLanguage { get; set; } = "kk-KZ";
+    [Required(ErrorMessage = "Choose a supported theme.")]
+    public string PreferredTheme { get; set; } = "system";
+    public int ActiveLoanCount { get; set; }
+    public int ReturnedLoanCount { get; set; }
+    public int DigitalBookCount { get; set; }
+    public int CompletedDigitalBookCount { get; set; }
+    public List<DigitalAssetCardViewModel> DigitalBooks { get; set; } = [];
+    public List<ProfileLoanViewModel> RecentLoans { get; set; } = [];
     [Required(ErrorMessage = "Аты-жөніңізді енгізіңіз."), StringLength(200, ErrorMessage = "Ең көбі {1} таңба енгізіңіз."), Display(Name = "Аты-жөні")]
     public string FullName { get; set; } = "";
     [Required(ErrorMessage = "Электрондық поштаны енгізіңіз."), EmailAddress(ErrorMessage = "Электрондық пошта дұрыс емес."), StringLength(256, ErrorMessage = "Ең көбі {1} таңба енгізіңіз."), Display(Name = "Электрондық пошта")]
@@ -56,9 +69,41 @@ public sealed class ProfileViewModel
     public List<SelectListItem> Subjects { get; set; } = [];
 }
 
+public sealed class AvatarUploadViewModel
+{
+    [Required(ErrorMessage = "Choose a photo to upload.")]
+    public IFormFile? File { get; set; }
+    [Range(0d, 1d, ErrorMessage = "The photo crop is invalid.")]
+    [ModelBinder(BinderType = typeof(DoubleModelBinder))]
+    public double CropX { get; set; }
+    [Range(0d, 1d, ErrorMessage = "The photo crop is invalid.")]
+    [ModelBinder(BinderType = typeof(DoubleModelBinder))]
+    public double CropY { get; set; }
+    [Range(0d, 1d, ErrorMessage = "The photo crop is invalid.")]
+    [ModelBinder(BinderType = typeof(DoubleModelBinder))]
+    public double CropSize { get; set; }
+}
+
+public sealed class ProfileLoanViewModel
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = "";
+    public DateTime LoanDate { get; set; }
+    public DateTime DueDate { get; set; }
+    public DateTime? ReturnedAt { get; set; }
+}
+
+public sealed class AvatarViewModel
+{
+    public string Initials { get; set; } = "EL";
+    public string? ImageUrl { get; set; }
+    public string Size { get; set; } = "small";
+    public string Name { get; set; } = "";
+}
+
 public sealed record AccountActionResult(bool Succeeded, IReadOnlyList<string> Errors)
 {
     public static AccountActionResult Success() => new(true, []);
-    public static AccountActionResult Failure(params string[] errors) => new(false, errors);
+    public static AccountActionResult Failure(params string[] errors) => new(false, errors.Select(error => EduLibrary.Localization.UiText.Get(error)).ToArray());
 }
 

@@ -11,7 +11,7 @@ public sealed class ReportsController(IReportingService service) : Controller
 {
     public async Task<IActionResult> Index(ReportFilterViewModel filter, CancellationToken ct)
     {
-        if (!ModelState.IsValid) return BadRequest("Есеп сүзгілерін дұрыс енгізіңіз.");
+        if (!ModelState.IsValid) return BadRequest(global::EduLibrary.Localization.UiText.Get("Есеп сүзгілерін дұрыс енгізіңіз."));
         try { return View(await service.GetAsync(filter, ct)); }
         catch (BusinessException exception)
         {
@@ -22,14 +22,14 @@ public sealed class ReportsController(IReportingService service) : Controller
 
     public async Task<IActionResult> Export(ReportFilterViewModel filter, CancellationToken ct)
     {
-        if (!ModelState.IsValid) return BadRequest("Есеп сүзгілерін дұрыс енгізіңіз.");
+        if (!ModelState.IsValid) return BadRequest(global::EduLibrary.Localization.UiText.Get("Есеп сүзгілерін дұрыс енгізіңіз."));
         try { return File(await service.ExportCsvAsync(filter, ct), "text/csv; charset=utf-8", $"EduLibrary-{filter.Type}-{filter.StartDate:yyyyMMdd}-{filter.EndDate:yyyyMMdd}.csv"); }
         catch (BusinessException exception) { return BadRequest(exception.Message); }
     }
 
     public async Task<IActionResult> Print(ReportFilterViewModel filter, CancellationToken ct)
     {
-        if (!ModelState.IsValid) return BadRequest("Есеп сүзгілерін дұрыс енгізіңіз.");
+        if (!ModelState.IsValid) return BadRequest(global::EduLibrary.Localization.UiText.Get("Есеп сүзгілерін дұрыс енгізіңіз."));
         try
         {
             var report = await service.GetPrintAsync(filter, ct);

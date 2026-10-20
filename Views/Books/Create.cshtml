@@ -1,5 +1,5 @@
 @model EduLibrary.ViewModels.BookEditViewModel
-@{ ViewData["Title"] = "Кітап қосу"; }
-<header class="book-editor-intro"><div><span class="section-caption">Каталогты толықтыру</span><h1>Жаңа кітап</h1><p>Жаңа әдебиетті кітапхана қорымен және оқу бағыттарымен байланыстырыңыз.</p></div><a asp-action="Index" class="btn btn-outline-secondary">Каталогқа оралу</a></header>
+@{ ViewData["Title"] = UiText.Get("Кітап қосу"); }
+<header class="book-editor-intro"><div><span class="section-caption">@T["Каталогты толықтыру"]</span><h1>@T["Жаңа кітап"]</h1><p>@T["Жаңа әдебиетті кітапхана қорымен және оқу бағыттарымен байланыстырыңыз."]</p></div><a asp-action="Index" class="btn btn-outline-secondary">@T["Каталогқа оралу"]</a></header>
 <form asp-action="Create" method="post" class="book-editor"><partial name="_Form" model="Model" /></form>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

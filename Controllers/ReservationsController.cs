@@ -52,7 +52,7 @@ public sealed class ReservationsController(IReservationService reservations) : C
             try
             {
                 var id = await reservations.CreateAsync(model, UserId, ct);
-                TempData["Success"] = "Өтініміңіз сақталды. Бронь мәртебесі мен хабарландыруларды бақылаңыз.";
+                TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Өтініміңіз сақталды. Бронь мәртебесі мен хабарландыруларды бақылаңыз.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
@@ -76,7 +76,7 @@ public sealed class ReservationsController(IReservationService reservations) : C
     public async Task<IActionResult> Slots(DateTime? pickupDate, string? pickupLocationId, CancellationToken ct)
     {
         if (!ModelState.IsValid || !pickupDate.HasValue || string.IsNullOrWhiteSpace(pickupLocationId))
-            return BadRequest(new { message = "Алып кету орны мен күнін таңдаңыз." });
+            return BadRequest(new { message = global::EduLibrary.Localization.UiText.Get("Алып кету орны мен күнін таңдаңыз.") });
         try { return Json(await reservations.GetSlotsAsync(pickupDate.Value, pickupLocationId, ct)); }
         catch (BusinessException ex) { return BadRequest(new { message = ex.Message }); }
     }
@@ -93,7 +93,7 @@ public sealed class ReservationsController(IReservationService reservations) : C
     {
         if (ModelState.IsValid)
         {
-            try { await reservations.MarkReadyAsync(model, UserId, ct); TempData["Success"] = "Кітап алып кетуге дайын. Студентке хабарлама жіберілді."; return RedirectToAction(nameof(Details), new { id = model.Id }); }
+            try { await reservations.MarkReadyAsync(model, UserId, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап алып кетуге дайын. Студентке хабарлама жіберілді."); return RedirectToAction(nameof(Details), new { id = model.Id }); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         var form = await reservations.GetPrepareFormAsync(model.Id, UserId, ct);
@@ -110,7 +110,7 @@ public sealed class ReservationsController(IReservationService reservations) : C
             try
             {
                 var loanId = await reservations.FulfillAsync(model, UserId, ct);
-                TempData["Success"] = "Кітап студентке берілді. Бронь орындалып, кітап беру тарихы жаңартылды.";
+                TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап студентке берілді. Бронь орындалып, кітап беру тарихы жаңартылды.");
                 return RedirectToAction("Details", "Loans", new { id = loanId });
             }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
@@ -123,7 +123,7 @@ public sealed class ReservationsController(IReservationService reservations) : C
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Cancel(int id, string rowVersion, CancellationToken ct)
     {
-        try { await reservations.CancelAsync(id, rowVersion, UserId, IsStaff, ct); TempData["Success"] = "Бронь тоқтатылды. Бөлінген дана кезек тәртібіне сай босатылады."; }
+        try { await reservations.CancelAsync(id, rowVersion, UserId, IsStaff, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Бронь тоқтатылды. Бөлінген дана кезек тәртібіне сай босатылады."); }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Details), new { id });
     }
@@ -134,13 +134,13 @@ public sealed class ReservationsController(IReservationService reservations) : C
     [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = RoleNames.Staff)]
     public async Task<IActionResult> Lookup(ReservationCodeLookupViewModel model, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(model.Code)) ModelState.AddModelError(nameof(model.Code), "Студент көрсеткен бронь кодын енгізіңіз.");
+        if (string.IsNullOrWhiteSpace(model.Code)) ModelState.AddModelError(nameof(model.Code), global::EduLibrary.Localization.UiText.Get("Студент көрсеткен бронь кодын енгізіңіз."));
         if (!ModelState.IsValid) return View(model);
         try
         {
             var id = await reservations.FindByCodeAsync(model.Code!, UserId, ct);
             if (id.HasValue) return RedirectToAction(nameof(Details), new { id = id.Value });
-            ModelState.AddModelError(nameof(model.Code), "Бұл кодқа сәйкес бронь табылмады. Кодты тексеріңіз.");
+            ModelState.AddModelError(nameof(model.Code), global::EduLibrary.Localization.UiText.Get("Бұл кодқа сәйкес бронь табылмады. Кодты тексеріңіз."));
         }
         catch (BusinessException ex) { ModelState.AddModelError(nameof(model.Code), ex.Message); }
         return View(model);

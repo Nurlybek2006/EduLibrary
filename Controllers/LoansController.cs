@@ -34,7 +34,7 @@ public sealed class LoansController(ICirculationService service) : Controller
             try
             {
                 var id = await service.IssueAsync(model, UserId ?? "", ct);
-                TempData["Success"] = "Кітап студентке сәтті берілді.";
+                TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап студентке сәтті берілді.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (BusinessException exception) { ModelState.AddModelError("", exception.Message); }

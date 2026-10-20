@@ -8,7 +8,7 @@ public static class CopyCode
     {
         var code = value?.Trim() ?? "";
         if (code.Length is < 1 or > 100 || code.Any(char.IsControl))
-            throw new BusinessException("Штрихкодты немесе түгендеу нөмірін енгізіңіз (1–100 таңба).");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Штрихкодты немесе түгендеу нөмірін енгізіңіз (1–100 таңба)."));
         return code;
     }
 

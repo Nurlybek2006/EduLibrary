@@ -20,7 +20,7 @@ async function login(context, role) {
  await page.goto('/Account/Login');
  await page.locator('[name=Email]').fill(config.SeedUsers[role].Email);
  await page.locator('[name=Password]').fill(config.SeedUsers[role].Password);
- await Promise.all([page.waitForURL(url => !url.pathname.startsWith('/Account/Login')), page.locator('form button[type=submit]').click()]);
+ await Promise.all([page.waitForURL(url => !url.pathname.startsWith('/Account/Login')), page.locator('form:has(input[name="Email"]) button[type=submit]').click()]);
  record(`${role} sign in`, !page.url().includes('/Account/Login'));
  return page;
 }
@@ -28,6 +28,7 @@ async function login(context, role) {
  const browser = await chromium.launch({ channel: 'chrome', headless: true });
  try {
   const publicContext = await browser.newContext({ baseURL, viewport: { width: 1440, height: 1000 } });
+  await publicContext.addCookies([{ name: '.AspNetCore.Culture', value: 'c=kk-KZ|uic=kk-KZ', url: baseURL }]);
   const publicPage = await publicContext.newPage();
   await publicPage.goto('/Account/Login'); await settle(publicPage);
   record('Light is default', await publicPage.locator('html').getAttribute('data-theme') === 'light');
@@ -47,12 +48,13 @@ async function login(context, role) {
   await publicContext.close();
   for (const role of ['Student', 'Admin', 'Librarian']) {
    const context = await browser.newContext({ baseURL, viewport: { width: 1440, height: 1000 } });
+   await context.addCookies([{ name: '.AspNetCore.Culture', value: 'c=kk-KZ|uic=kk-KZ', url: baseURL }]);
    const page = await login(context, role);
    page.on('pageerror', error => errors.push({ role, error: error.message }));
    await page.goto('/Books'); await settle(page);
    const bookLink = await page.locator('#catalog-results a[href*="/Books/Details/"]').first().getAttribute('href');
    assert(bookLink, 'Catalog should contain a real book link.');
-   const routes = role === 'Student' ? ['/Books', bookLink, '/ReadingSpace', '/Recommendations', '/Loans', '/Fines', '/Account/Profile', '/Notifications'] : ['/Dashboard', '/Books', bookLink, '/Analytics', '/Reports', '/Books/Create', '/Copies/Lookup', '/Loans/Create', '/Students', '/Notifications', '/Account/Profile'];
+   const routes = role === 'Student' ? ['/Books', bookLink, '/ReadingSpace', '/Recommendations', '/Loans', '/Fines', '/Account/Profile', '/Notifications', '/DigitalLibrary'] : ['/Dashboard', '/Books', bookLink, '/Analytics', '/Reports', '/Books/Create', '/Copies/Lookup', '/Loans/Create', '/Students', '/Notifications', '/Account/Profile', '/DigitalLibrary'];
    for (const route of routes) for (const width of [360, 390, 768, 1024, 1440, 1920]) for (const theme of ['light', 'dark']) {
     if (role === 'Librarian' && !['/Dashboard', '/Books', '/Analytics', '/Reports', '/Loans/Create'].includes(route)) continue;
     await page.setViewportSize({ width, height: 1000 });

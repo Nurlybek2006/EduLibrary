@@ -44,12 +44,12 @@ public sealed class ReadingSpaceService(ApplicationDbContext db, ILibraryClock c
                 AuthorNames = l.BookCopy.Book.BookAuthors.OrderBy(a => a.Author.LastName).Select(a => a.Author.FirstName + " " + a.Author.LastName).ToList(),
                 LoanDate = l.LoanDate, DueDate = l.DueDate, ReturnedAt = l.ReturnedAt
             }).ToListAsync(ct);
-        model.RecentActivity = await db.Notifications.AsNoTracking().Where(n => n.UserId == userId).OrderByDescending(n => n.CreatedAt).ThenByDescending(n => n.Id).Take(5)
-            .Select(n => new ReadingActivityViewModel { Title = n.Title, Message = n.Message, Type = n.Type, Link = n.Link, CreatedAt = n.CreatedAt }).ToListAsync(ct);
-        var zone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Qyzylorda");
+        var activity = await db.Notifications.AsNoTracking().Where(n => n.UserId == userId).OrderByDescending(n => n.CreatedAt).ThenByDescending(n => n.Id).Take(5)
+            .Select(n => new NotificationRowViewModel { Id=n.Id, Title = n.Title, Message = n.Message, Type = n.Type, Link = n.Link, CreatedAt = n.CreatedAt }).ToListAsync(ct);
+        activity = await NotificationService.LocalizeAsync(db, userId, activity, ct);
+        model.RecentActivity = activity.Select(n=>new ReadingActivityViewModel { Title=n.Title,Message=n.Message,Type=n.Type,Link=n.Link,CreatedAt=n.CreatedAt }).ToList();
         foreach (var item in model.RecentActivity)
         {
-            item.CreatedAt = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(item.CreatedAt, DateTimeKind.Utc), zone);
             if (!item.Link.StartsWith('/') || item.Link.StartsWith("//", StringComparison.Ordinal)
                 || item.Link.StartsWith("/\\", StringComparison.Ordinal) || item.Link.Any(char.IsControl)) item.Link = "/Notifications";
         }

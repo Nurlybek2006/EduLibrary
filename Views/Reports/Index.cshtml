@@ -1,41 +1,41 @@
 @model EduLibrary.ViewModels.ReportPageViewModel
 @{
-    ViewData["Title"] = "Есептер";
+    ViewData["Title"] = UiText.Get("Есептер");
     var isPrint = ViewData["Print"] is true;
-    var reportTypes = new[] { ("loans", "Кітап беру"), ("popular", "Танымал кітаптар"), ("overdue", "Кешіктірулер"), ("readers", "Оқырмандар"), ("ratings", "Әдебиеттер рейтингі") };
+    var reportTypes = new[] { ("loans", UiText.Get("Кітап беру")), ("popular", UiText.Get("Танымал кітаптар")), ("overdue", UiText.Get("Кешіктірулер")), ("readers", UiText.Get("Оқырмандар")), ("ratings", UiText.Get("Әдебиеттер рейтингі")) };
 }
 <div class="workspace-page reports-workspace index-workspace">
-<div class="page-header workspace-heading"><div><span class="eyebrow">ДЕРЕКТЕРГЕ НЕГІЗДЕЛГЕН ЕСЕП</span><h1>@Model.Title</h1><p>@Model.StartDate.ToString("dd.MM.yyyy") – @Model.EndDate.ToString("dd.MM.yyyy")</p></div><div class="actions no-print"><a class="btn btn-secondary" asp-action="Export" asp-all-route-data="Model.RouteValues()"><i data-lucide="download"></i> CSV жүктеу</a><a class="btn btn-secondary" asp-action="Print" asp-all-route-data="Model.RouteValues()"><i data-lucide="printer"></i> Басып шығару</a></div></div>
+<div class="page-header workspace-heading"><div><span class="eyebrow">@T["ДЕРЕКТЕРГЕ НЕГІЗДЕЛГЕН ЕСЕП"]</span><h1>@Model.Title</h1><p>@Model.StartDate.ToString("d") – @Model.EndDate.ToString("d")</p></div><div class="actions no-print"><a class="btn btn-secondary" asp-action="Export" asp-all-route-data="Model.RouteValues()"><i data-lucide="download"></i> @T["CSV жүктеу"]</a><a class="btn btn-secondary" asp-action="Print" asp-all-route-data="Model.RouteValues()"><i data-lucide="printer"></i> @T["Басып шығару"]</a></div></div>
 @if (isPrint)
 {
-    <div class="alert alert-info no-print">Барлық @Model.TotalCount жазба басып шығаруға дайын. <button type="button" class="btn btn-primary" data-print-report>Басып шығару</button> <a asp-action="Index" asp-all-route-data="Model.RouteValues()">Есепке оралу</a></div>
+    <div class="alert alert-info no-print">@T["Барлық"] @Model.TotalCount @T["жазба басып шығаруға дайын."] <button type="button" class="btn btn-primary" data-print-report>@T["Басып шығару"]</button> <a asp-action="Index" asp-all-route-data="Model.RouteValues()">@T["Есепке оралу"]</a></div>
 }
 else
 {
-<nav class="report-tabs no-print" aria-label="Есеп түрлері">@foreach (var item in reportTypes) { <a class="btn @(Model.Filter.Type == item.Item1 ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-all-route-data="Model.RouteValues(type: item.Item1)">@item.Item2</a> }</nav>
+<nav class="report-tabs no-print" aria-label="@T["Есеп түрлері"]">@foreach (var item in reportTypes) { <a class="btn @(Model.Filter.Type == item.Item1 ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-all-route-data="Model.RouteValues(type: item.Item1)">@item.Item2</a> }</nav>
 <form method="get" class="card ledger-panel report-filter no-print" data-report-filter>
     <input type="hidden" name="Type" value="@Model.Filter.Type" />
     <div class="form-grid"><partial name="_PeriodFilter" model="Model.Filter" />
-        <div><label for="Search" class="form-label">Іздеу</label><input id="Search" class="form-control" name="Search" value="@Model.Filter.Search" maxlength="200" placeholder="Кітап, автор немесе оқырман" /></div>
-        <div><label for="CategoryId" class="form-label">Санат</label><select id="CategoryId" name="CategoryId" class="form-select"><option value="">Барлық санаттар</option>@foreach(var option in Model.Categories) { <option value="@option.Value" selected="@(Model.Filter.CategoryId?.ToString() == option.Value)">@option.Text</option> }</select></div>
-        <div><label for="Faculty" class="form-label">Факультет</label><select id="Faculty" name="Faculty" class="form-select"><option value="">Барлық факультеттер</option>@foreach(var option in Model.Faculties) { <option value="@option.Value" selected="@(Model.Filter.Faculty == option.Value)">@option.Text</option> }</select></div>
-        @if(Model.Filter.Type != "ratings") { <div><label for="Status" class="form-label">Беру мәртебесі</label><select id="Status" name="Status" class="form-select"><option value="all">Барлық жазбалар</option><option value="active" selected="@(Model.Filter.Status == "active")">Белсенді</option><option value="returned" selected="@(Model.Filter.Status == "returned")">Қайтарылған</option><option value="overdue" selected="@(Model.Filter.Status == "overdue")">Кешіккен (тарихымен)</option></select></div> }
-        @if(Model.Filter.Type == "loans") { <div><label for="GroupBy" class="form-label">Топтау</label><select id="GroupBy" name="GroupBy" class="form-select"><option value="day">Күн бойынша</option><option value="month" selected="@(Model.Filter.GroupBy == "month")">Ай бойынша</option></select></div> }
+        <div><label for="Search" class="form-label">@T["Іздеу"]</label><input id="Search" class="form-control" name="Search" value="@Model.Filter.Search" maxlength="200" placeholder="@T["Кітап, автор немесе оқырман"]" /></div>
+        <div><label for="CategoryId" class="form-label">@T["Санат"]</label><select id="CategoryId" name="CategoryId" class="form-select"><option value="">@T["Барлық санаттар"]</option>@foreach(var option in Model.Categories) { <option value="@option.Value" selected="@(Model.Filter.CategoryId?.ToString() == option.Value)">@option.Text</option> }</select></div>
+        <div><label for="Faculty" class="form-label">@T["Факультет"]</label><select id="Faculty" name="Faculty" class="form-select"><option value="">@T["Барлық факультеттер"]</option>@foreach(var option in Model.Faculties) { <option value="@option.Value" selected="@(Model.Filter.Faculty == option.Value)">@option.Text</option> }</select></div>
+        @if(Model.Filter.Type != "ratings") { <div><label for="Status" class="form-label">@T["Беру мәртебесі"]</label><select id="Status" name="Status" class="form-select"><option value="all">@T["Барлық жазбалар"]</option><option value="active" selected="@(Model.Filter.Status == "active")">@T["Белсенді"]</option><option value="returned" selected="@(Model.Filter.Status == "returned")">@T["Қайтарылған"]</option><option value="overdue" selected="@(Model.Filter.Status == "overdue")">@T["Кешіккен (тарихымен)"]</option></select></div> }
+        @if(Model.Filter.Type == "loans") { <div><label for="GroupBy" class="form-label">@T["Топтау"]</label><select id="GroupBy" name="GroupBy" class="form-select"><option value="day">@T["Күн бойынша"]</option><option value="month" selected="@(Model.Filter.GroupBy == "month")">@T["Ай бойынша"]</option></select></div> }
     </div>
-    <div class="actions"><button class="btn btn-primary" type="submit"><i data-lucide="sliders-horizontal"></i> Сүзгіні қолдану</button><a class="btn btn-secondary" asp-action="Index" asp-route-Type="@Model.Filter.Type">Тазарту</a></div>
+    <div class="actions"><button class="btn btn-primary" type="submit"><i data-lucide="sliders-horizontal"></i> @T["Сүзгіні қолдану"]</button><a class="btn btn-secondary" asp-action="Index" asp-route-Type="@Model.Filter.Type">@T["Тазарту"]</a></div>
 </form>
 }
 <p class="text-muted report-description">@Model.Description</p>
 <div class="stat-grid report-summary">@foreach(var metric in Model.Summary) { <div class="stat-card"><span>@metric.Label</span><strong>@metric.Value</strong>@if(metric.Hint is not null) { <small class="text-muted">@metric.Hint</small> }</div> }</div>
 <section class="card ledger-panel report-table">
-<div class="card-header section-heading"><h2>Есеп нәтижесі</h2><span class="text-muted">@Model.TotalCount жазба</span></div>
-@if(Model.Rows.Count == 0) { <div class="empty-state"><i data-lucide="file-search"></i><h2>Деректер табылмады</h2><p>Кезеңді немесе сүзгілерді өзгертіңіз. Пікірсіз кітаптарға рейтинг ойдан есептелмейді.</p></div> }
+<div class="card-header section-heading"><h2>@T["Есеп нәтижесі"]</h2><span class="text-muted">@Model.TotalCount @T["жазба"]</span></div>
+@if(Model.Rows.Count == 0) { <div class="empty-state"><i data-lucide="file-search"></i><h2>@T["Деректер табылмады"]</h2><p>@T["Кезеңді немесе сүзгілерді өзгертіңіз. Пікірсіз кітаптарға рейтинг ойдан есептелмейді."]</p></div> }
 else
 {
 <div class="table-responsive"><table class="table data-ledger"><thead><tr>@foreach(var column in Model.Columns) { <th scope="col">@if(!isPrint && column.Sort.Length > 0) { <a asp-action="Index" asp-all-route-data="Model.RouteValues(sort: column.Sort)">@column.Label <span aria-hidden="true">@(Model.Filter.Sort == column.Sort ? Model.Filter.Direction == "asc" ? "↑" : "↓" : "↕")</span></a> } else { @column.Label }</th> }</tr></thead><tbody>@foreach(var row in Model.Rows) { <tr>@foreach(var cell in row.Cells) { <td>@if(cell.Controller is not null && !isPrint) { <a asp-controller="@cell.Controller" asp-action="@cell.Action" asp-route-id="@cell.Id">@cell.Value</a> } else { @cell.Value }</td> }</tr> }</tbody></table></div>
 }
-@if(!isPrint) { <div class="pagination-bar no-print"><span class="text-muted">@Model.Filter.Page / @Model.TotalPages бет</span><div class="actions">@if(Model.Filter.Page > 1) { <a class="btn btn-secondary btn-sm" asp-action="Index" asp-all-route-data="Model.RouteValues(page: Model.Filter.Page - 1)">Алдыңғы</a> }@if(Model.Filter.Page < Model.TotalPages) { <a class="btn btn-secondary btn-sm" asp-action="Index" asp-all-route-data="Model.RouteValues(page: Model.Filter.Page + 1)">Келесі</a> }</div></div> }
+@if(!isPrint) { <div class="pagination-bar no-print"><span class="text-muted">@Model.Filter.Page / @Model.TotalPages @T["бет"]</span><div class="actions">@if(Model.Filter.Page > 1) { <a class="btn btn-secondary btn-sm" asp-action="Index" asp-all-route-data="Model.RouteValues(page: Model.Filter.Page - 1)">@T["Алдыңғы"]</a> }@if(Model.Filter.Page < Model.TotalPages) { <a class="btn btn-secondary btn-sm" asp-action="Index" asp-all-route-data="Model.RouteValues(page: Model.Filter.Page + 1)">@T["Келесі"]</a> }</div></div> }
 </section>
-<p class="text-muted mt-3">Дереккөзі: EduLibrary SQL Server · Уақыт белдеуі: Asia/Qyzylorda · CSV барлық сүзілген жолды қамтиды.</p>
+<p class="text-muted mt-3">@T["Дереккөзі: EduLibrary SQL Server · Уақыт белдеуі: Asia/Qyzylorda · CSV барлық сүзілген жолды қамтиды."]</p>
 </div>
 @section Scripts { <script src="~/js/reports.js" asp-append-version="true"></script> }

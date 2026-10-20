@@ -19,6 +19,8 @@ public sealed class StudentListViewModel
 
 public sealed class StudentListItem
 {
+    public string? IdentityUserId { get; set; }
+    public string? AvatarPath { get; set; }
     public int Id { get; set; }
     public string StudentNumber { get; set; } = "";
     public string FullName { get; set; } = "";
@@ -55,6 +57,8 @@ public sealed class StudentEditViewModel
 
 public sealed class StudentDetailsViewModel
 {
+    public string? IdentityUserId { get; set; }
+    public string? AvatarPath { get; set; }
     public int Id { get; set; }
     public string StudentNumber { get; set; } = "";
     public string FullName { get; set; } = "";

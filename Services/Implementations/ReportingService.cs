@@ -22,8 +22,8 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
         var report = await BuildAsync(filter, true, ct);
         var rows = new List<IEnumerable<string?>>
         {
-            new[] { report.Title }, new[] { "Кезең", $"{report.StartDate:dd.MM.yyyy} – {report.EndDate:dd.MM.yyyy}" },
-            new[] { report.Description }, new[] { "Іздеу", filter.Search ?? "", "Факультет", filter.Faculty ?? "", "Мәртебе", filter.Status },
+            new[] { report.Title }, new[] { global::EduLibrary.Localization.UiText.Get("Кезең"), $"{report.StartDate:d} – {report.EndDate:d}" },
+            new[] { report.Description }, new[] { global::EduLibrary.Localization.UiText.Get("Іздеу"), filter.Search ?? "", global::EduLibrary.Localization.UiText.Get("Факультет"), filter.Faculty ?? "", global::EduLibrary.Localization.UiText.Get("Мәртебе"), filter.Status },
             report.Columns.Select(x => x.Label)
         };
         rows.AddRange(report.Rows.Select(x => x.Cells.Select(c => c.Value)));
@@ -42,7 +42,7 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
         filter.GroupBy = filter.GroupBy == "month" ? "month" : "day";
         filter.Search = filter.Search?.Trim();
         filter.Faculty = filter.Faculty?.Trim();
-        if (filter.Search?.Length > 200 || filter.Faculty?.Length > 150) throw new BusinessException("Іздеу немесе факультет атауы тым ұзын.");
+        if (filter.Search?.Length > 200 || filter.Faculty?.Length > 150) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Іздеу немесе факультет атауы тым ұзын."));
         var period = ResolvePeriod(filter, clock.Today);
         var report = new ReportPageViewModel { Filter = filter, StartDate = period.Start, EndDate = period.End, GeneratedAt = clock.UtcNow };
         var loans = FilterLoans(filter, period);
@@ -96,10 +96,10 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
     {
         var today = clock.Today;
         var month = report.Filter.GroupBy == "month";
-        report.Title = "Кезеңдер бойынша кітап беру";
-        report.Description = "Беру күні кезеңге түскен жазбалар. Белсенділік — бүгінгі мәртебе; кешігу — бүгінге дейінгі немесе нақты қайтарылған күнге дейінгі кешігу.";
+        report.Title = global::EduLibrary.Localization.UiText.Get("Кезеңдер бойынша кітап беру");
+        report.Description = global::EduLibrary.Localization.UiText.Get("Беру күні кезеңге түскен жазбалар. Белсенділік — бүгінгі мәртебе; кешігу — бүгінге дейінгі немесе нақты қайтарылған күнге дейінгі кешігу.");
         var totals = await loans.GroupBy(_ => 1).Select(g => new LoanCounts { Total = g.Count(), Active = g.Count(x => x.ReturnedAt == null), Returned = g.Count(x => x.ReturnedAt != null), Overdue = g.Count(x => (x.ReturnedAt ?? today) > x.DueDate) }).SingleOrDefaultAsync(ct) ?? new();
-        report.Summary = [new("Барлық берулер", Number(totals.Total)), new("Белсенді", Number(totals.Active)), new("Қайтарылған", Number(totals.Returned)), new("Кешіккен", Number(totals.Overdue), "Қайтарылған кешіккен кітаптар да кіреді")];
+        report.Summary = [new(global::EduLibrary.Localization.UiText.Get("Барлық берулер"), Number(totals.Total)), new(global::EduLibrary.Localization.UiText.Get("Белсенді"), Number(totals.Active)), new(global::EduLibrary.Localization.UiText.Get("Қайтарылған"), Number(totals.Returned)), new(global::EduLibrary.Localization.UiText.Get("Кешіккен"), Number(totals.Overdue), global::EduLibrary.Localization.UiText.Get("Қайтарылған кешіккен кітаптар да кіреді"))];
         var grouped = loans.GroupBy(x => new { x.LoanDate.Year, x.LoanDate.Month, Day = month ? 1 : x.LoanDate.Day })
             .Select(g => new LoanPeriodRow { Year = g.Key.Year, Month = g.Key.Month, Day = g.Key.Day, Total = g.Count(), Active = g.Count(x => x.ReturnedAt == null), Returned = g.Count(x => x.ReturnedAt != null), Overdue = g.Count(x => (x.ReturnedAt ?? today) > x.DueDate) });
         report.TotalCount = await grouped.CountAsync(ct);
@@ -113,18 +113,18 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
             _ => Asc(report.Filter) ? grouped.OrderBy(x => x.Year).ThenBy(x => x.Month).ThenBy(x => x.Day) : grouped.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month).ThenByDescending(x => x.Day)
         };
         var rows = await Page(ordered.ThenBy(x => x.Year).ThenBy(x => x.Month).ThenBy(x => x.Day), report, export).ToListAsync(ct);
-        report.Columns = [new(month ? "Ай" : "Күн", "period"), new("Барлығы", "total"), new("Белсенді", "active"), new("Қайтарылған", "returned"), new("Кешіккен", "overdue")];
-        report.Rows = rows.Select(x => Row(Cell(new DateTime(x.Year, x.Month, x.Day).ToString(month ? "MM.yyyy" : "dd.MM.yyyy")), Cell(Number(x.Total)), Cell(Number(x.Active)), Cell(Number(x.Returned)), Cell(Number(x.Overdue)))).ToList();
+        report.Columns = [new(month ? global::EduLibrary.Localization.UiText.Get("Ай") : global::EduLibrary.Localization.UiText.Get("Күн"), "period"), new(global::EduLibrary.Localization.UiText.Get("Барлығы"), "total"), new(global::EduLibrary.Localization.UiText.Get("Белсенді"), "active"), new(global::EduLibrary.Localization.UiText.Get("Қайтарылған"), "returned"), new(global::EduLibrary.Localization.UiText.Get("Кешіккен"), "overdue")];
+        report.Rows = rows.Select(x => Row(Cell(new DateTime(x.Year, x.Month, x.Day).ToString(month ? "Y" : "d")), Cell(Number(x.Total)), Cell(Number(x.Active)), Cell(Number(x.Returned)), Cell(Number(x.Overdue)))).ToList();
     }
 
     private async Task PopularAsync(ReportPageViewModel report, IQueryable<Loan> loans, bool export, CancellationToken ct)
     {
-        report.Title = "Танымал кітаптар";
-        report.Description = "Таңдалған кезеңде берілген кітаптар. Орын беру саны бойынша есептеледі; саны тең кітаптар бір орынды бөліседі. Қолжетімділік — қазіргі қор.";
+        report.Title = global::EduLibrary.Localization.UiText.Get("Танымал кітаптар");
+        report.Description = global::EduLibrary.Localization.UiText.Get("Таңдалған кезеңде берілген кітаптар. Орын беру саны бойынша есептеледі; саны тең кітаптар бір орынды бөліседі. Қолжетімділік — қазіргі қор.");
         var grouped = loans.GroupBy(x => new { x.BookCopy.BookId, x.BookCopy.Book.Title })
             .Select(g => new PopularRow { BookId = g.Key.BookId, Title = g.Key.Title, Total = g.Count(), Available = db.BookCopies.Count(c => c.BookId == g.Key.BookId && c.Status == Models.Enums.CopyStatus.Available && !c.Book.IsArchived) });
         report.TotalCount = await grouped.CountAsync(ct);
-        report.Summary = [new("Кітап атаулары", Number(report.TotalCount)), new("Беру саны", Number(await loans.CountAsync(ct))), new("Қолжетімді даналар", Number(await grouped.SumAsync(x => (int?)x.Available, ct) ?? 0), "Есепке кірген кітаптардың қазіргі қоры")];
+        report.Summary = [new(global::EduLibrary.Localization.UiText.Get("Кітап атаулары"), Number(report.TotalCount)), new(global::EduLibrary.Localization.UiText.Get("Беру саны"), Number(await loans.CountAsync(ct))), new(global::EduLibrary.Localization.UiText.Get("Қолжетімді даналар"), Number(await grouped.SumAsync(x => (int?)x.Available, ct) ?? 0), global::EduLibrary.Localization.UiText.Get("Есепке кірген кітаптардың қазіргі қоры"))];
         var ranks = await grouped.Select(x => x.Total).Distinct().OrderByDescending(x => x).ToListAsync(ct);
         IOrderedQueryable<PopularRow> ordered = report.Filter.Sort switch
         {
@@ -136,7 +136,7 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
         var ids = rows.Select(x => x.BookId).ToList();
         var authors = await db.BookAuthors.AsNoTracking().Where(x => ids.Contains(x.BookId)).OrderBy(x => x.Author.LastName).Select(x => new { x.BookId, Name = x.Author.FirstName + " " + x.Author.LastName }).ToListAsync(ct);
         var names = authors.ToLookup(x => x.BookId, x => x.Name);
-        report.Columns = [new("Орын", "total"), new("Кітап", "book"), new("Авторлар", ""), new("Беру саны", "total"), new("Қолжетімді дана", "available")];
+        report.Columns = [new(global::EduLibrary.Localization.UiText.Get("Орын"), "total"), new(global::EduLibrary.Localization.UiText.Get("Кітап"), "book"), new(global::EduLibrary.Localization.UiText.Get("Авторлар"), ""), new(global::EduLibrary.Localization.UiText.Get("Беру саны"), "total"), new(global::EduLibrary.Localization.UiText.Get("Қолжетімді дана"), "available")];
         report.Rows = rows.Select(x => Row(Cell((ranks.IndexOf(x.Total) + 1).ToString()), BookCell(x.Title, x.BookId), Cell(string.Join(", ", names[x.BookId])), Cell(Number(x.Total)), Cell(Number(x.Available)))).ToList();
     }
 
@@ -144,8 +144,8 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
     {
         var today = clock.Today;
         var rate = options.Value.FinePerOverdueDay;
-        report.Title = "Кешіктірулер";
-        report.Description = "Беру күні кезеңге түскен кешіккен жазбалар. Қайтарылмаған кітапқа бүгінгі болжам, қайтарылған кітапқа бекітілген айыппұл көрсетіледі.";
+        report.Title = global::EduLibrary.Localization.UiText.Get("Кешіктірулер");
+        report.Description = global::EduLibrary.Localization.UiText.Get("Беру күні кезеңге түскен кешіккен жазбалар. Қайтарылмаған кітапқа бүгінгі болжам, қайтарылған кітапқа бекітілген айыппұл көрсетіледі.");
         var query = loans.Where(x => (x.ReturnedAt ?? today) > x.DueDate).Select(x => new OverdueRow
         {
             Id = x.Id, Student = x.Student.FullName, StudentNumber = x.Student.StudentNumber, Book = x.BookCopy.Book.Title,
@@ -155,7 +155,7 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
         });
         report.TotalCount = await query.CountAsync(ct);
         var sums = await query.GroupBy(_ => 1).Select(g => new { Days = g.Sum(x => x.Days), Amount = g.Sum(x => x.Fine), Open = g.Count(x => x.ReturnedAt == null) }).SingleOrDefaultAsync(ct);
-        report.Summary = [new("Кешіктірілген жазбалар", Number(report.TotalCount)), new("Әлі қайтарылмаған", Number(sums?.Open ?? 0)), new("Жалпы кешігу", Number(sums?.Days ?? 0) + " күн"), new("Айыппұл есебі", Money(sums?.Amount ?? 0), "Болжамды және бекітілген сомалар қосындысы")];
+        report.Summary = [new(global::EduLibrary.Localization.UiText.Get("Кешіктірілген жазбалар"), Number(report.TotalCount)), new(global::EduLibrary.Localization.UiText.Get("Әлі қайтарылмаған"), Number(sums?.Open ?? 0)), new(global::EduLibrary.Localization.UiText.Get("Жалпы кешігу"), Number(sums?.Days ?? 0) + global::EduLibrary.Localization.UiText.Get(" күн")), new(global::EduLibrary.Localization.UiText.Get("Айыппұл есебі"), Money(sums?.Amount ?? 0), global::EduLibrary.Localization.UiText.Get("Болжамды және бекітілген сомалар қосындысы"))];
         IOrderedQueryable<OverdueRow> ordered = report.Filter.Sort switch
         {
             "student" => Asc(report.Filter) ? query.OrderBy(x => x.Student) : query.OrderByDescending(x => x.Student),
@@ -166,15 +166,15 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
             _ => Asc(report.Filter) ? query.OrderBy(x => x.Days) : query.OrderByDescending(x => x.Days)
         };
         var rows = await Page(ordered.ThenBy(x => x.Id), report, export).ToListAsync(ct);
-        report.Columns = [new("Студент", "student"), new("Кітап", "book"), new("Берілген күні", "loan"), new("Мерзімі", "due"), new("Кешігу (күн)", "days"), new("Айыппұл", "fine"), new("Қайтару мәртебесі", "")];
-        report.Rows = rows.Select(x => Row(Cell(x.Student + " · " + x.StudentNumber), new(x.Book, "Loans", "Details", x.Id), Cell(x.LoanDate.ToString("dd.MM.yyyy")), Cell(x.DueDate.ToString("dd.MM.yyyy")), Cell(Number(x.Days)), Cell(Money(x.Fine) + (x.ReturnedAt is null ? " (болжам)" : " (бекітілген)")), Cell(x.ReturnedAt?.ToString("dd.MM.yyyy") ?? "Қайтарылмаған"))).ToList();
+        report.Columns = [new(global::EduLibrary.Localization.UiText.Get("Студент"), "student"), new(global::EduLibrary.Localization.UiText.Get("Кітап"), "book"), new(global::EduLibrary.Localization.UiText.Get("Берілген күні"), "loan"), new(global::EduLibrary.Localization.UiText.Get("Мерзімі"), "due"), new(global::EduLibrary.Localization.UiText.Get("Кешігу (күн)"), "days"), new(global::EduLibrary.Localization.UiText.Get("Айыппұл"), "fine"), new(global::EduLibrary.Localization.UiText.Get("Қайтару мәртебесі"), "")];
+        report.Rows = rows.Select(x => Row(Cell(x.Student + " · " + x.StudentNumber), new(x.Book, "Loans", "Details", x.Id), Cell(x.LoanDate.ToString("d")), Cell(x.DueDate.ToString("d")), Cell(Number(x.Days)), Cell(Money(x.Fine) + (x.ReturnedAt is null ? global::EduLibrary.Localization.UiText.Get(" (болжам)") : global::EduLibrary.Localization.UiText.Get(" (бекітілген)"))), Cell(x.ReturnedAt?.ToString("d") ?? global::EduLibrary.Localization.UiText.Get("Қайтарылмаған")))).ToList();
     }
 
     private async Task ReadersAsync(ReportPageViewModel report, IQueryable<Loan> loans, bool export, CancellationToken ct)
     {
         var today = clock.Today;
-        report.Title = "Оқырман белсенділігі";
-        report.Description = "Беру күні кезеңге түскен жазбалар бойынша. Белсенділік ұпайы = 3 × беру + 2 × қайтару − 2 × кешігу (ең азы 0). Соңғы әрекет — осы жазбалардың беру/қайтару күні.";
+        report.Title = global::EduLibrary.Localization.UiText.Get("Оқырман белсенділігі");
+        report.Description = global::EduLibrary.Localization.UiText.Get("Беру күні кезеңге түскен жазбалар бойынша. Белсенділік ұпайы = 3 × беру + 2 × қайтару − 2 × кешігу (ең азы 0). Соңғы әрекет — осы жазбалардың беру/қайтару күні.");
         var grouped = loans.GroupBy(x => new { x.StudentId, x.Student.FullName, x.Student.StudentNumber, x.Student.Faculty }).Select(g => new ReaderRow
         {
             Id = g.Key.StudentId, Name = g.Key.FullName, Number = g.Key.StudentNumber, Faculty = g.Key.Faculty,
@@ -184,7 +184,7 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
         });
         report.TotalCount = await grouped.CountAsync(ct);
         var sums = await grouped.GroupBy(_ => 1).Select(g => new { Loans = g.Sum(x => x.Total), Returns = g.Sum(x => x.Returned), Overdue = g.Sum(x => x.Overdue) }).SingleOrDefaultAsync(ct);
-        report.Summary = [new("Белсенді оқырмандар", Number(report.TotalCount)), new("Беру саны", Number(sums?.Loans ?? 0)), new("Қайтару саны", Number(sums?.Returns ?? 0)), new("Кешіккен жазбалар", Number(sums?.Overdue ?? 0))];
+        report.Summary = [new(global::EduLibrary.Localization.UiText.Get("Белсенді оқырмандар"), Number(report.TotalCount)), new(global::EduLibrary.Localization.UiText.Get("Беру саны"), Number(sums?.Loans ?? 0)), new(global::EduLibrary.Localization.UiText.Get("Қайтару саны"), Number(sums?.Returns ?? 0)), new(global::EduLibrary.Localization.UiText.Get("Кешіккен жазбалар"), Number(sums?.Overdue ?? 0))];
         IOrderedQueryable<ReaderRow> ordered = report.Filter.Sort switch
         {
             "student" => Asc(report.Filter) ? grouped.OrderBy(x => x.Name) : grouped.OrderByDescending(x => x.Name),
@@ -195,15 +195,15 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
             _ => Asc(report.Filter) ? grouped.OrderBy(x => x.Score) : grouped.OrderByDescending(x => x.Score)
         };
         var rows = await Page(ordered.ThenBy(x => x.Id), report, export).ToListAsync(ct);
-        report.Columns = [new("Студент", "student"), new("Факультет", ""), new("Берілген", "total"), new("Қайтарылған", "returned"), new("Кешіккен", "overdue"), new("Соңғы әрекет", "recent"), new("Белсенділік ұпайы", "score")];
-        report.Rows = rows.Select(x => Row(new(x.Name + " · " + x.Number, "Students", "Details", x.Id), Cell(x.Faculty), Cell(Number(x.Total)), Cell(Number(x.Returned)), Cell(Number(x.Overdue)), Cell(x.Latest.ToString("dd.MM.yyyy")), Cell(Number(Math.Max(0, x.Score))))).ToList();
+        report.Columns = [new(global::EduLibrary.Localization.UiText.Get("Студент"), "student"), new(global::EduLibrary.Localization.UiText.Get("Факультет"), ""), new(global::EduLibrary.Localization.UiText.Get("Берілген"), "total"), new(global::EduLibrary.Localization.UiText.Get("Қайтарылған"), "returned"), new(global::EduLibrary.Localization.UiText.Get("Кешіккен"), "overdue"), new(global::EduLibrary.Localization.UiText.Get("Соңғы әрекет"), "recent"), new(global::EduLibrary.Localization.UiText.Get("Белсенділік ұпайы"), "score")];
+        report.Rows = rows.Select(x => Row(new(x.Name + " · " + x.Number, "Students", "Details", x.Id), Cell(x.Faculty), Cell(Number(x.Total)), Cell(Number(x.Returned)), Cell(Number(x.Overdue)), Cell(x.Latest.ToString("d")), Cell(Number(Math.Max(0, x.Score))))).ToList();
     }
 
     private async Task RatingsAsync(ReportPageViewModel report, ReportingPeriod period, bool export, CancellationToken ct)
     {
         var filter = report.Filter;
-        report.Title = "Әдебиеттер рейтингі";
-        report.Description = "Кезеңде жарияланған, жасырылмаған және жойылмаған пікірлер. Бағалар тең болса, кітаптар бір орынды бөліседі. Берілу саны да осы кезеңмен шектеледі; пікірсіз кітаптар кірмейді.";
+        report.Title = global::EduLibrary.Localization.UiText.Get("Әдебиеттер рейтингі");
+        report.Description = global::EduLibrary.Localization.UiText.Get("Кезеңде жарияланған, жасырылмаған және жойылмаған пікірлер. Бағалар тең болса, кітаптар бір орынды бөліседі. Берілу саны да осы кезеңмен шектеледі; пікірсіз кітаптар кірмейді.");
         var reviews = db.Reviews.AsNoTracking().Where(x => !x.IsDeleted && !x.IsHidden && x.CreatedAt >= period.UtcStart && x.CreatedAt < period.UtcEnd);
         if (!string.IsNullOrEmpty(filter.Search)) reviews = reviews.Where(x => x.Book.Title.Contains(filter.Search) || x.Book.ISBN.Contains(filter.Search) || x.Book.BookAuthors.Any(a => (a.Author.FirstName + " " + a.Author.LastName).Contains(filter.Search)));
         if (filter.CategoryId.HasValue) reviews = reviews.Where(x => x.Book.BookCategories.Any(c => c.CategoryId == filter.CategoryId));
@@ -216,7 +216,7 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
         report.TotalCount = await query.CountAsync(ct);
         var reviewCount = await reviews.CountAsync(ct);
         var average = await reviews.Select(x => (double?)x.Rating).AverageAsync(ct);
-        report.Summary = [new("Бағаланған кітаптар", Number(report.TotalCount)), new("Ашық пікірлер", Number(reviewCount)), new("Орташа баға", Rating(average), "Барлық ашық пікірлер бойынша өлшенген орташа")];
+        report.Summary = [new(global::EduLibrary.Localization.UiText.Get("Бағаланған кітаптар"), Number(report.TotalCount)), new(global::EduLibrary.Localization.UiText.Get("Ашық пікірлер"), Number(reviewCount)), new(global::EduLibrary.Localization.UiText.Get("Орташа баға"), Rating(average), global::EduLibrary.Localization.UiText.Get("Барлық ашық пікірлер бойынша өлшенген орташа"))];
         var ranks = await query.Select(x => x.Average).Distinct().OrderByDescending(x => x).ToListAsync(ct);
         IOrderedQueryable<RatingRow> ordered = filter.Sort switch
         {
@@ -226,7 +226,7 @@ public sealed class ReportingService(ApplicationDbContext db, ILibraryClock cloc
             _ => Asc(filter) ? query.OrderBy(x => x.Average) : query.OrderByDescending(x => x.Average)
         };
         var rows = await Page(ordered.ThenBy(x => x.BookId), report, export).ToListAsync(ct);
-        report.Columns = [new("Орын", "rating"), new("Кітап", "book"), new("Орташа рейтинг", "rating"), new("Пікірлер саны", "reviews"), new("Кезеңдегі беру", "total")];
+        report.Columns = [new(global::EduLibrary.Localization.UiText.Get("Орын"), "rating"), new(global::EduLibrary.Localization.UiText.Get("Кітап"), "book"), new(global::EduLibrary.Localization.UiText.Get("Орташа рейтинг"), "rating"), new(global::EduLibrary.Localization.UiText.Get("Пікірлер саны"), "reviews"), new(global::EduLibrary.Localization.UiText.Get("Кезеңдегі беру"), "total")];
         report.Rows = rows.Select(x => Row(Cell((ranks.IndexOf(x.Average) + 1).ToString()), BookCell(x.Title, x.BookId), Cell(Rating(x.Average)), Cell(Number(x.Reviews)), Cell(Number(x.Loans)))).ToList();
     }
 

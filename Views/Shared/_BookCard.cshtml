@@ -6,22 +6,22 @@
         <span class="book-art-action"><i data-lucide="arrow-up-right" aria-hidden="true"></i></span>
     </a>
     <div class="editorial-book-info">
-        <div class="editorial-book-category">@(string.IsNullOrWhiteSpace(Model.Category) ? "Оқу әдебиеті" : Model.Category)</div>
+        <div class="editorial-book-category">@(string.IsNullOrWhiteSpace(Model.Category) ? UiText.Get("Оқу әдебиеті") : Model.Category)</div>
         <h2 class="editorial-book-title"><a href="@detailsUrl">@Model.Title</a></h2>
-        <p class="editorial-book-author">@(string.IsNullOrWhiteSpace(Model.Authors) ? "Автор көрсетілмеген" : Model.Authors)</p>
-        <div class="editorial-book-rating"><span aria-hidden="true">★</span><strong>@(Model.ReviewCount > 0 ? Model.AverageRating.ToString("0.0") : "—")</strong><span class="rating-review-count">@(Model.ReviewCount > 0 ? $"{Model.ReviewCount} пікір" : "Әзірге пікір жоқ")</span></div>
+        <p class="editorial-book-author">@(string.IsNullOrWhiteSpace(Model.Authors) ? UiText.Get("Автор көрсетілмеген") : Model.Authors)</p>
+        <div class="editorial-book-rating"><span aria-hidden="true">★</span><strong>@(Model.ReviewCount > 0 ? Model.AverageRating.ToString("0.0") : "—")</strong><span class="rating-review-count">@(Model.ReviewCount > 0 ? UiText.Format($"{Model.ReviewCount} reviews") : UiText.Get("Әзірге пікір жоқ"))</span></div>
         <div class="editorial-book-bottom">
-            @if (Model.IsArchived) { <span class="book-availability is-archived"><span></span>Мұрағатта</span> }
-            else if (Model.AvailableCopies > 0) { <span class="book-availability is-available"><span></span>@Model.AvailableCopies дана қолжетімді</span> }
-            else { <span class="book-availability is-unavailable"><span></span>Қазір қолжетімсіз</span> }
-            <a class="book-card-detail-link" href="@detailsUrl" aria-label="@Model.Title — кітап туралы">Толығырақ <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            @if (Model.IsArchived) { <span class="book-availability is-archived"><span></span>@T["Мұрағатта"]</span> }
+            else if (Model.AvailableCopies > 0) { <span class="book-availability is-available"><span></span>@Model.AvailableCopies @T["дана қолжетімді"]</span> }
+            else { <span class="book-availability is-unavailable"><span></span>@T["Қазір қолжетімсіз"]</span> }
+            <a class="book-card-detail-link" href="@detailsUrl" aria-label="@UiText.Format($"About {Model.Title}")">@T["Толығырақ"] <i data-lucide="arrow-right" aria-hidden="true"></i></a>
         </div>
         @if (!Model.IsArchived && (User.IsInRole("Student") || User.Identity?.IsAuthenticated != true))
         {
             var reserveUrl = Url.Action("Create", "Reservations", new { bookId = Model.BookId });
             <div class="book-reservation-action">
-            @if (User.IsInRole("Student")) { <a class="book-reserve-link" href="@reserveUrl"><i data-lucide="@(Model.AvailableCopies > 0 ? "bookmark-plus" : "list-ordered")" aria-hidden="true"></i>@(Model.AvailableCopies > 0 ? "Брондау" : "Кезекке тұру")<i data-lucide="arrow-up-right" aria-hidden="true"></i></a> }
-            else { <a class="book-reserve-link" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@reserveUrl"><i data-lucide="bookmark-plus" aria-hidden="true"></i>@(Model.AvailableCopies > 0 ? "Брондау" : "Кезекке тұру")<i data-lucide="arrow-up-right" aria-hidden="true"></i></a> }
+            @if (User.IsInRole("Student")) { <a class="book-reserve-link" href="@reserveUrl"><i data-lucide="@(Model.AvailableCopies > 0 ? "bookmark-plus" : "list-ordered")" aria-hidden="true"></i>@(Model.AvailableCopies > 0 ? UiText.Get("Брондау") : UiText.Get("Кезекке тұру"))<i data-lucide="arrow-up-right" aria-hidden="true"></i></a> }
+            else { <a class="book-reserve-link" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@reserveUrl"><i data-lucide="bookmark-plus" aria-hidden="true"></i>@(Model.AvailableCopies > 0 ? UiText.Get("Брондау") : UiText.Get("Кезекке тұру"))<i data-lucide="arrow-up-right" aria-hidden="true"></i></a> }
             </div>
         }
     </div>

@@ -26,7 +26,7 @@ public sealed class StaffController(IAccountService accounts) : Controller
             foreach (var error in result.Errors) ModelState.AddModelError("", error);
             return View(model);
         }
-        TempData["Success"] = "Кітапханашы аккаунты ашылды.";
+        TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітапханашы аккаунты ашылды.");
         return RedirectToAction(nameof(Index));
     }
 
@@ -36,7 +36,7 @@ public sealed class StaffController(IAccountService accounts) : Controller
         try
         {
             await accounts.DeactivateLibrarianAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "", cancellationToken);
-            TempData["Success"] = "Кітапханашы аккаунты тоқтатылды.";
+            TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітапханашы аккаунты тоқтатылды.");
         }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Index));

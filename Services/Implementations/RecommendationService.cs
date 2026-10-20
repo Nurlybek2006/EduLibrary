@@ -21,7 +21,7 @@ public sealed class RecommendationService(ApplicationDbContext db, IOptions<Reco
         var model = new RecommendationViewModel { IsStaff = isStaff };
         if (isStaff)
             model.Students = await db.Students.AsNoTracking().OrderBy(s => s.FullName).ThenBy(s => s.Id)
-                .Select(s => new SelectListItem(s.FullName + (s.IsActive ? "" : " · белсенді емес"), s.Id.ToString())).ToListAsync(ct);
+                .Select(s => new SelectListItem(s.FullName + (s.IsActive ? "" : global::EduLibrary.Localization.UiText.Get(" · белсенді емес")), s.Id.ToString())).ToListAsync(ct);
         if (isStaff && studentId is null) return model;
         var profile = await ScopedStudent(userId, isStaff, studentId).AsNoTracking().AsSplitQuery().Select(s => new StudentPreferenceProfile
         {
@@ -98,12 +98,12 @@ public sealed class RecommendationService(ApplicationDbContext db, IOptions<Reco
         var discoverIds = candidates.Where(c => c.Categories.Count > 0 && c.Categories.All(category => !familiarCategories.Contains(category.Id))).Select(c => c.Id).ToHashSet();
         model.Sections =
         [
-            new() { Key = "for-you", Title = "Сізге ұсынылады", Description = "Қызығушылық, пән, оқу тарихы және кітапхана деректерінің ортақ нәтижесі.", EmptyMessage = "Жаңа ұсыныс табылмады. Бұрын оқылған кітаптарды қосып көріңіз.", Books = recommended },
-            new() { Key = "subjects", Title = "Оқыған пәндеріңізге сай", Description = "Кітаптың пәндік байланысы және мәтіндік сәйкестігі есепке алынды.", EmptyMessage = profile.Subjects.Count == 0 ? "Профильде пәндер таңдалмаған. Оқу бағытыңызды толықтырыңыз." : "Таңдалған пәндерге сәйкес жаңа кітап табылмады.", Books = RankSection(results.Where(b => b.MatchingSubjects.Count > 0), b => b.SubjectScore, count) },
-            new() { Key = "interests", Title = "Қызығушылықтарыңыз бойынша", Description = "Сіз көрсеткен бағыттармен сәйкес әдебиеттер.", EmptyMessage = profile.Interests.Count == 0 ? "Қызығушылықтарыңызды қосып, ұсыныстарды нақтылаңыз." : "Қызығушылықтарыңызға сәйкес жаңа кітап әзірге жоқ.", Books = RankSection(results.Where(b => b.MatchingInterests.Count > 0), b => b.InterestScore, count) },
-            new() { Key = "history", Title = "Оқыған кітаптарыңызға ұқсас", Description = "Бұрынғы авторлар, санаттар, пәндер және өз бағаларыңыз негізінде.", EmptyMessage = profile.HasHistory ? "Оқу тарихына ұқсас жаңа кітап табылмады." : "Оқу тарихы мен пікірлер әлі жоқ. Бұл бөлім алғашқы кітаптардан кейін нақтыланады.", Books = RankSection(results.Where(b => b.HistoryScore > 0), b => b.HistoryScore, count) },
-            new() { Key = "field", Title = "Салаңызда танымал", Description = "Сол факультет оқырмандарының нақты кітап алу тарихы бойынша.", EmptyMessage = "Факультетіңіз бойынша жеткілікті кітап алу дерегі жоқ. Жалпы танымалдық негізгі ұсыныстарда ескерілді.", Books = RankSection(results.Where(b => b.FacultyLoans > 0), b => b.FacultyLoans, count) },
-            new() { Key = "discover", Title = "Жаңа бағытты ашыңыз", Description = "Таныс санаттардан тыс әдебиеттер. Төмен сәйкестік жаңа бағытты білдіруі мүмкін.", EmptyMessage = "Каталогтағы басқа бағыттар әзірге таусылды. Жаңа әдебиеттер қосылғанда бұл бөлім жаңарады.", Books = RankSection(results.Where(b => discoverIds.Contains(b.BookId)), b => b.PopularityScore, count) }
+            new() { Key = "for-you", Title = global::EduLibrary.Localization.UiText.Get("Сізге ұсынылады"), Description = global::EduLibrary.Localization.UiText.Get("Қызығушылық, пән, оқу тарихы және кітапхана деректерінің ортақ нәтижесі."), EmptyMessage = global::EduLibrary.Localization.UiText.Get("Жаңа ұсыныс табылмады. Бұрын оқылған кітаптарды қосып көріңіз."), Books = recommended },
+            new() { Key = "subjects", Title = global::EduLibrary.Localization.UiText.Get("Оқыған пәндеріңізге сай"), Description = global::EduLibrary.Localization.UiText.Get("Кітаптың пәндік байланысы және мәтіндік сәйкестігі есепке алынды."), EmptyMessage = profile.Subjects.Count == 0 ? global::EduLibrary.Localization.UiText.Get("Профильде пәндер таңдалмаған. Оқу бағытыңызды толықтырыңыз.") : global::EduLibrary.Localization.UiText.Get("Таңдалған пәндерге сәйкес жаңа кітап табылмады."), Books = RankSection(results.Where(b => b.MatchingSubjects.Count > 0), b => b.SubjectScore, count) },
+            new() { Key = "interests", Title = global::EduLibrary.Localization.UiText.Get("Қызығушылықтарыңыз бойынша"), Description = global::EduLibrary.Localization.UiText.Get("Сіз көрсеткен бағыттармен сәйкес әдебиеттер."), EmptyMessage = profile.Interests.Count == 0 ? global::EduLibrary.Localization.UiText.Get("Қызығушылықтарыңызды қосып, ұсыныстарды нақтылаңыз.") : global::EduLibrary.Localization.UiText.Get("Қызығушылықтарыңызға сәйкес жаңа кітап әзірге жоқ."), Books = RankSection(results.Where(b => b.MatchingInterests.Count > 0), b => b.InterestScore, count) },
+            new() { Key = "history", Title = global::EduLibrary.Localization.UiText.Get("Оқыған кітаптарыңызға ұқсас"), Description = global::EduLibrary.Localization.UiText.Get("Бұрынғы авторлар, санаттар, пәндер және өз бағаларыңыз негізінде."), EmptyMessage = profile.HasHistory ? global::EduLibrary.Localization.UiText.Get("Оқу тарихына ұқсас жаңа кітап табылмады.") : global::EduLibrary.Localization.UiText.Get("Оқу тарихы мен пікірлер әлі жоқ. Бұл бөлім алғашқы кітаптардан кейін нақтыланады."), Books = RankSection(results.Where(b => b.HistoryScore > 0), b => b.HistoryScore, count) },
+            new() { Key = "field", Title = global::EduLibrary.Localization.UiText.Get("Салаңызда танымал"), Description = global::EduLibrary.Localization.UiText.Get("Сол факультет оқырмандарының нақты кітап алу тарихы бойынша."), EmptyMessage = global::EduLibrary.Localization.UiText.Get("Факультетіңіз бойынша жеткілікті кітап алу дерегі жоқ. Жалпы танымалдық негізгі ұсыныстарда ескерілді."), Books = RankSection(results.Where(b => b.FacultyLoans > 0), b => b.FacultyLoans, count) },
+            new() { Key = "discover", Title = global::EduLibrary.Localization.UiText.Get("Жаңа бағытты ашыңыз"), Description = global::EduLibrary.Localization.UiText.Get("Таныс санаттардан тыс әдебиеттер. Төмен сәйкестік жаңа бағытты білдіруі мүмкін."), EmptyMessage = global::EduLibrary.Localization.UiText.Get("Каталогтағы басқа бағыттар әзірге таусылды. Жаңа әдебиеттер қосылғанда бұл бөлім жаңарады."), Books = RankSection(results.Where(b => discoverIds.Contains(b.BookId)), b => b.PopularityScore, count) }
         ];
         model.StudentId = profile.StudentId; model.StudentName = profile.DisplayName; model.Faculty = profile.Faculty;
         model.Interests = profile.Interests; model.Subjects = profile.Subjects.Select(s => s.Name).ToList();
@@ -137,7 +137,7 @@ public sealed class RecommendationService(ApplicationDbContext db, IOptions<Reco
                 await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
                 var student = await ScopedStudent(userId, isStaff, model.StudentId).Include(s => s.Interests).Include(s => s.StudentSubjects).AsSplitQuery().SingleOrDefaultAsync(ct);
                 if (student is null) return false;
-                if (!isStaff && !student.IsActive) throw new BusinessException("Оқырман белсенді емес. Кітапханашыға хабарласыңыз.");
+                if (!isStaff && !student.IsActive) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Оқырман белсенді емес. Кітапханашыға хабарласыңыз."));
                 await StudentProfileData.SetPreferencesAsync(db, student, model.SelectedSubjectIds, model.Interests, ct);
                 await db.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
@@ -148,7 +148,7 @@ public sealed class RecommendationService(ApplicationDbContext db, IOptions<Reco
         catch (Exception ex) when (DatabaseConflict.IsExpected(ex))
         {
             logger.LogWarning("Recommendation preferences update conflicted");
-            throw new BusinessException("Оқу бағыты қатар өзгертілді. Бетті жаңартып, қайта көріңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Оқу бағыты қатар өзгертілді. Бетті жаңартып, қайта көріңіз."));
         }
     }
 

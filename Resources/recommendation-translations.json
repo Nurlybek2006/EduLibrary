@@ -1,0 +1,11 @@
+[
+ {"key":"Recommendations.Interests","kk":"Қызығушылықтарыңызбен сәйкестік бар: {0}.","ru":"Соответствует вашим интересам: {0}.","en":"Matches your interests: {0}."},
+ {"key":"Recommendations.Subjects","kk":"Пәндеріңізбен байланысты: {0}.","ru":"Связано с вашими предметами: {0}.","en":"Related to your subjects: {0}."},
+ {"key":"Recommendations.History","kk":"Оқу тарихыңыздағы авторлар немесе бағыттармен ұқсас: {0}.","ru":"Похоже на авторов или направления в вашей истории чтения: {0}.","en":"Similar to authors or fields in your reading history: {0}."},
+ {"key":"Recommendations.ColdStart","kk":"Жеке сәйкестік дәлелі әзірге аз. Бұл — каталогтағы әдебиеттермен танысуға арналған ұсыныс.","ru":"Личных данных пока мало. Эта рекомендация поможет познакомиться с каталогом.","en":"Personal reading data is limited. This recommendation helps you explore the catalog."},
+ {"key":"Recommendations.FacultyLoans","kk":"Осы факультет оқырмандары кітапты {0} рет алған.","ru":"Читатели вашего факультета брали эту книгу {0} раз.","en":"Readers in your faculty borrowed this book {0} times."},
+ {"key":"Recommendations.TotalLoans","kk":"Кітап кітапханада {0} рет берілген.","ru":"Книга выдавалась библиотекой {0} раз.","en":"This book has been borrowed {0} times."},
+ {"key":"Recommendations.Rating","kk":"{0} ашық пікір бойынша орташа баға — {1}/5.","ru":"Средняя оценка по {0} опубликованным отзывам — {1}/5.","en":"Average rating from {0} published reviews: {1}/5."},
+ {"key":"Recommendations.Available","kk":"Қазір {0} дана қолжетімді.","ru":"Сейчас доступно экземпляров: {0}.","en":"Currently {0} copies are available."},
+ {"key":"Recommendations.Unavailable","kk":"Қазір бос дана жоқ; каталогтағы мәртебесін кейін тексеріңіз.","ru":"Сейчас свободных экземпляров нет; проверьте каталог позже.","en":"No copies are available now; check the catalog again later."}
+]

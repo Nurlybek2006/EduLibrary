@@ -1,0 +1,37 @@
+[
+  {
+    "path": "wwwroot/lib/pdfjs/LICENSE",
+    "version": "6.4.299",
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  {
+    "path": "wwwroot/lib/pdfjs/pdf.min.mjs",
+    "version": "6.4.299",
+    "sha256": "57456c8e0c81e46be31174b499ef77f2b9f5ee46d04412ba627320a36755d4c2"
+  },
+  {
+    "path": "wwwroot/lib/pdfjs/pdf.worker.min.mjs",
+    "version": "6.4.299",
+    "sha256": "9536359f1b8367850d485731ca1d5e45c159a7b7a0912325e539937aa21ceb18"
+  },
+  {
+    "path": "wwwroot/lib/epubjs/epub.min.js",
+    "version": "0.3.93",
+    "sha256": "06eae15745107b4aa508c95538275251f69bfb9f1175621fc458d9f42ed082d4"
+  },
+  {
+    "path": "wwwroot/lib/epubjs/LICENSE",
+    "version": "0.3.93",
+    "sha256": "8663e726f4194e1a34913b223c2e4745ed06f3ec645a66a41ab70b735070b692"
+  },
+  {
+    "path": "wwwroot/lib/jszip/jszip.min.js",
+    "version": "3.10.1",
+    "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
+  },
+  {
+    "path": "wwwroot/lib/jszip/LICENSE.md",
+    "version": "3.10.1",
+    "sha256": "566c953c6090b1218ca6217dd7359d45dde46581968586dc607d59a78af6a9c4"
+  }
+]

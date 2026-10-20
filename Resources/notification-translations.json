@@ -1,0 +1,13 @@
+{
+  "Notifications.IssuedBody": ["«{0}»: қайтару мерзімі — {1:d}.", "«{0}»: срок возврата — {1:d}.", "“{0}”: return by {1:d}."],
+  "Notifications.ReturnedBody": ["«{0}»: кітапхана дананы қабылдады.", "«{0}»: библиотека приняла экземпляр.", "“{0}”: the library has received the copy."],
+  "Notifications.ReminderBody": ["«{0}» кітабын қайтару мерзімі: {1:d}.", "Срок возврата книги «{0}»: {1:d}.", "The return date for “{0}” is {1:d}."],
+  "Notifications.FineBody": ["«{0}»: бекітілген айыппұл — {1:N2} ₸.", "«{0}»: начисленный штраф — {1:N2} ₸.", "“{0}”: the final fine is {1:N2} ₸."],
+  "Notifications.ReservationCreatedBody": ["«{0}»: дана сізге сақталды. Дайын болғаны туралы хабарламаны күтіңіз.", "«{0}»: экземпляр зарезервирован. Дождитесь уведомления о готовности.", "“{0}”: a copy is reserved for you. Wait for the ready notification."],
+  "Notifications.ReservationQueuedBody": ["«{0}»: кезекке қосылдыңыз. Бос дана шыққанда кезек ретімен бөлінеді.", "«{0}»: вы добавлены в очередь. Свободный экземпляр будет выделен в порядке очереди.", "“{0}”: you have joined the queue. An available copy will be allocated in order."],
+  "Notifications.ReservationReadyBody": ["«{0}»: алып кету уақыты — {1:g}. Кодты қызметкерге көрсетіңіз. Бронь {2:g} дейін жарамды.", "«{0}»: время получения — {1:g}. Покажите код сотруднику. Бронь действует до {2:g}.", "“{0}”: pickup is scheduled for {1:g}. Show your code to staff. The hold expires at {2:g}."],
+  "Notifications.ReservationPromotedBody": ["«{0}»: кезегіңіз келді, дана сізге бөлінді. Қызметкер оны дайындайды. Алып кету уақыты — {1:g}.", "«{0}»: ваша очередь подошла, экземпляр выделен. Сотрудник подготовит его. Время получения — {1:g}.", "“{0}”: your turn has arrived and a copy is allocated. Staff will prepare it. Pickup is scheduled for {1:g}."],
+  "Notifications.ReservationExpiredBody": ["«{0}»: алып кету мерзімі аяқталды. Қажет болса, қайта брондаңыз.", "«{0}»: срок получения истёк. При необходимости создайте новую бронь.", "“{0}”: the pickup deadline has passed. Make another reservation if needed."],
+  "Notifications.ReservationCancelledBody": ["«{0}»: бронь тоқтатылды. Бөлінген дана мен уақыт босатылды.", "«{0}»: бронь отменена. Выделенный экземпляр и время освобождены.", "“{0}”: the reservation was cancelled. Any allocated copy and appointment have been released."],
+  "Notifications.ReservationExpiringBody": ["«{0}»: дайын кітапты {2:g} дейін алып кетіңіз.", "«{0}»: получите готовую книгу до {2:g}.", "“{0}”: collect the ready book by {2:g}."]
+}

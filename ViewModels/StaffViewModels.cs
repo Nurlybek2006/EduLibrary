@@ -4,6 +4,7 @@ namespace EduLibrary.ViewModels;
 
 public sealed class StaffListItem
 {
+    public string? AvatarPath { get; set; }
     public string Id { get; set; } = "";
     public string FullName { get; set; } = "";
     public string Email { get; set; } = "";

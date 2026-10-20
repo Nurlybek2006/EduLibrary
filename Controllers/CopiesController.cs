@@ -27,7 +27,7 @@ public sealed class CopiesController(ICatalogService catalog, ILibraryClock cloc
             {
                 var id = await lookup.FindByCodeAsync(code!, ct);
                 if (id.HasValue) return RedirectToAction(nameof(Details), new { id = id.Value });
-                ModelState.AddModelError("Code", "Бұл кодқа сәйкес кітап данасы табылмады. Штрихкодты немесе түгендеу нөмірін тексеріңіз.");
+                ModelState.AddModelError("Code", global::EduLibrary.Localization.UiText.Get("Бұл кодқа сәйкес кітап данасы табылмады. Штрихкодты немесе түгендеу нөмірін тексеріңіз."));
             }
             catch (BusinessException ex) { ModelState.AddModelError("Code", ex.Message); }
         }
@@ -65,7 +65,7 @@ public sealed class CopiesController(ICatalogService catalog, ILibraryClock cloc
         model.Id = 0;
         if (ModelState.IsValid)
         {
-            try { await catalog.SaveCopyAsync(model, ct); TempData["Success"] = "Кітаптың жаңа данасы тіркелді."; return RedirectToAction(nameof(Index), new { bookId = model.BookId }); }
+            try { await catalog.SaveCopyAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітаптың жаңа данасы тіркелді."); return RedirectToAction(nameof(Index), new { bookId = model.BookId }); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         await catalog.PopulateCopyOptionsAsync(model, ct); return View(model);
@@ -83,7 +83,7 @@ public sealed class CopiesController(ICatalogService catalog, ILibraryClock cloc
         if (id != model.Id || id <= 0) return BadRequest();
         if (ModelState.IsValid)
         {
-            try { await catalog.SaveCopyAsync(model, ct); TempData["Success"] = "Дана деректері жаңартылды."; return RedirectToAction(nameof(Index), new { bookId = model.BookId }); }
+            try { await catalog.SaveCopyAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Дана деректері жаңартылды."); return RedirectToAction(nameof(Index), new { bookId = model.BookId }); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         await catalog.PopulateCopyOptionsAsync(model, ct); return View(model);
@@ -92,7 +92,7 @@ public sealed class CopiesController(ICatalogService catalog, ILibraryClock cloc
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id, string rowVersion, CancellationToken ct)
     {
-        try { await catalog.DeleteCopyAsync(id, rowVersion, ct); TempData["Success"] = "Кітап данасы жойылды."; }
+        try { await catalog.DeleteCopyAsync(id, rowVersion, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап данасы жойылды."); }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Index));
     }

@@ -10,6 +10,11 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using System.Globalization;
+
+// Keep the original Kazakh display assertions independent of the host OS language.
+CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("kk-KZ");
+CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("kk-KZ");
 
 // The caller may select the SQL server/authentication, never the test catalog.
 // Only the random database created by this process can enter the cleanup path.

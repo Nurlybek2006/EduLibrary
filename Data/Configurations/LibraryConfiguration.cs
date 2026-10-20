@@ -111,6 +111,17 @@ public class LibraryConfiguration : IEntityTypeConfiguration<Book>, IEntityTypeC
     public void Configure(EntityTypeBuilder<Subject> b) { b.Property(x=>x.Name).HasMaxLength(150).IsRequired(); b.HasIndex(x=>x.Name).IsUnique(); }
     public void Configure(EntityTypeBuilder<StudentSubject> b) { b.HasKey(x=>new{x.StudentId,x.SubjectId}); b.HasOne(x=>x.Student).WithMany(x=>x.StudentSubjects).HasForeignKey(x=>x.StudentId); b.HasOne(x=>x.Subject).WithMany(x=>x.StudentSubjects).HasForeignKey(x=>x.SubjectId); }
     public void Configure(EntityTypeBuilder<StudentInterest> b) { b.Property(x=>x.Name).HasMaxLength(100).IsRequired(); b.HasIndex(x=>new{x.StudentId,x.Name}).IsUnique(); b.HasOne(x=>x.Student).WithMany(x=>x.Interests).HasForeignKey(x=>x.StudentId); }
-    public void Configure(EntityTypeBuilder<ApplicationUser> b) { b.Property(x=>x.FullName).HasMaxLength(200).IsRequired(); }
+    public void Configure(EntityTypeBuilder<ApplicationUser> b)
+    {
+        b.Property(x=>x.FullName).HasMaxLength(200).IsRequired();
+        b.Property(x=>x.AvatarPath).HasMaxLength(100);
+        b.Property(x=>x.PreferredLanguage).HasMaxLength(10).HasDefaultValue("kk-KZ");
+        b.Property(x=>x.PreferredTheme).HasMaxLength(10).HasDefaultValue("system");
+        b.ToTable(t=>
+        {
+            t.HasCheckConstraint("CK_Users_Language", "[PreferredLanguage] IN ('kk-KZ','ru-RU','en-US')");
+            t.HasCheckConstraint("CK_Users_Theme", "[PreferredTheme] IN ('system','light','dark')");
+        });
+    }
     public void Configure(EntityTypeBuilder<SeedHistory> b) { b.HasKey(x=>x.Key); b.Property(x=>x.Key).HasMaxLength(100); }
 }

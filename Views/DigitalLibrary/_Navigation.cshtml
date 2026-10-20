@@ -1,0 +1,2 @@
+@model EduLibrary.ViewModels.DigitalLibraryPageViewModel
+<nav class="digital-navigation" aria-label="@T["Digital library navigation"]"><a asp-action="Index" class="@(!Model.IsManagement && !Model.IsPersonal ? "current" : "")">@T["Discover"]</a><a asp-action="My" class="@(Model.IsPersonal ? "current" : "")">@T["My digital books"]</a>@if (Model.IsStaff) { <a asp-action="Manage" class="@(Model.IsManagement ? "current" : "")">@T["Manage digital content"]</a> }</nav>

@@ -27,7 +27,7 @@ public sealed class ReturnsController(ICirculationService service) : Controller
             try
             {
                 await service.ReturnAsync(model, User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "", ct);
-                TempData["Success"] = "Кітап қабылданды. Қайтару жазбасы мен айыппұл есебі сақталды.";
+                TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап қабылданды. Қайтару жазбасы мен айыппұл есебі сақталды.");
                 return RedirectToAction("Details", "Loans", new { id = model.LoanId });
             }
             catch (BusinessException exception) { ModelState.AddModelError("", exception.Message); }
@@ -35,7 +35,7 @@ public sealed class ReturnsController(ICirculationService service) : Controller
         var original = await service.GetReturnFormAsync(model.LoanId, ct);
         if (original is null)
         {
-            TempData["Error"] = "Бұл кітап бұрын қайтарылған немесе жазба табылмады.";
+            TempData["Error"] = global::EduLibrary.Localization.UiText.Get("Бұл кітап бұрын қайтарылған немесе жазба табылмады.");
             return RedirectToAction("Details", "Loans", new { id = model.LoanId });
         }
         original.ReturnDate = model.ReturnDate;

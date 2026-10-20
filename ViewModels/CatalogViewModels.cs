@@ -107,13 +107,13 @@ public sealed class BookEditViewModel : IValidatableObject
     {
         if (!string.IsNullOrWhiteSpace(CoverImageUrl) &&
             (!Uri.TryCreate(CoverImageUrl, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps))
-            yield return new ValidationResult("Мұқаба үшін жарамды HTTPS сілтемесін енгізіңіз.", [nameof(CoverImageUrl)]);
+            yield return new ValidationResult(global::EduLibrary.Localization.UiText.Get("Мұқаба үшін жарамды HTTPS сілтемесін енгізіңіз."), [nameof(CoverImageUrl)]);
         var today = (validationContext.GetService(typeof(ILibraryClock)) as ILibraryClock)?.Today ?? DateTime.Today;
         if (PublicationYear > today.Year + 1)
-            yield return new ValidationResult("Басылым жылы келесі жылдан аспауы тиіс.", [nameof(PublicationYear)]);
+            yield return new ValidationResult(global::EduLibrary.Localization.UiText.Get("Басылым жылы келесі жылдан аспауы тиіс."), [nameof(PublicationYear)]);
         var isbn = ISBN?.Replace("-", "").Replace(" ", "");
         if (isbn is not null && isbn.Length is not (10 or 13))
-            yield return new ValidationResult("ISBN 10 немесе 13 таңбадан тұруы тиіс.", [nameof(ISBN)]);
+            yield return new ValidationResult(global::EduLibrary.Localization.UiText.Get("ISBN 10 немесе 13 таңбадан тұруы тиіс."), [nameof(ISBN)]);
     }
 }
 
@@ -231,9 +231,9 @@ public sealed class CopyEditViewModel : IValidatableObject
     {
         var today = (validationContext.GetService(typeof(ILibraryClock)) as ILibraryClock)?.Today ?? DateTime.Today;
         if (AcquiredAt.Date > today)
-            yield return new ValidationResult("Қабылданған күн болашақта болмауы тиіс.", [nameof(AcquiredAt)]);
+            yield return new ValidationResult(global::EduLibrary.Localization.UiText.Get("Қабылданған күн болашақта болмауы тиіс."), [nameof(AcquiredAt)]);
         if (AcquiredAt.Year < 1900)
-            yield return new ValidationResult("Қабылданған күн 1900 жылдан ерте болмауы тиіс.", [nameof(AcquiredAt)]);
+            yield return new ValidationResult(global::EduLibrary.Localization.UiText.Get("Қабылданған күн 1900 жылдан ерте болмауы тиіс."), [nameof(AcquiredAt)]);
     }
 }
 
@@ -241,13 +241,13 @@ public static class CatalogLabels
 {
     public static string CopyStatusLabel(CopyStatus status) => status switch
     {
-        CopyStatus.Available => "Қолжетімді",
-        CopyStatus.OnLoan => "Оқырманда",
-        CopyStatus.Damaged => "Зақымдалған",
-        CopyStatus.Lost => "Жоғалған",
-        CopyStatus.Maintenance => "Жөндеуде",
-        CopyStatus.Reserved => "Брондалған",
-        _ => "Белгісіз"
+        CopyStatus.Available => global::EduLibrary.Localization.UiText.Get("Қолжетімді"),
+        CopyStatus.OnLoan => global::EduLibrary.Localization.UiText.Get("Оқырманда"),
+        CopyStatus.Damaged => global::EduLibrary.Localization.UiText.Get("Зақымдалған"),
+        CopyStatus.Lost => global::EduLibrary.Localization.UiText.Get("Жоғалған"),
+        CopyStatus.Maintenance => global::EduLibrary.Localization.UiText.Get("Жөндеуде"),
+        CopyStatus.Reserved => global::EduLibrary.Localization.UiText.Get("Брондалған"),
+        _ => global::EduLibrary.Localization.UiText.Get("Белгісіз")
     };
     public static IEnumerable<SelectListItem> CopyStatuses(bool includeOnLoan = true) =>
         Enum.GetValues<CopyStatus>().Where(x => includeOnLoan || x is not (CopyStatus.OnLoan or CopyStatus.Reserved))

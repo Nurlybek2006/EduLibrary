@@ -20,10 +20,12 @@ public sealed class ReviewEditViewModel
 
 public sealed class ReviewRowViewModel
 {
+    public string? ReviewerUserId { get; set; }
+    public string? AvatarPath { get; set; }
     public int Id { get; set; }
     public int BookId { get; set; }
     public string BookTitle { get; set; } = "";
-    public string ReviewerLabel { get; set; } = "Оқырман";
+    public string ReviewerLabel { get; set; } = global::EduLibrary.Localization.UiText.Get("Оқырман");
     public int Rating { get; set; }
     public string Comment { get; set; } = "";
     public DateTime CreatedAt { get; set; }

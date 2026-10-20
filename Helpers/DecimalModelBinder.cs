@@ -19,7 +19,7 @@ public sealed class DecimalModelBinder : IModelBinder
                      CultureInfo.InvariantCulture, out var amount))
             context.Result = ModelBindingResult.Success(amount);
         else
-            context.ModelState.TryAddModelError(context.ModelName, "Жарамды сан енгізіңіз (мысалы, 1500,50).");
+            context.ModelState.TryAddModelError(context.ModelName, global::EduLibrary.Localization.UiText.Get("Жарамды сан енгізіңіз (мысалы, 1500,50)."));
         return Task.CompletedTask;
     }
 }

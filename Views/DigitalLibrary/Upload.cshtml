@@ -1,0 +1,4 @@
+@model EduLibrary.ViewModels.DigitalAssetEditViewModel
+@{ ViewData["Title"] = T["Upload digital edition"].Value; }
+<section class="digital-page"><header class="digital-heading"><div><span class="section-caption">@T["Digital collection"]</span><h1>@T["Upload digital edition"]</h1><p>@T["Add an authorized PDF or EPUB to the library."]</p></div><a asp-action="Manage" class="btn btn-outline-secondary">@T["Back to management"]</a></header><form asp-action="Upload" method="post" enctype="multipart/form-data" id="digital-asset-form"><partial name="_Form" model="Model" /></form></section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

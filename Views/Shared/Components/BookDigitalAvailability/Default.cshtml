@@ -1,0 +1,6 @@
+@model EduLibrary.ViewModels.DigitalAvailabilityViewModel
+<section class="@(Model.Compact ? "recommendation-digital-availability" : "book-digital-availability")" data-digital-availability>
+@if (!Model.Compact) { <h2>@T["Digital editions"]</h2> }
+@if (Model.Assets.Count == 0) { <p>@T["No authorized digital edition is available for this book."]</p> }
+else { <div class="actions">@foreach (var asset in Model.Assets) { @if (User.Identity?.IsAuthenticated == true) { <a href="@asset.ReaderUrl" class="@(Model.Compact ? "" : "btn btn-outline-secondary")"><i data-lucide="book-open" aria-hidden="true"></i>@T["Read online"] · @asset.Format</a> }else { <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@asset.ReaderUrl" class="btn btn-outline-secondary">@T["Sign in to read"] · @asset.Format</a> } }</div> }
+</section>

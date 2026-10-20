@@ -172,6 +172,7 @@ public sealed class RecommendationTests
     [Fact]
     public void LocalExplanationDoesNotInventInterestEvidence()
     {
+        using var culture = new CultureScope("kk-KZ");
         var text = new TemplateExplanationProvider().Explain(new RecommendationResult { AvailableCopies = 0 });
         Assert.Contains("Жеке сәйкестік дәлелі әзірге аз", text);
         Assert.Contains("бос дана жоқ", text);

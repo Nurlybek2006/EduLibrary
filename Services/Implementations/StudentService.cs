@@ -34,7 +34,7 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
         filter.TotalPages = Math.Max(1, (int)Math.Ceiling(filter.TotalCount / (double)PageSize));
         filter.Page = Math.Clamp(filter.Page, 1, filter.TotalPages);
         filter.Students = await query.OrderBy(s => s.FullName).ThenBy(s => s.Id).Skip((filter.Page - 1) * PageSize).Take(PageSize)
-            .Select(s => new StudentListItem { Id = s.Id, StudentNumber = s.StudentNumber, FullName = s.FullName, Email = s.Email, Faculty = s.Faculty, Course = s.Course, GroupName = s.GroupName, IsActive = s.IsActive })
+            .Select(s => new StudentListItem { Id = s.Id, IdentityUserId = s.IdentityUserId, AvatarPath = s.IdentityUser != null ? s.IdentityUser.AvatarPath : null, StudentNumber = s.StudentNumber, FullName = s.FullName, Email = s.Email, Faculty = s.Faculty, Course = s.Course, GroupName = s.GroupName, IsActive = s.IsActive })
             .ToListAsync(cancellationToken);
         filter.Faculties = await db.Students.AsNoTracking().Select(s => s.Faculty).Distinct().OrderBy(s => s).ToListAsync(cancellationToken);
         return filter;
@@ -46,7 +46,7 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
     public async Task<StudentDetailsViewModel?> GetDetailsAsync(int id, string currentUserId, bool canManage, CancellationToken cancellationToken = default)
     {
         var student = await db.Students.AsNoTracking().Where(s => s.Id == id && (canManage || s.IdentityUserId == currentUserId))
-            .Include(s => s.Interests).Include(s => s.StudentSubjects).ThenInclude(s => s.Subject)
+            .Include(s => s.IdentityUser).Include(s => s.Interests).Include(s => s.StudentSubjects).ThenInclude(s => s.Subject)
             .AsSplitQuery().SingleOrDefaultAsync(cancellationToken);
         if (student is null) return null;
         var loans = await db.Loans.AsNoTracking().Where(l => l.StudentId == id).OrderByDescending(l => l.LoanDate).ThenByDescending(l => l.Id)
@@ -61,7 +61,7 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
             .Select(f => new StudentFineItem { BookTitle = f.Loan.BookCopy.Book.Title, Reason = f.Reason, Amount = f.Amount, PaidAmount = f.PaidAmount, CreatedAt = f.CreatedAt }).ToListAsync(cancellationToken);
         return new StudentDetailsViewModel
         {
-            Id = student.Id, StudentNumber = student.StudentNumber, FullName = student.FullName, Email = student.Email, PhoneNumber = student.PhoneNumber,
+            Id = student.Id, IdentityUserId = student.IdentityUserId, AvatarPath = student.IdentityUser?.AvatarPath, StudentNumber = student.StudentNumber, FullName = student.FullName, Email = student.Email, PhoneNumber = student.PhoneNumber,
             Faculty = student.Faculty, Course = student.Course, GroupName = student.GroupName, IsActive = student.IsActive, CanManage = canManage,
             Interests = student.Interests.Select(i => i.Name).OrderBy(i => i).ToList(), Subjects = student.StudentSubjects.Select(s => s.Subject.Name).OrderBy(s => s).ToList(),
             ActiveLoans = loans.Where(l => l.ReturnedAt is null).ToList(), History = loans.Where(l => l.ReturnedAt is not null).ToList(),
@@ -105,7 +105,7 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
         catch (Exception ex) when (DatabaseConflict.IsExpected(ex))
         {
             logger.LogWarning(ex, "Student creation conflicted");
-            throw new BusinessException("Студентті сақтау мүмкін болмады. Нөмір мен поштаның бірегей екенін тексеріңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Студентті сақтау мүмкін болмады. Нөмір мен поштаның бірегей екенін тексеріңіз."));
         }
     }
 
@@ -117,7 +117,7 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
             {
                 await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
                 var student = await db.Students.Include(s => s.IdentityUser).Include(s => s.Interests).Include(s => s.StudentSubjects).AsSplitQuery().SingleOrDefaultAsync(s => s.Id == id, cancellationToken)
-                    ?? throw new BusinessException("Студент табылмады.");
+                    ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Студент табылмады."));
                 await EnsureUniqueAsync(model, id, cancellationToken);
                 ApplyFields(student, model);
                 await StudentProfileData.SetPreferencesAsync(db, student, model.SelectedSubjectIds, model.Interests, cancellationToken);
@@ -135,7 +135,7 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
         catch (Exception ex) when (DatabaseConflict.IsExpected(ex))
         {
             logger.LogWarning(ex, "Student {StudentId} update conflicted", id);
-            throw new BusinessException("Өзгерістер сақталмады. Нөмір мен поштаның бірегей екенін тексеріп, қайта көріңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Өзгерістер сақталмады. Нөмір мен поштаның бірегей екенін тексеріп, қайта көріңіз."));
         }
     }
 
@@ -147,13 +147,13 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
             {
                 await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
                 var student = await db.Students.Include(s => s.IdentityUser).SingleOrDefaultAsync(s => s.Id == id, cancellationToken)
-                    ?? throw new BusinessException("Студент табылмады.");
+                    ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Студент табылмады."));
                 student.IsActive = false;
                 if (student.IdentityUser is { } user)
                 {
                     // A student record must not be used to disable a privileged account.
                     if (await users.IsInRoleAsync(user, "Admin") || await users.IsInRoleAsync(user, "Librarian"))
-                        throw new BusinessException("Қызметкер аккаунтын студент парағы арқылы тоқтатуға болмайды.");
+                        throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Қызметкер аккаунтын студент парағы арқылы тоқтатуға болмайды."));
                     user.LockoutEnabled = true;
                     user.LockoutEnd = DateTimeOffset.MaxValue;
                     user.SecurityStamp = Guid.NewGuid().ToString();
@@ -168,7 +168,7 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
         catch (Exception ex) when (DatabaseConflict.IsExpected(ex))
         {
             logger.LogWarning(ex, "Student {StudentId} deactivation conflicted", id);
-            throw new BusinessException("Студент деректері өзгерді. Бетті жаңартып, қайта көріңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Студент деректері өзгерді. Бетті жаңартып, қайта көріңіз."));
         }
     }
 
@@ -176,8 +176,8 @@ public sealed class StudentService(ApplicationDbContext db, UserManager<Applicat
     {
         var number = model.StudentNumber.Trim();
         var email = model.Email.Trim().ToUpperInvariant();
-        if (await db.Students.AnyAsync(s => s.Id != exceptId && s.StudentNumber == number, ct)) throw new BusinessException("Бұл студент нөмірі тіркелген.");
-        if (await db.Students.AnyAsync(s => s.Id != exceptId && s.Email.ToUpper() == email, ct)) throw new BusinessException("Бұл электрондық пошта басқа студентке тиесілі.");
+        if (await db.Students.AnyAsync(s => s.Id != exceptId && s.StudentNumber == number, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл студент нөмірі тіркелген."));
+        if (await db.Students.AnyAsync(s => s.Id != exceptId && s.Email.ToUpper() == email, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл электрондық пошта басқа студентке тиесілі."));
     }
 
     private static void ApplyFields(Student student, StudentEditViewModel model)

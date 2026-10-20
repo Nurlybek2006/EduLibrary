@@ -1,0 +1,8 @@
+@model EduLibrary.ViewModels.AvatarViewModel
+<span class="user-avatar user-avatar--@Model.Size" role="img" aria-label="@Model.Name">
+    <span class="user-avatar-initials" aria-hidden="true">@Model.Initials</span>
+    @if (Model.ImageUrl is not null)
+    {
+        <img src="@Model.ImageUrl" alt="" width="256" height="256" loading="lazy" decoding="async" data-user-avatar />
+    }
+</span>

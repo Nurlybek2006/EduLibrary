@@ -9,6 +9,8 @@ public interface IAccountService
     Task LogoutAsync();
     Task<ProfileViewModel?> GetProfileAsync(string userId, CancellationToken cancellationToken = default);
     Task<AccountActionResult> UpdateProfileAsync(string userId, ProfileViewModel model, CancellationToken cancellationToken = default);
+    Task<AccountActionResult> UpdateAvatarAsync(string userId, AvatarUploadViewModel model, CancellationToken cancellationToken = default);
+    Task<AccountActionResult> RemoveAvatarAsync(string userId, CancellationToken cancellationToken = default);
     Task<List<StaffListItem>> ListStaffAsync(string currentUserId);
     Task<AccountActionResult> CreateLibrarianAsync(CreateLibrarianViewModel model, CancellationToken cancellationToken = default);
     Task DeactivateLibrarianAsync(string id, string currentUserId, CancellationToken cancellationToken = default);

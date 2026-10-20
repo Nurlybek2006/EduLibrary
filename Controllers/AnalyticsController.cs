@@ -11,7 +11,7 @@ public sealed class AnalyticsController(IAnalyticsService service) : Controller
 {
     public async Task<IActionResult> Index(ReportFilterViewModel filter, CancellationToken ct)
     {
-        if (!ModelState.IsValid) return BadRequest("Талдау кезеңін дұрыс енгізіңіз.");
+        if (!ModelState.IsValid) return BadRequest(global::EduLibrary.Localization.UiText.Get("Талдау кезеңін дұрыс енгізіңіз."));
         try { return View(await service.GetAsync(filter, ct)); }
         catch (BusinessException exception)
         {
@@ -22,7 +22,7 @@ public sealed class AnalyticsController(IAnalyticsService service) : Controller
 
     public async Task<IActionResult> Data(ReportFilterViewModel filter, CancellationToken ct)
     {
-        if (!ModelState.IsValid) return BadRequest("Талдау кезеңін дұрыс енгізіңіз.");
+        if (!ModelState.IsValid) return BadRequest(global::EduLibrary.Localization.UiText.Get("Талдау кезеңін дұрыс енгізіңіз."));
         try { return Json(await service.GetAsync(filter, ct)); }
         catch (BusinessException exception) { return BadRequest(exception.Message); }
     }

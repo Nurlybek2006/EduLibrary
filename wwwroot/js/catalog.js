@@ -29,7 +29,7 @@
             drawer.querySelector("summary").append(badge);
         }
         badge.textContent = String(count);
-        badge.setAttribute("aria-label", count + " белсенді сүзгі");
+        badge.setAttribute("aria-label", count + window.eduT(" белсенді сүзгі"));
     };
     const announce = (text, failed = false) => {
         if (!status) return;
@@ -52,7 +52,7 @@
         const own = ++sequence;
         results.setAttribute("aria-busy", "true");
         results.classList.add("is-fetching");
-        announce("Кітаптар ізделуде…");
+        announce(window.eduT("Кітаптар ізделуде…"));
         try {
             const endpoint = new URL("/Books/Results", location.origin);
             endpoint.search = new URL(url, location.origin).search;
@@ -65,11 +65,11 @@
             updateView();
             updateFilterCount();
             const count = results.querySelector("[data-result-count]")?.dataset.resultCount;
-            announce(count ? count + " кітап табылды." : "Іздеу аяқталды.");
+            announce(count ? count + window.eduT(" кітап табылды.") : window.eduT("Іздеу аяқталды."));
             if (push) history.pushState(null, "", url);
         } catch (error) {
             if (own === sequence && error.name !== "AbortError") {
-                announce("Іздеу орындалмады. Іздеу батырмасымен қайталап көріңіз.", true);
+                announce(window.eduT("Іздеу орындалмады. Іздеу батырмасымен қайталап көріңіз."), true);
             }
         } finally {
             if (own === sequence) {

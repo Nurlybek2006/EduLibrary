@@ -33,7 +33,7 @@ public sealed class RecommendationsController(IRecommendationService recommendat
             try
             {
                 if (!await recommendations.SavePreferencesAsync(UserId, IsStaff, model, ct)) return NotFound();
-                TempData["Success"] = "Оқу бағытыңыз сақталды. Ұсыныстар жаңа деректермен есептелді.";
+                TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Оқу бағытыңыз сақталды. Ұсыныстар жаңа деректермен есептелді.");
                 return RedirectToAction(nameof(Index), new { studentId = model.StudentId });
             }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }

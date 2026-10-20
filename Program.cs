@@ -1,10 +1,14 @@
 using System.Globalization;
+using EduLibrary;
 using EduLibrary.Data;
 using EduLibrary.Data.Seed;
 using EduLibrary.Helpers;
 using EduLibrary.Models.Entities;
 using EduLibrary.Services.Interfaces;
 using EduLibrary.Services.Implementations;
+using EduLibrary.Localization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +47,12 @@ builder.Services.AddScoped<ICirculationService, CirculationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddSingleton<IAvatarStorage, AvatarStorage>();
+builder.Services.AddOptions<DigitalLibraryOptions>().BindConfiguration("DigitalLibrary")
+    .Validate(DigitalLibraryOptions.IsValid, "Invalid digital library limits or storage settings.").ValidateOnStart();
+builder.Services.AddSingleton<IDigitalAssetStorage, DigitalAssetStorage>();
+builder.Services.AddScoped<IDigitalLibraryService, DigitalLibraryService>();
+builder.Services.AddScoped<IReadingProgressService, ReadingProgressService>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IReadingSpaceService, ReadingSpaceService>();
 builder.Services.AddOptions<ReservationOptions>().Configure<IConfiguration>(ReservationOptions.Bind)
@@ -62,23 +72,27 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<ICopyLookupService, CopyLookupService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddHostedService<ReminderBackgroundService>();
+builder.Services.AddLocalization(o => o.ResourcesPath = "Resources");
 builder.Services.AddControllersWithViews(o=>
 {
     o.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
     o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-    o.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_=>"Бұл өрісті толтырыңыз.");
-    o.ModelBindingMessageProvider.SetValueIsInvalidAccessor(_=>"Енгізілген мән жарамсыз.");
-    o.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor((_,name)=>$"«{name}» өрісінің мәні жарамсыз.");
-    o.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(name=>$"«{name}» өрісіне сан енгізіңіз.");
-    o.ModelBindingMessageProvider.SetMissingBindRequiredValueAccessor(name=>$"«{name}» өрісін толтырыңыз.");
-    o.ModelBindingMessageProvider.SetNonPropertyAttemptedValueIsInvalidAccessor(_=>"Енгізілген мән жарамсыз.");
-    o.ModelBindingMessageProvider.SetNonPropertyValueMustBeANumberAccessor(()=>"Сан енгізіңіз.");
-});
+    o.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_=>UiText.Get("Бұл өрісті толтырыңыз."));
+    o.ModelBindingMessageProvider.SetValueIsInvalidAccessor(_=>UiText.Get("Енгізілген мән жарамсыз."));
+    o.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor((_,name)=>UiText.Get("«{0}» өрісінің мәні жарамсыз.",name));
+    o.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(name=>UiText.Get("«{0}» өрісіне сан енгізіңіз.",name));
+    o.ModelBindingMessageProvider.SetMissingBindRequiredValueAccessor(name=>UiText.Get("«{0}» өрісін толтырыңыз.",name));
+    o.ModelBindingMessageProvider.SetNonPropertyAttemptedValueIsInvalidAccessor(_=>UiText.Get("Енгізілген мән жарамсыз."));
+    o.ModelBindingMessageProvider.SetNonPropertyValueMustBeANumberAccessor(()=>UiText.Get("Сан енгізіңіз."));
+}).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+  .AddDataAnnotationsLocalization(o=>o.DataAnnotationLocalizerProvider=(_,factory)=>factory.Create(typeof(SharedResource)));
 builder.Services.Configure<RequestLocalizationOptions>(o=>
 {
-    var culture = new CultureInfo("kk-KZ");
-    o.DefaultRequestCulture = new(culture);
-    o.SupportedCultures = [culture]; o.SupportedUICultures = [culture];
+    o.DefaultRequestCulture = new("kk-KZ");
+    o.SupportedCultures = UiText.SupportedCultures.Select(c=>new CultureInfo(c)).ToList();
+    o.SupportedUICultures = o.SupportedCultures;
+    o.RequestCultureProviders = [new CookieRequestCultureProvider()];
+    o.ApplyCurrentCultureToResponseHeaders = true;
 });
 var app = builder.Build();
 await using (var scope = app.Services.CreateAsyncScope())
@@ -88,6 +102,8 @@ await using (var scope = app.Services.CreateAsyncScope())
     {
         if (builder.Configuration.GetValue<bool>("Database:ApplyMigrations")) await db.Database.MigrateAsync();
         await DbSeeder.SeedAsync(scope.ServiceProvider, builder.Configuration, app.Environment.IsDevelopment());
+        if (builder.Configuration.GetValue<bool>("DigitalLibrary:SeedDemoContent"))
+            await DigitalDemoSeeder.SeedAsync(scope.ServiceProvider);
     }
     catch (Exception ex)
     {

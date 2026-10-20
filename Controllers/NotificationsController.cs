@@ -20,7 +20,7 @@ public sealed class NotificationsController(INotificationService notifications) 
     [HttpPost]
     public async Task<IActionResult> ReadAll(CancellationToken ct)
     {
-        await notifications.MarkAllReadAsync(UserId,ct);TempData["Success"]="Барлық хабарландыру оқылды деп белгіленді.";
+        await notifications.MarkAllReadAsync(UserId,ct);TempData["Success"]=global::EduLibrary.Localization.UiText.Get("Барлық хабарландыру оқылды деп белгіленді.");
         return RedirectToAction(nameof(Index));
     }
 }

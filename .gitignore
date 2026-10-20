@@ -11,3 +11,7 @@ tests/**/bin/
 tests/**/obj/
 __pycache__/
 *.pyc
+App_Data/
+tools/**/bin/
+tools/**/obj/
+tmp/

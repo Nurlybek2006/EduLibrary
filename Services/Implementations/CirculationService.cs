@@ -122,24 +122,24 @@ public sealed class CirculationService(
     public async Task<int> IssueAsync(IssueLoanViewModel model, string issuedByUserId, CancellationToken ct = default)
     {
         EnsureOperator(issuedByUserId);
-        if (model.StudentId <= 0 || model.BookCopyId <= 0) throw new BusinessException("Студент пен кітап данасын таңдаңыз.");
-        if (model.LoanDate == default || model.DueDate == default) throw new BusinessException("Берілген күн мен қайтару мерзімін енгізіңіз.");
-        if (model.LoanDate.Date > clock.Today) throw new BusinessException("Берілген күн болашақта болмауы тиіс.");
-        if (model.DueDate.Date < model.LoanDate.Date) throw new BusinessException("Қайтару мерзімі берілген күннен ерте болмауы тиіс.");
+        if (model.StudentId <= 0 || model.BookCopyId <= 0) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Студент пен кітап данасын таңдаңыз."));
+        if (model.LoanDate == default || model.DueDate == default) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Берілген күн мен қайтару мерзімін енгізіңіз."));
+        if (model.LoanDate.Date > clock.Today) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Берілген күн болашақта болмауы тиіс."));
+        if (model.DueDate.Date < model.LoanDate.Date) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Қайтару мерзімі берілген күннен ерте болмауы тиіс."));
         ValidateNotes(model.Notes);
         var loan = await InTransactionAsync(async () =>
         {
             var student = await db.Students.SingleOrDefaultAsync(x => x.Id == model.StudentId, ct);
-            if (student is null || !student.IsActive) throw new BusinessException("Белсенді студентті таңдаңыз.");
+            if (student is null || !student.IsActive) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Белсенді студентті таңдаңыз."));
             var copy = await db.BookCopies.Include(x => x.Book).SingleOrDefaultAsync(x => x.Id == model.BookCopyId, ct);
-            if (copy is null || copy.Book.IsArchived) throw new BusinessException("Кітап данасы табылмады немесе кітап мұрағатталған.");
+            if (copy is null || copy.Book.IsArchived) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітап данасы табылмады немесе кітап мұрағатталған."));
             if (copy.Status != CopyStatus.Available || await db.Loans.AnyAsync(x => x.BookCopyId == copy.Id && x.ReturnedAt == null, ct))
-                throw new BusinessException("Бұл дана қазір қолжетімсіз. Басқа дананы таңдаңыз.");
+                throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл дана қазір қолжетімсіз. Басқа дананы таңдаңыз."));
             if (await db.Reservations.AnyAsync(r => r.BookId == copy.BookId && r.Status == ReservationStatus.Queued, ct))
-                throw new BusinessException("Бұл кітапта күту кезегі бар. Алдымен кезектегі броньдарға дана мен алып кету слотын бөліңіз.");
+                throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл кітапта күту кезегі бар. Алдымен кезектегі броньдарға дана мен алып кету слотын бөліңіз."));
             if (await db.Reservations.AnyAsync(r => r.StudentId == student.Id && r.BookId == copy.BookId &&
                     (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.ReadyForPickup || r.Status == ReservationStatus.Queued), ct))
-                throw new BusinessException("Студенттің осы кітапқа белсенді броні бар. Кітапты бронь бетінде алып кету кодымен беріңіз.");
+                throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Студенттің осы кітапқа белсенді броні бар. Кітапты бронь бетінде алып кету кодымен беріңіз."));
             var record = new Loan
             {
                 StudentId = student.Id, BookCopyId = copy.Id,
@@ -149,7 +149,7 @@ public sealed class CirculationService(
             copy.Status = CopyStatus.OnLoan;
             db.Loans.Add(record);
             return record;
-        }, "Дана басқа қызметкермен өзгертілді немесе берілді. Тізімді жаңартып, қайталап көріңіз.", ct);
+        }, global::EduLibrary.Localization.UiText.Get("Дана басқа қызметкермен өзгертілді немесе берілді. Тізімді жаңартып, қайталап көріңіз."), ct);
         logger.LogInformation("Loan {LoanId} issued to student {StudentId} by {UserId}", loan.Id, model.StudentId, issuedByUserId);
         return loan.Id;
     }
@@ -171,29 +171,29 @@ public sealed class CirculationService(
     public async Task ReturnAsync(ReturnLoanViewModel model, string receivedByUserId, CancellationToken ct = default)
     {
         EnsureOperator(receivedByUserId);
-        if (model.ReturnDate == default || model.ReturnDate.Date > clock.Today) throw new BusinessException("Қайтару күні бүгіннен кеш болмауы тиіс.");
-        if (model.ReturnCondition is not ("Good" or "Damaged")) throw new BusinessException("Дананың жағдайын дұрыс таңдаңыз.");
+        if (model.ReturnDate == default || model.ReturnDate.Date > clock.Today) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Қайтару күні бүгіннен кеш болмауы тиіс."));
+        if (model.ReturnCondition is not ("Good" or "Damaged")) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Дананың жағдайын дұрыс таңдаңыз."));
         ValidateNotes(model.Notes);
         await InTransactionAsync(async () =>
         {
             var loan = await db.Loans.Include(x => x.BookCopy).SingleOrDefaultAsync(x => x.Id == model.LoanId, ct);
-            if (loan is null) throw new BusinessException("Кітап беру жазбасы табылмады.");
-            if (loan.ReturnedAt.HasValue || await db.Returns.AnyAsync(x => x.LoanId == loan.Id, ct)) throw new BusinessException("Бұл кітап бұрын қайтарылған.");
-            if (model.ReturnDate.Date < loan.LoanDate.Date) throw new BusinessException("Қайтару күні кітап берілген күннен ерте болмауы тиіс.");
-            if (loan.BookCopy.Status != CopyStatus.OnLoan) throw new BusinessException("Дананың мәртебесі өзгерген. Деректерді тексеріңіз.");
+            if (loan is null) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітап беру жазбасы табылмады."));
+            if (loan.ReturnedAt.HasValue || await db.Returns.AnyAsync(x => x.LoanId == loan.Id, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл кітап бұрын қайтарылған."));
+            if (model.ReturnDate.Date < loan.LoanDate.Date) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Қайтару күні кітап берілген күннен ерте болмауы тиіс."));
+            if (loan.BookCopy.Status != CopyStatus.OnLoan) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Дананың мәртебесі өзгерген. Деректерді тексеріңіз."));
             SetOriginalVersion(loan, model.RowVersion);
             loan.ReturnedAt = model.ReturnDate.Date;
             loan.BookCopy.Status = model.ReturnCondition == "Good" ? CopyStatus.Available : CopyStatus.Damaged;
-            loan.BookCopy.Condition = model.ReturnCondition == "Good" ? "Жақсы" : "Зақымдалған";
+            loan.BookCopy.Condition = model.ReturnCondition == "Good" ? global::EduLibrary.Localization.UiText.Get("Жақсы") : global::EduLibrary.Localization.UiText.Get("Зақымдалған");
             db.Returns.Add(new Return { LoanId = loan.Id, ReturnDate = model.ReturnDate.Date, ReceivedByUserId = receivedByUserId, ReturnCondition = model.ReturnCondition, Notes = model.Notes?.Trim() });
             var days = Math.Max(0, (model.ReturnDate.Date - loan.DueDate.Date).Days);
             if (days > 0 && DailyRate > 0)
             {
-                if (await db.Fines.AnyAsync(x => x.LoanId == loan.Id, ct)) throw new BusinessException("Бұл жазбаға айыппұл бұрын есептелген. Деректерді тексеріңіз.");
-                db.Fines.Add(new Fine { LoanId = loan.Id, StudentId = loan.StudentId, Amount = days * DailyRate, PaidAmount = 0, Status = FineStatus.Unpaid, Reason = $"Кітапты {days} күн кешіктіріп қайтару", CreatedAt = clock.UtcNow });
+                if (await db.Fines.AnyAsync(x => x.LoanId == loan.Id, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл жазбаға айыппұл бұрын есептелген. Деректерді тексеріңіз."));
+                db.Fines.Add(new Fine { LoanId = loan.Id, StudentId = loan.StudentId, Amount = days * DailyRate, PaidAmount = 0, Status = FineStatus.Unpaid, Reason = global::EduLibrary.Localization.UiText.Format($"Кітапты {days} күн кешіктіріп қайтару"), CreatedAt = clock.UtcNow });
             }
             return true;
-        }, "Бұл жазбаны басқа қызметкер өзгертті. Бетті жаңартып, қайталап көріңіз.", ct);
+        }, global::EduLibrary.Localization.UiText.Get("Бұл жазбаны басқа қызметкер өзгертті. Бетті жаңартып, қайталап көріңіз."), ct);
         logger.LogInformation("Loan {LoanId} returned by {UserId}", model.LoanId, receivedByUserId);
     }
 
@@ -254,19 +254,19 @@ public sealed class CirculationService(
     public async Task PayFineAsync(FinePaymentViewModel model, string receivedByUserId, CancellationToken ct = default)
     {
         EnsureOperator(receivedByUserId);
-        if (model.Amount <= 0 || decimal.Round(model.Amount, 2) != model.Amount) throw new BusinessException("Төлем сомасы оң сан болуы және екі ондық таңбадан аспауы тиіс.");
+        if (model.Amount <= 0 || decimal.Round(model.Amount, 2) != model.Amount) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Төлем сомасы оң сан болуы және екі ондық таңбадан аспауы тиіс."));
         await InTransactionAsync(async () =>
         {
             var fine = await db.Fines.SingleOrDefaultAsync(x => x.Id == model.FineId, ct);
-            if (fine is null) throw new BusinessException("Айыппұл табылмады.");
-            if (model.Amount > fine.Amount - fine.PaidAmount) throw new BusinessException("Төлем сомасы қалған берешектен аспауы тиіс.");
+            if (fine is null) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Айыппұл табылмады."));
+            if (model.Amount > fine.Amount - fine.PaidAmount) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Төлем сомасы қалған берешектен аспауы тиіс."));
             SetOriginalVersion(fine, model.RowVersion);
             fine.PaidAmount += model.Amount;
             fine.Status = fine.PaidAmount == fine.Amount ? FineStatus.Paid : FineStatus.PartiallyPaid;
             fine.PaidAt = fine.Status == FineStatus.Paid ? clock.UtcNow : null;
             db.FinePayments.Add(new FinePayment { FineId = fine.Id, Amount = model.Amount, PaidAt = clock.UtcNow, ReceivedByUserId = receivedByUserId });
             return true;
-        }, "Айыппұл басқа қызметкермен өзгертілді. Қалдықты жаңартып, қайта көріңіз.", ct);
+        }, global::EduLibrary.Localization.UiText.Get("Айыппұл басқа қызметкермен өзгертілді. Қалдықты жаңартып, қайта көріңіз."), ct);
         logger.LogInformation("Fine {FineId} payment {Amount} recorded by {UserId}", model.FineId, model.Amount, receivedByUserId);
     }
 
@@ -328,18 +328,18 @@ public sealed class CirculationService(
     {
         if (string.IsNullOrEmpty(rowVersion)) return;
         try { db.Entry(entity).Property("RowVersion").OriginalValue = Convert.FromBase64String(rowVersion); }
-        catch (FormatException) { throw new BusinessException("Жазбаның нұсқасы дұрыс емес. Бетті жаңартыңыз."); }
+        catch (FormatException) { throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Жазбаның нұсқасы дұрыс емес. Бетті жаңартыңыз.")); }
     }
 
     private static void EnsureOperator(string userId)
     {
-        if (string.IsNullOrWhiteSpace(userId)) throw new BusinessException("Жүйеге қайта кіріңіз.");
+        if (string.IsNullOrWhiteSpace(userId)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Жүйеге қайта кіріңіз."));
     }
 
     private static void ValidateNotes(string? notes)
     {
-        if (notes?.Length > 2000) throw new BusinessException("Ескертпе 2000 таңбадан аспауы тиіс.");
+        if (notes?.Length > 2000) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Ескертпе 2000 таңбадан аспауы тиіс."));
     }
 
-    internal static string? ConditionLabel(string? condition) => condition switch { "Good" => "Жақсы", "Damaged" => "Зақымдалған", _ => condition };
+    internal static string? ConditionLabel(string? condition) => condition switch { "Good" => global::EduLibrary.Localization.UiText.Get("Жақсы"), "Damaged" => global::EduLibrary.Localization.UiText.Get("Зақымдалған"), _ => condition };
 }

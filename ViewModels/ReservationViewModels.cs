@@ -37,7 +37,7 @@ public class ReservationRowViewModel
     public string StudentName { get; set; } = "";
     public string StudentNumber { get; set; } = "";
     public ReservationStatus Status { get; set; }
-    public string StatusLabel => Status switch { ReservationStatus.Pending => "Дайындалуын күтуде", ReservationStatus.ReadyForPickup => "Алып кетуге дайын", ReservationStatus.Queued => "Кезекте", ReservationStatus.Fulfilled => "Кітап берілді", ReservationStatus.Cancelled => "Тоқтатылған", ReservationStatus.Expired => "Мерзімі өткен", _ => "Белгісіз" };
+    public string StatusLabel => Status switch { ReservationStatus.Pending => global::EduLibrary.Localization.UiText.Get("Дайындалуын күтуде"), ReservationStatus.ReadyForPickup => global::EduLibrary.Localization.UiText.Get("Алып кетуге дайын"), ReservationStatus.Queued => global::EduLibrary.Localization.UiText.Get("Кезекте"), ReservationStatus.Fulfilled => global::EduLibrary.Localization.UiText.Get("Кітап берілді"), ReservationStatus.Cancelled => global::EduLibrary.Localization.UiText.Get("Тоқтатылған"), ReservationStatus.Expired => global::EduLibrary.Localization.UiText.Get("Мерзімі өткен"), _ => global::EduLibrary.Localization.UiText.Get("Белгісіз") };
     public DateTime CreatedAt { get; set; }
     public DateTime? PickupAt { get; set; }
     public DateTime? ExpiresAt { get; set; }

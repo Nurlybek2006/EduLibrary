@@ -21,7 +21,7 @@ public sealed class AuthorsController(ICatalogService catalog) : Controller
         model.Id = 0;
         if (ModelState.IsValid)
         {
-            try { await catalog.SaveAuthorAsync(model, ct); TempData["Success"] = "Автор анықтамалыққа қосылды."; return RedirectToAction(nameof(Index)); }
+            try { await catalog.SaveAuthorAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Автор анықтамалыққа қосылды."); return RedirectToAction(nameof(Index)); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         return View(model);
@@ -39,7 +39,7 @@ public sealed class AuthorsController(ICatalogService catalog) : Controller
         if (id != model.Id || id <= 0) return BadRequest();
         if (ModelState.IsValid)
         {
-            try { await catalog.SaveAuthorAsync(model, ct); TempData["Success"] = "Автор деректері жаңартылды."; return RedirectToAction(nameof(Index)); }
+            try { await catalog.SaveAuthorAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Автор деректері жаңартылды."); return RedirectToAction(nameof(Index)); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         return View(model);
@@ -48,7 +48,7 @@ public sealed class AuthorsController(ICatalogService catalog) : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        try { await catalog.DeleteAuthorAsync(id, ct); TempData["Success"] = "Автор жойылды."; }
+        try { await catalog.DeleteAuthorAsync(id, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Автор жойылды."); }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Index));
     }

@@ -30,6 +30,10 @@ namespace EduLibrary.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("AvatarPath")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -69,6 +73,20 @@ namespace EduLibrary.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("PreferredLanguage")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasDefaultValue("kk-KZ");
+
+                    b.Property<string>("PreferredTheme")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasDefaultValue("system");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -89,7 +107,12 @@ namespace EduLibrary.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetUsers", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Users_Language", "[PreferredLanguage] IN ('kk-KZ','ru-RU','en-US')");
+
+                            t.HasCheckConstraint("CK_Users_Theme", "[PreferredTheme] IN ('system','light','dark')");
+                        });
                 });
 
             modelBuilder.Entity("EduLibrary.Models.Entities.Author", b =>
@@ -320,6 +343,169 @@ namespace EduLibrary.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.DigitalBookAsset", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("AllowDownload")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Checksum")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FileFormat")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("LicenseName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("LicenseType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LicenseUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("PageCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RightsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RightsHolder")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("SourceUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("StoragePath")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UploadedByUserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoragePath")
+                        .IsUnique();
+
+                    b.HasIndex("UploadedByUserId");
+
+                    b.HasIndex("IsPublished", "IsArchived", "CreatedAt");
+
+                    b.HasIndex("BookId", "IsPublished", "IsArchived", "FileFormat");
+
+                    b.ToTable("DigitalBookAssets", t =>
+                        {
+                            t.HasCheckConstraint("CK_DigitalAssets_Access", "[AccessLevel] BETWEEN 0 AND 2");
+
+                            t.HasCheckConstraint("CK_DigitalAssets_Format", "[FileFormat] IN (0,1)");
+
+                            t.HasCheckConstraint("CK_DigitalAssets_License", "[LicenseType] BETWEEN 0 AND 5 AND ([IsPublished] = 0 OR ([RightsConfirmed] = 1 AND [LicenseType] <> 0 AND LEN([LicenseName]) > 0 AND LEN([RightsHolder]) > 0))");
+
+                            t.HasCheckConstraint("CK_DigitalAssets_Size", "[FileSize] > 0 AND [PageCount] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.DigitalReadingSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DigitalBookAssetId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LastActivityAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DigitalBookAssetId");
+
+                    b.HasIndex("UserId", "DigitalBookAssetId", "LastActivityAt");
+
+                    b.ToTable("DigitalReadingSessions", t =>
+                        {
+                            t.HasCheckConstraint("CK_DigitalReadingSessions_Time", "[LastActivityAt] >= [StartedAt] AND ([CompletedAt] IS NULL OR [CompletedAt] >= [StartedAt])");
+                        });
                 });
 
             modelBuilder.Entity("EduLibrary.Models.Entities.Fine", b =>
@@ -562,6 +748,122 @@ namespace EduLibrary.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Publishers");
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.ReadingBookmark", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DigitalBookAssetId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EpubCfi")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int?>("PageNumber")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DigitalBookAssetId");
+
+                    b.HasIndex("UserId", "DigitalBookAssetId", "CreatedAt");
+
+                    b.ToTable("ReadingBookmarks", t =>
+                        {
+                            t.HasCheckConstraint("CK_ReadingBookmarks_Locator", "([PageNumber] IS NOT NULL AND [PageNumber] > 0) OR ([EpubCfi] IS NOT NULL AND LEN([EpubCfi]) > 0)");
+                        });
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.ReadingProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CurrentPage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DigitalBookAssetId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EpubCfi")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<DateTime>("LastReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("ProgressPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("TotalPages")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DigitalBookAssetId");
+
+                    b.HasIndex("UserId", "DigitalBookAssetId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "LastReadAt");
+
+                    b.ToTable("ReadingProgress", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_ReadingProgress_Pages", "[CurrentPage] >= 0 AND [TotalPages] >= 0 AND ([TotalPages] = 0 OR [CurrentPage] <= [TotalPages])");
+
+                            t.HasCheckConstraint("CK_ReadingProgress_Percent", "[ProgressPercentage] BETWEEN 0 AND 100");
+                        });
                 });
 
             modelBuilder.Entity("EduLibrary.Models.Entities.Reservation", b =>
@@ -1134,6 +1436,44 @@ namespace EduLibrary.Data.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("EduLibrary.Models.Entities.DigitalBookAsset", b =>
+                {
+                    b.HasOne("EduLibrary.Models.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduLibrary.Models.Entities.ApplicationUser", "UploadedByUser")
+                        .WithMany()
+                        .HasForeignKey("UploadedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("UploadedByUser");
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.DigitalReadingSession", b =>
+                {
+                    b.HasOne("EduLibrary.Models.Entities.DigitalBookAsset", "DigitalBookAsset")
+                        .WithMany()
+                        .HasForeignKey("DigitalBookAssetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduLibrary.Models.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DigitalBookAsset");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("EduLibrary.Models.Entities.Fine", b =>
                 {
                     b.HasOne("EduLibrary.Models.Entities.Student", "Student")
@@ -1207,6 +1547,44 @@ namespace EduLibrary.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.ReadingBookmark", b =>
+                {
+                    b.HasOne("EduLibrary.Models.Entities.DigitalBookAsset", "DigitalBookAsset")
+                        .WithMany()
+                        .HasForeignKey("DigitalBookAssetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduLibrary.Models.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DigitalBookAsset");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EduLibrary.Models.Entities.ReadingProgress", b =>
+                {
+                    b.HasOne("EduLibrary.Models.Entities.DigitalBookAsset", "DigitalBookAsset")
+                        .WithMany()
+                        .HasForeignKey("DigitalBookAssetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduLibrary.Models.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DigitalBookAsset");
 
                     b.Navigation("User");
                 });

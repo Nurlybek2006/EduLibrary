@@ -38,7 +38,7 @@ public sealed class LoanRowViewModel
     public DateTime? ReturnedAt { get; set; }
     public int OverdueDays { get; set; }
     public decimal EstimatedFine { get; set; }
-    public string StatusLabel => ReturnedAt.HasValue ? "Қайтарылды" : OverdueDays > 0 ? "Мерзімі өткен" : "Оқырманда";
+    public string StatusLabel => ReturnedAt.HasValue ? global::EduLibrary.Localization.UiText.Get("Қайтарылды") : OverdueDays > 0 ? global::EduLibrary.Localization.UiText.Get("Мерзімі өткен") : global::EduLibrary.Localization.UiText.Get("Оқырманда");
     public string StatusClass => ReturnedAt.HasValue ? "success" : OverdueDays > 0 ? "danger" : "primary";
 }
 
@@ -133,7 +133,7 @@ public sealed class FineRowViewModel
     public decimal Balance => Amount - PaidAmount;
     public DateTime CreatedAt { get; set; }
     public DateTime? PaidAt { get; set; }
-    public string StatusLabel => Balance == 0 ? "Төленді" : PaidAmount > 0 ? "Ішінара төленді" : "Төленбеген";
+    public string StatusLabel => Balance == 0 ? global::EduLibrary.Localization.UiText.Get("Төленді") : PaidAmount > 0 ? global::EduLibrary.Localization.UiText.Get("Ішінара төленді") : global::EduLibrary.Localization.UiText.Get("Төленбеген");
     public string StatusClass => Balance == 0 ? "success" : PaidAmount > 0 ? "warning" : "danger";
 }
 

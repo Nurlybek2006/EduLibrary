@@ -30,7 +30,7 @@ public sealed class FinesController(ICirculationService service) : Controller
             try
             {
                 await service.PayFineAsync(model, UserId ?? "", ct);
-                TempData["Success"] = "Төлем сәтті тіркелді.";
+                TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Төлем сәтті тіркелді.");
                 return RedirectToAction(nameof(Details), new { id = model.FineId });
             }
             catch (BusinessException exception) { ModelState.AddModelError("", exception.Message); }

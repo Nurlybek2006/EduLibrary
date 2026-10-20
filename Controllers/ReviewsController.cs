@@ -50,7 +50,7 @@ public sealed class ReviewsController(IReviewService reviews) : Controller
         {
             try
             {
-                var bookId = await reviews.SaveAsync(model, UserId, ct); TempData["Success"] = "Пікіріңіз сақталды. Ойыңызбен бөліскеніңізге рақмет!";
+                var bookId = await reviews.SaveAsync(model, UserId, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Пікіріңіз сақталды. Ойыңызбен бөліскеніңізге рақмет!");
                 return RedirectToAction("Details", "Books", new { id = bookId }, "reviews");
             }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
@@ -67,7 +67,7 @@ public sealed class ReviewsController(IReviewService reviews) : Controller
         if (await reviews.GetEditFormAsync(id, UserId, ct) is null) return NotFound();
         try
         {
-            var bookId = await reviews.DeleteAsync(id, rowVersion, UserId, ct); TempData["Success"] = "Пікіріңіз жойылды.";
+            var bookId = await reviews.DeleteAsync(id, rowVersion, UserId, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Пікіріңіз жойылды.");
             return RedirectToAction("Details", "Books", new { id = bookId }, "reviews");
         }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; return RedirectToAction(nameof(Edit), new { id }); }
@@ -77,7 +77,7 @@ public sealed class ReviewsController(IReviewService reviews) : Controller
     public async Task<IActionResult> Moderate(int id, bool hidden, string rowVersion, int? bookId, CancellationToken ct)
     {
         if (!ModelState.IsValid) return BadRequest();
-        try { await reviews.ModerateAsync(id, hidden, rowVersion, ct); TempData["Success"] = hidden ? "Пікір жария көрсетілімнен жасырылды." : "Пікір қайта жарияланды."; }
+        try { await reviews.ModerateAsync(id, hidden, rowVersion, ct); TempData["Success"] = hidden ? global::EduLibrary.Localization.UiText.Get("Пікір жария көрсетілімнен жасырылды.") : global::EduLibrary.Localization.UiText.Get("Пікір қайта жарияланды."); }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Index), new { bookId });
     }

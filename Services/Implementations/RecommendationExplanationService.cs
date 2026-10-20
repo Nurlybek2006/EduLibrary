@@ -11,14 +11,14 @@ public sealed class TemplateExplanationProvider
     public string Explain(RecommendationResult book)
     {
         var reasons = new List<string>();
-        if (book.MatchingInterests.Count > 0) reasons.Add($"Қызығушылықтарыңызбен сәйкестік бар: {string.Join(", ", book.MatchingInterests.Take(3))}.");
-        if (book.MatchingSubjects.Count > 0) reasons.Add($"Пәндеріңізбен байланысты: {string.Join(", ", book.MatchingSubjects.Take(2))}.");
-        if (book.HistoryMatches.Count > 0 && book.HistoryScore > 0) reasons.Add($"Оқу тарихыңыздағы авторлар немесе бағыттармен ұқсас: {string.Join(", ", book.HistoryMatches.Take(2))}.");
-        if (reasons.Count == 0) reasons.Add("Жеке сәйкестік дәлелі әзірге аз. Бұл — каталогтағы әдебиеттермен танысуға арналған ұсыныс.");
-        if (book.FacultyLoans > 0) reasons.Add($"Осы факультет оқырмандары кітапты {book.FacultyLoans} рет алған.");
-        else if (book.TotalLoans > 0) reasons.Add($"Кітап кітапханада {book.TotalLoans} рет берілген.");
-        if (book.ReviewCount > 0) reasons.Add($"{book.ReviewCount} ашық пікір бойынша орташа баға — {book.AverageRating.ToString("0.0", CultureInfo.GetCultureInfo("kk-KZ"))}/5.");
-        reasons.Add(book.AvailableCopies > 0 ? $"Қазір {book.AvailableCopies} дана қолжетімді." : "Қазір бос дана жоқ; каталогтағы мәртебесін кейін тексеріңіз.");
+        if (book.MatchingInterests.Count > 0) reasons.Add(UiText.Get("Recommendations.Interests",string.Join(", ", book.MatchingInterests.Take(3))));
+        if (book.MatchingSubjects.Count > 0) reasons.Add(UiText.Get("Recommendations.Subjects",string.Join(", ", book.MatchingSubjects.Take(2))));
+        if (book.HistoryMatches.Count > 0 && book.HistoryScore > 0) reasons.Add(UiText.Get("Recommendations.History",string.Join(", ", book.HistoryMatches.Take(2))));
+        if (reasons.Count == 0) reasons.Add(UiText.Get("Recommendations.ColdStart"));
+        if (book.FacultyLoans > 0) reasons.Add(UiText.Get("Recommendations.FacultyLoans",book.FacultyLoans));
+        else if (book.TotalLoans > 0) reasons.Add(UiText.Get("Recommendations.TotalLoans",book.TotalLoans));
+        if (book.ReviewCount > 0) reasons.Add(UiText.Get("Recommendations.Rating",book.ReviewCount,book.AverageRating.ToString("0.0", CultureInfo.CurrentCulture)));
+        reasons.Add(book.AvailableCopies > 0 ? UiText.Get("Recommendations.Available",book.AvailableCopies) : UiText.Get("Recommendations.Unavailable"));
         return string.Join(" ", reasons);
     }
 }

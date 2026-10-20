@@ -21,7 +21,7 @@ public sealed class CategoriesController(ICatalogService catalog) : Controller
         model.Id = 0;
         if (ModelState.IsValid)
         {
-            try { await catalog.SaveCategoryAsync(model, ct); TempData["Success"] = "Санат анықтамалыққа қосылды."; return RedirectToAction(nameof(Index)); }
+            try { await catalog.SaveCategoryAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Санат анықтамалыққа қосылды."); return RedirectToAction(nameof(Index)); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         return View(model);
@@ -39,7 +39,7 @@ public sealed class CategoriesController(ICatalogService catalog) : Controller
         if (id != model.Id || id <= 0) return BadRequest();
         if (ModelState.IsValid)
         {
-            try { await catalog.SaveCategoryAsync(model, ct); TempData["Success"] = "Санат деректері жаңартылды."; return RedirectToAction(nameof(Index)); }
+            try { await catalog.SaveCategoryAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Санат деректері жаңартылды."); return RedirectToAction(nameof(Index)); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         return View(model);
@@ -48,7 +48,7 @@ public sealed class CategoriesController(ICatalogService catalog) : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        try { await catalog.DeleteCategoryAsync(id, ct); TempData["Success"] = "Санат жойылды."; }
+        try { await catalog.DeleteCategoryAsync(id, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Санат жойылды."); }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Index));
     }

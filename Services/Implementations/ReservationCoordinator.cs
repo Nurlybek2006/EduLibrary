@@ -22,7 +22,7 @@ public static class ReservationCoordinator
         command.CommandText = "DECLARE @result int; EXEC @result = sys.sp_getapplock @Resource = 'EduLibrary.Reservations.v1', @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 15000; SELECT @result;";
         command.CommandTimeout = 20;
         var result = Convert.ToInt32(await command.ExecuteScalarAsync(ct));
-        if (result < 0) throw new BusinessException("Бронь кезегін қазір жаңарту мүмкін болмады. Қайта көріңіз.");
+        if (result < 0) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бронь кезегін қазір жаңарту мүмкін болмады. Қайта көріңіз."));
     }
 
     public static async Task<int> ReconcileAsync(ApplicationDbContext db, ILibraryClock clock, ReservationOptions options, int? bookId = null, CancellationToken ct = default)
@@ -41,7 +41,7 @@ public static class ReservationCoordinator
                 Release(reservation);
                 reservation.Status = ReservationStatus.Cancelled;
                 reservation.CancelledAtUtc = now;
-                Notify(db, reservation, "ReservationCancelled", "Бронь тоқтатылды", "Кітап немесе оқырман профилі қолжетімсіз болғандықтан бронь тоқтатылды.", now);
+                Notify(db, reservation, "ReservationCancelled", global::EduLibrary.Localization.UiText.Get("Бронь тоқтатылды"), global::EduLibrary.Localization.UiText.Get("Кітап немесе оқырман профилі қолжетімсіз болғандықтан бронь тоқтатылды."), now);
                 changed++;
             }
             else if (reservation.Status != ReservationStatus.Queued && reservation.ExpiresAtUtc <= now)
@@ -49,7 +49,7 @@ public static class ReservationCoordinator
                 Release(reservation);
                 reservation.Status = ReservationStatus.Expired;
                 reservation.ExpiredAtUtc = now;
-                Notify(db, reservation, "ReservationExpired", "Бронь мерзімі өтті", "Алып кету мерзімі аяқталды. Қажет болса, қайта бронь жасаңыз.", now);
+                Notify(db, reservation, "ReservationExpired", global::EduLibrary.Localization.UiText.Get("Бронь мерзімі өтті"), global::EduLibrary.Localization.UiText.Get("Алып кету мерзімі аяқталды. Қажет болса, қайта бронь жасаңыз."), now);
                 changed++;
             }
         }
@@ -75,7 +75,7 @@ public static class ReservationCoordinator
                 {
                     reservation.Status = ReservationStatus.Cancelled;
                     reservation.CancelledAtUtc = now;
-                    Notify(db, reservation, "ReservationCancelled", "Бронь тоқтатылды", "Таңдалған алып кету орны енді қолжетімсіз. Жаңа орынмен қайта бронь жасаңыз.", now);
+                    Notify(db, reservation, "ReservationCancelled", global::EduLibrary.Localization.UiText.Get("Бронь тоқтатылды"), global::EduLibrary.Localization.UiText.Get("Таңдалған алып кету орны енді қолжетімсіз. Жаңа орынмен қайта бронь жасаңыз."), now);
                     changed++;
                     continue;
                 }
@@ -93,7 +93,7 @@ public static class ReservationCoordinator
                 reservation.ExpiresAtUtc = ReservationSchedule.HoldDeadline(now, appointment.Value, options.PendingHoldHours, options);
                 reservation.Status = ReservationStatus.Pending;
                 capacity[(location.Id, appointment.Value)] = capacity.GetValueOrDefault((location.Id, appointment.Value)) + 1;
-                Notify(db, reservation, "ReservationPromoted", "Кітап сізге бөлінді", $"Кезегіңіз келді. Қызметкер кітапты дайындайды. Алып кету: {ReservationSchedule.ToLocal(appointment.Value):dd.MM.yyyy HH:mm}, {location.Name}.", now);
+                Notify(db, reservation, "ReservationPromoted", global::EduLibrary.Localization.UiText.Get("Кітап сізге бөлінді"), global::EduLibrary.Localization.UiText.Format($"Кезегіңіз келді. Қызметкер кітапты дайындайды. Алып кету: {ReservationSchedule.ToLocal(appointment.Value):dd.MM.yyyy HH:mm}, {location.Name}."), now);
                 changed++;
             }
         }
@@ -105,7 +105,7 @@ public static class ReservationCoordinator
             var existing = await db.Notifications.Where(n => keys.Contains(n.DeduplicationKey)).Select(n => n.DeduplicationKey).ToListAsync(ct);
             foreach (var reservation in soon.Where(r => !existing.Contains($"ReservationExpiring:{r.Id}")))
             {
-                Notify(db, reservation, "ReservationExpiring", "Бронь мерзімі аяқталуға жақын", $"Дайын кітапты {ReservationSchedule.ToLocal(reservation.ExpiresAtUtc!.Value):dd.MM.yyyy HH:mm} дейін алып кетіңіз.", now);
+                Notify(db, reservation, "ReservationExpiring", global::EduLibrary.Localization.UiText.Get("Бронь мерзімі аяқталуға жақын"), global::EduLibrary.Localization.UiText.Format($"Дайын кітапты {ReservationSchedule.ToLocal(reservation.ExpiresAtUtc!.Value):dd.MM.yyyy HH:mm} дейін алып кетіңіз."), now);
                 changed++;
             }
         }

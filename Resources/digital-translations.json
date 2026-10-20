@@ -1,0 +1,1076 @@
+[
+  {
+    "key": "A digital edition belongs to an existing book. It does not create or change physical copies.",
+    "kk": "Электрондық нұсқа каталогтағы кітапқа тиесілі. Ол физикалық даналарды құрмайды және өзгертпейді.",
+    "ru": "Электронное издание связано с книгой каталога. Оно не создаёт и не изменяет физические экземпляры.",
+    "en": "A digital edition belongs to an existing book. It does not create or change physical copies."
+  },
+  {
+    "key": "A library without distance",
+    "kk": "Қашықтыққа бағынбайтын кітапхана",
+    "ru": "Библиотека без расстояний",
+    "en": "A library without distance"
+  },
+  {
+    "key": "Access",
+    "kk": "Қолжетімділік",
+    "ru": "Доступ",
+    "en": "Access"
+  },
+  {
+    "key": "Access and publication",
+    "kk": "Қолжетімділік және жариялау",
+    "ru": "Доступ и публикация",
+    "en": "Access and publication"
+  },
+  {
+    "key": "Access level",
+    "kk": "Қолжетімділік деңгейі",
+    "ru": "Уровень доступа",
+    "en": "Access level"
+  },
+  {
+    "key": "Action",
+    "kk": "Әрекет",
+    "ru": "Действие",
+    "en": "Action"
+  },
+  {
+    "key": "Add an authorized PDF or EPUB to the library.",
+    "kk": "Кітапханаға таратуға рұқсат етілген PDF немесе EPUB қосыңыз.",
+    "ru": "Добавьте в библиотеку PDF или EPUB с подтверждёнными правами.",
+    "en": "Add an authorized PDF or EPUB to the library."
+  },
+  {
+    "key": "Add bookmark",
+    "kk": "Бетбелгі қосу",
+    "ru": "Добавить закладку",
+    "en": "Add bookmark"
+  },
+  {
+    "key": "All authors",
+    "kk": "Барлық авторлар",
+    "ru": "Все авторы",
+    "en": "All authors"
+  },
+  {
+    "key": "All categories",
+    "kk": "Барлық санаттар",
+    "ru": "Все категории",
+    "en": "All categories"
+  },
+  {
+    "key": "All formats",
+    "kk": "Барлық форматтар",
+    "ru": "Все форматы",
+    "en": "All formats"
+  },
+  {
+    "key": "All languages",
+    "kk": "Барлық тілдер",
+    "ru": "Все языки",
+    "en": "All languages"
+  },
+  {
+    "key": "All recommendations",
+    "kk": "Барлық ұсыныстар",
+    "ru": "Все рекомендации",
+    "en": "All recommendations"
+  },
+  {
+    "key": "All subjects",
+    "kk": "Барлық пәндер",
+    "ru": "Все дисциплины",
+    "en": "All subjects"
+  },
+  {
+    "key": "Allow a separate file download",
+    "kk": "Файлды бөлек жүктеп алуға рұқсат ету",
+    "ru": "Разрешить отдельное скачивание файла",
+    "en": "Allow a separate file download"
+  },
+  {
+    "key": "Apply filters",
+    "kk": "Сүзгілерді қолдану",
+    "ru": "Применить фильтры",
+    "en": "Apply filters"
+  },
+  {
+    "key": "Archive digital edition",
+    "kk": "Электрондық нұсқаны архивтеу",
+    "ru": "Архивировать электронное издание",
+    "en": "Archive digital edition"
+  },
+  {
+    "key": "Archive this digital edition? It will no longer be available to readers.",
+    "kk": "Осы электрондық нұсқаны архивтейсіз бе? Оқырмандар оған қол жеткізе алмайды.",
+    "ru": "Архивировать это электронное издание? Оно станет недоступно читателям.",
+    "en": "Archive this digital edition? It will no longer be available to readers."
+  },
+  {
+    "key": "Archived",
+    "kk": "Архивтелген",
+    "ru": "В архиве",
+    "en": "Archived"
+  },
+  {
+    "key": "Author",
+    "kk": "Автор",
+    "ru": "Автор",
+    "en": "Author"
+  },
+  {
+    "key": "Back to book information",
+    "kk": "Кітап туралы ақпаратқа оралу",
+    "ru": "К сведениям о книге",
+    "en": "Back to book information"
+  },
+  {
+    "key": "Back to digital library",
+    "kk": "Электрондық кітапханаға оралу",
+    "ru": "В электронную библиотеку",
+    "en": "Back to digital library"
+  },
+  {
+    "key": "Back to management",
+    "kk": "Басқаруға оралу",
+    "ru": "К управлению",
+    "en": "Back to management"
+  },
+  {
+    "key": "Book",
+    "kk": "Кітап",
+    "ru": "Книга",
+    "en": "Book"
+  },
+  {
+    "key": "Book content",
+    "kk": "Кітап мазмұны",
+    "ru": "Содержимое книги",
+    "en": "Book content"
+  },
+  {
+    "key": "Bookmark removed",
+    "kk": "Бетбелгі жойылды",
+    "ru": "Закладка удалена",
+    "en": "Bookmark removed"
+  },
+  {
+    "key": "Bookmark saved",
+    "kk": "Бетбелгі сақталды",
+    "ru": "Закладка сохранена",
+    "en": "Bookmark saved"
+  },
+  {
+    "key": "Bookmark title",
+    "kk": "Бетбелгі атауы",
+    "ru": "Название закладки",
+    "en": "Bookmark title"
+  },
+  {
+    "key": "Bookmarks",
+    "kk": "Бетбелгілер",
+    "ru": "Закладки",
+    "en": "Bookmarks"
+  },
+  {
+    "key": "Browse by subject",
+    "kk": "Пән бойынша қарау",
+    "ru": "Поиск по дисциплинам",
+    "en": "Browse by subject"
+  },
+  {
+    "key": "Browse digital books",
+    "kk": "Электрондық кітаптарды қарау",
+    "ru": "Смотреть электронные книги",
+    "en": "Browse digital books"
+  },
+  {
+    "key": "Cancel",
+    "kk": "Бас тарту",
+    "ru": "Отмена",
+    "en": "Cancel"
+  },
+  {
+    "key": "Catalog book",
+    "kk": "Каталогтағы кітап",
+    "ru": "Книга каталога",
+    "en": "Catalog book"
+  },
+  {
+    "key": "Catalog information",
+    "kk": "Каталогтағы ақпарат",
+    "ru": "Сведения в каталоге",
+    "en": "Catalog information"
+  },
+  {
+    "key": "Category",
+    "kk": "Санат",
+    "ru": "Категория",
+    "en": "Category"
+  },
+  {
+    "key": "Chapter",
+    "kk": "Тарау",
+    "ru": "Глава",
+    "en": "Chapter"
+  },
+  {
+    "key": "Choose a book",
+    "kk": "Кітапты таңдаңыз",
+    "ru": "Выберите книгу",
+    "en": "Choose a book"
+  },
+  {
+    "key": "Close",
+    "kk": "Жабу",
+    "ru": "Закрыть",
+    "en": "Close"
+  },
+  {
+    "key": "Close bookmarks",
+    "kk": "Бетбелгілерді жабу",
+    "ru": "Закрыть закладки",
+    "en": "Close bookmarks"
+  },
+  {
+    "key": "Completed",
+    "kk": "Оқылды",
+    "ru": "Прочитано",
+    "en": "Completed"
+  },
+  {
+    "key": "Completed books",
+    "kk": "Оқылған кітаптар",
+    "ru": "Прочитанные книги",
+    "en": "Completed books"
+  },
+  {
+    "key": "Content language",
+    "kk": "Мазмұн тілі",
+    "ru": "Язык содержимого",
+    "en": "Content language"
+  },
+  {
+    "key": "Continue from your saved place",
+    "kk": "Сақталған орыннан жалғастырыңыз",
+    "ru": "Продолжите с сохранённого места",
+    "en": "Continue from your saved place"
+  },
+  {
+    "key": "Continue reading",
+    "kk": "Оқуды жалғастыру",
+    "ru": "Продолжить чтение",
+    "en": "Continue reading"
+  },
+  {
+    "key": "Current file",
+    "kk": "Ағымдағы файл",
+    "ru": "Текущий файл",
+    "en": "Current file"
+  },
+  {
+    "key": "Current page",
+    "kk": "Ағымдағы бет",
+    "ru": "Текущая страница",
+    "en": "Current page"
+  },
+  {
+    "key": "Currently reading",
+    "kk": "Қазір оқып жүрмін",
+    "ru": "Сейчас читаю",
+    "en": "Currently reading"
+  },
+  {
+    "key": "Dark",
+    "kk": "Қараңғы",
+    "ru": "Тёмная",
+    "en": "Dark"
+  },
+  {
+    "key": "Digital collection",
+    "kk": "Электрондық қор",
+    "ru": "Электронный фонд",
+    "en": "Digital collection"
+  },
+  {
+    "key": "Digital edition",
+    "kk": "Электрондық нұсқа",
+    "ru": "Электронное издание",
+    "en": "Digital edition"
+  },
+  {
+    "key": "Digital editions",
+    "kk": "Электрондық нұсқалар",
+    "ru": "Электронные издания",
+    "en": "Digital editions"
+  },
+  {
+    "key": "Digital library",
+    "kk": "Электрондық кітапхана",
+    "ru": "Электронная библиотека",
+    "en": "Digital library"
+  },
+  {
+    "key": "Digital library navigation",
+    "kk": "Электрондық кітапхана навигациясы",
+    "ru": "Навигация электронной библиотеки",
+    "en": "Digital library navigation"
+  },
+  {
+    "key": "Digital reading does not change physical copy availability or borrowing records.",
+    "kk": "Электрондық оқу физикалық даналардың қолжетімділігін немесе кітап беру жазбаларын өзгертпейді.",
+    "ru": "Электронное чтение не меняет доступность физических экземпляров и записи о выдаче.",
+    "en": "Digital reading does not change physical copy availability or borrowing records."
+  },
+  {
+    "key": "Discover",
+    "kk": "Кітаптарды ашу",
+    "ru": "Обзор",
+    "en": "Discover"
+  },
+  {
+    "key": "Discover books",
+    "kk": "Кітап таңдау",
+    "ru": "Выбрать книгу",
+    "en": "Discover books"
+  },
+  {
+    "key": "Discover digital books",
+    "kk": "Электрондық кітаптарды ашыңыз",
+    "ru": "Откройте электронные книги",
+    "en": "Discover digital books"
+  },
+  {
+    "key": "Download",
+    "kk": "Жүктеп алу",
+    "ru": "Скачать",
+    "en": "Download"
+  },
+  {
+    "key": "Draft",
+    "kk": "Жоба",
+    "ru": "Черновик",
+    "en": "Draft"
+  },
+  {
+    "key": "Drafts remain visible only to library staff. Publishing requires confirmed rights and complete provenance.",
+    "kk": "Жобаларды тек кітапхана қызметкерлері көреді. Жариялау үшін құқықтар расталып, шығу тегі толық көрсетілуі керек.",
+    "ru": "Черновики видны только сотрудникам библиотеки. Для публикации нужны подтверждённые права и полные сведения о происхождении.",
+    "en": "Drafts remain visible only to library staff. Publishing requires confirmed rights and complete provenance."
+  },
+  {
+    "key": "Edit",
+    "kk": "Өңдеу",
+    "ru": "Редактировать",
+    "en": "Edit"
+  },
+  {
+    "key": "Edit digital edition",
+    "kk": "Электрондық нұсқаны өңдеу",
+    "ru": "Редактировать электронное издание",
+    "en": "Edit digital edition"
+  },
+  {
+    "key": "Edition",
+    "kk": "Нұсқа",
+    "ru": "Издание",
+    "en": "Edition"
+  },
+  {
+    "key": "File and catalog book",
+    "kk": "Файл және каталогтағы кітап",
+    "ru": "Файл и книга каталога",
+    "en": "File and catalog book"
+  },
+  {
+    "key": "Find next",
+    "kk": "Келесісін табу",
+    "ru": "Найти далее",
+    "en": "Find next"
+  },
+  {
+    "key": "Fit width",
+    "kk": "Еніне сыйдыру",
+    "ru": "По ширине",
+    "en": "Fit width"
+  },
+  {
+    "key": "Font size",
+    "kk": "Қаріп өлшемі",
+    "ru": "Размер шрифта",
+    "en": "Font size"
+  },
+  {
+    "key": "Format",
+    "kk": "Формат",
+    "ru": "Формат",
+    "en": "Format"
+  },
+  {
+    "key": "Fullscreen",
+    "kk": "Толық экран",
+    "ru": "Полный экран",
+    "en": "Fullscreen"
+  },
+  {
+    "key": "Fullscreen is unavailable in this browser.",
+    "kk": "Бұл браузерде толық экран қолжетімсіз.",
+    "ru": "В этом браузере полноэкранный режим недоступен.",
+    "en": "Fullscreen is unavailable in this browser."
+  },
+  {
+    "key": "I confirm that the recorded rights permit this digital edition to be distributed.",
+    "kk": "Көрсетілген құқықтар осы электрондық нұсқаны таратуға рұқсат беретінін растаймын.",
+    "ru": "Подтверждаю, что указанные права разрешают распространение этого электронного издания.",
+    "en": "I confirm that the recorded rights permit this digital edition to be distributed."
+  },
+  {
+    "key": "Language",
+    "kk": "Тіл",
+    "ru": "Язык",
+    "en": "Language"
+  },
+  {
+    "key": "Last read",
+    "kk": "Соңғы оқылған уақыт",
+    "ru": "Последнее чтение",
+    "en": "Last read"
+  },
+  {
+    "key": "Library",
+    "kk": "Кітапхана",
+    "ru": "Библиотека",
+    "en": "Library"
+  },
+  {
+    "key": "Library collection",
+    "kk": "Кітапхана қоры",
+    "ru": "Библиотечный фонд",
+    "en": "Library collection"
+  },
+  {
+    "key": "License",
+    "kk": "Лицензия",
+    "ru": "Лицензия",
+    "en": "License"
+  },
+  {
+    "key": "License URL",
+    "kk": "Лицензия сілтемесі",
+    "ru": "Ссылка на лицензию",
+    "en": "License URL"
+  },
+  {
+    "key": "License and provenance",
+    "kk": "Лицензия және шығу тегі",
+    "ru": "Лицензия и происхождение",
+    "en": "License and provenance"
+  },
+  {
+    "key": "License name",
+    "kk": "Лицензия атауы",
+    "ru": "Название лицензии",
+    "en": "License name"
+  },
+  {
+    "key": "License type",
+    "kk": "Лицензия түрі",
+    "ru": "Тип лицензии",
+    "en": "License type"
+  },
+  {
+    "key": "Light",
+    "kk": "Ашық",
+    "ru": "Светлая",
+    "en": "Light"
+  },
+  {
+    "key": "Line spacing",
+    "kk": "Жол аралығы",
+    "ru": "Межстрочный интервал",
+    "en": "Line spacing"
+  },
+  {
+    "key": "Loading your book…",
+    "kk": "Кітап жүктелуде…",
+    "ru": "Книга загружается…",
+    "en": "Loading your book…"
+  },
+  {
+    "key": "Manage digital content",
+    "kk": "Электрондық қорды басқару",
+    "ru": "Управление электронным фондом",
+    "en": "Manage digital content"
+  },
+  {
+    "key": "Match {0} of {1}",
+    "kk": "{1} сәйкестіктің {0}-і",
+    "ru": "Совпадение {0} из {1}",
+    "en": "Match {0} of {1}"
+  },
+  {
+    "key": "Maximum file size: {0} MB",
+    "kk": "Файлдың ең үлкен көлемі: {0} МБ",
+    "ru": "Максимальный размер файла: {0} МБ",
+    "en": "Maximum file size: {0} MB"
+  },
+  {
+    "key": "Most read",
+    "kk": "Ең көп оқылған",
+    "ru": "Самые читаемые",
+    "en": "Most read"
+  },
+  {
+    "key": "My digital books",
+    "kk": "Менің электрондық кітаптарым",
+    "ru": "Мои электронные книги",
+    "en": "My digital books"
+  },
+  {
+    "key": "Next",
+    "kk": "Келесі",
+    "ru": "Далее",
+    "en": "Next"
+  },
+  {
+    "key": "Next page",
+    "kk": "Келесі бет",
+    "ru": "Следующая страница",
+    "en": "Next page"
+  },
+  {
+    "key": "No authorized digital edition is available for this book.",
+    "kk": "Бұл кітаптың таратуға рұқсат етілген электрондық нұсқасы жоқ.",
+    "ru": "Для этой книги нет электронного издания с подтверждёнными правами.",
+    "en": "No authorized digital edition is available for this book."
+  },
+  {
+    "key": "No bookmarks yet. Save a page or passage to return to it later.",
+    "kk": "Әзірге бетбелгі жоқ. Кейін оралу үшін бетті немесе үзіндіні сақтаңыз.",
+    "ru": "Закладок пока нет. Сохраните страницу или фрагмент, чтобы вернуться к нему позже.",
+    "en": "No bookmarks yet. Save a page or passage to return to it later."
+  },
+  {
+    "key": "No digital editions found",
+    "kk": "Электрондық нұсқалар табылмады",
+    "ru": "Электронные издания не найдены",
+    "en": "No digital editions found"
+  },
+  {
+    "key": "No matching text found",
+    "kk": "Сәйкес мәтін табылмады",
+    "ru": "Совпадений не найдено",
+    "en": "No matching text found"
+  },
+  {
+    "key": "Note (optional)",
+    "kk": "Ескертпе (міндетті емес)",
+    "ru": "Заметка (необязательно)",
+    "en": "Note (optional)"
+  },
+  {
+    "key": "Only materials with confirmed distribution rights are published. Digital reading does not borrow a physical copy.",
+    "kk": "Тек тарату құқығы расталған материалдар жарияланады. Электрондық оқу физикалық дананы алмайды.",
+    "ru": "Публикуются только материалы с подтверждёнными правами. Электронное чтение не занимает физический экземпляр.",
+    "en": "Only materials with confirmed distribution rights are published. Digital reading does not borrow a physical copy."
+  },
+  {
+    "key": "Open",
+    "kk": "Ашу",
+    "ru": "Открыть",
+    "en": "Open"
+  },
+  {
+    "key": "Open a digital book to begin. Your progress will be saved to your account.",
+    "kk": "Бастау үшін электрондық кітапты ашыңыз. Оқу прогресі есептік жазбаңызға сақталады.",
+    "ru": "Откройте электронную книгу. Прогресс чтения будет сохранён в вашей учётной записи.",
+    "en": "Open a digital book to begin. Your progress will be saved to your account."
+  },
+  {
+    "key": "PDF or EPUB file",
+    "kk": "PDF немесе EPUB файлы",
+    "ru": "Файл PDF или EPUB",
+    "en": "PDF or EPUB file"
+  },
+  {
+    "key": "PDF page",
+    "kk": "PDF беті",
+    "ru": "Страница PDF",
+    "en": "PDF page"
+  },
+  {
+    "key": "Page {0}",
+    "kk": "{0}-бет",
+    "ru": "Страница {0}",
+    "en": "Page {0}"
+  },
+  {
+    "key": "Page {0} of {1}",
+    "kk": "{1} беттің {0}-і",
+    "ru": "Страница {0} из {1}",
+    "en": "Page {0} of {1}"
+  },
+  {
+    "key": "Pages",
+    "kk": "Беттер",
+    "ru": "Страницы",
+    "en": "Pages"
+  },
+  {
+    "key": "Pagination",
+    "kk": "Беттерге өту",
+    "ru": "Переход по страницам",
+    "en": "Pagination"
+  },
+  {
+    "key": "Previous",
+    "kk": "Алдыңғы",
+    "ru": "Назад",
+    "en": "Previous"
+  },
+  {
+    "key": "Previous page",
+    "kk": "Алдыңғы бет",
+    "ru": "Предыдущая страница",
+    "en": "Previous page"
+  },
+  {
+    "key": "Progress",
+    "kk": "Прогресс",
+    "ru": "Прогресс",
+    "en": "Progress"
+  },
+  {
+    "key": "Provenance",
+    "kk": "Шығу тегі",
+    "ru": "Происхождение",
+    "en": "Provenance"
+  },
+  {
+    "key": "Publish only files with verified distribution rights. Commercial catalog metadata does not grant digital distribution permission.",
+    "kk": "Тек тарату құқығы тексерілген файлдарды жариялаңыз. Коммерциялық кітаптың каталогтағы ақпараты оны электронды таратуға рұқсат бермейді.",
+    "ru": "Публикуйте только файлы с подтверждёнными правами. Наличие коммерческой книги в каталоге не даёт права на её электронное распространение.",
+    "en": "Publish only files with verified distribution rights. Commercial catalog metadata does not grant digital distribution permission."
+  },
+  {
+    "key": "Publish this digital edition",
+    "kk": "Осы электрондық нұсқаны жариялау",
+    "ru": "Опубликовать это электронное издание",
+    "en": "Publish this digital edition"
+  },
+  {
+    "key": "Published",
+    "kk": "Жарияланған",
+    "ru": "Опубликовано",
+    "en": "Published"
+  },
+  {
+    "key": "Read licensed PDF and EPUB books in your browser. Your place and bookmarks travel with you.",
+    "kk": "Рұқсат етілген PDF және EPUB кітаптарын браузерде оқыңыз. Оқу орныңыз бен бетбелгілеріңіз әр құрылғыда сақталады.",
+    "ru": "Читайте разрешённые PDF и EPUB в браузере. Место чтения и закладки доступны на разных устройствах.",
+    "en": "Read licensed PDF and EPUB books in your browser. Your place and bookmarks travel with you."
+  },
+  {
+    "key": "Read online",
+    "kk": "Онлайн оқу",
+    "ru": "Читать онлайн",
+    "en": "Read online"
+  },
+  {
+    "key": "Readers",
+    "kk": "Оқырмандар",
+    "ru": "Читатели",
+    "en": "Readers"
+  },
+  {
+    "key": "Reading bookmark",
+    "kk": "Оқу бетбелгісі",
+    "ru": "Закладка для чтения",
+    "en": "Reading bookmark"
+  },
+  {
+    "key": "Reading controls",
+    "kk": "Оқуды басқару",
+    "ru": "Управление чтением",
+    "en": "Reading controls"
+  },
+  {
+    "key": "Reading progress",
+    "kk": "Оқу прогресі",
+    "ru": "Прогресс чтения",
+    "en": "Reading progress"
+  },
+  {
+    "key": "Reading theme",
+    "kk": "Оқу тақырыбы",
+    "ru": "Тема чтения",
+    "en": "Reading theme"
+  },
+  {
+    "key": "Ready to read",
+    "kk": "Оқуға дайын",
+    "ru": "Готово к чтению",
+    "en": "Ready to read"
+  },
+  {
+    "key": "Recently added",
+    "kk": "Жақында қосылған",
+    "ru": "Недавно добавленные",
+    "en": "Recently added"
+  },
+  {
+    "key": "Recently opened",
+    "kk": "Жақында ашылған",
+    "ru": "Недавно открытые",
+    "en": "Recently opened"
+  },
+  {
+    "key": "Recommended for you",
+    "kk": "Сізге арналған ұсыныстар",
+    "ru": "Рекомендуем вам",
+    "en": "Recommended for you"
+  },
+  {
+    "key": "Reflowable text",
+    "kk": "Экранға бейімделетін мәтін",
+    "ru": "Адаптивный текст",
+    "en": "Reflowable text"
+  },
+  {
+    "key": "Remove",
+    "kk": "Жою",
+    "ru": "Удалить",
+    "en": "Remove"
+  },
+  {
+    "key": "Remove this bookmark?",
+    "kk": "Осы бетбелгіні жоясыз ба?",
+    "ru": "Удалить эту закладку?",
+    "en": "Remove this bookmark?"
+  },
+  {
+    "key": "Replace file (optional)",
+    "kk": "Файлды ауыстыру (міндетті емес)",
+    "ru": "Заменить файл (необязательно)",
+    "en": "Replace file (optional)"
+  },
+  {
+    "key": "Reset",
+    "kk": "Тазарту",
+    "ru": "Сбросить",
+    "en": "Reset"
+  },
+  {
+    "key": "Retry saving",
+    "kk": "Сақтауды қайталау",
+    "ru": "Повторить сохранение",
+    "en": "Retry saving"
+  },
+  {
+    "key": "Rights",
+    "kk": "Құқықтар",
+    "ru": "Права",
+    "en": "Rights"
+  },
+  {
+    "key": "Rights holder",
+    "kk": "Құқық иесі",
+    "ru": "Правообладатель",
+    "en": "Rights holder"
+  },
+  {
+    "key": "Save a bookmark",
+    "kk": "Бетбелгіні сақтау",
+    "ru": "Сохранение закладки",
+    "en": "Save a bookmark"
+  },
+  {
+    "key": "Save bookmark",
+    "kk": "Бетбелгіні сақтау",
+    "ru": "Сохранить закладку",
+    "en": "Save bookmark"
+  },
+  {
+    "key": "Save digital edition",
+    "kk": "Электрондық нұсқаны сақтау",
+    "ru": "Сохранить электронное издание",
+    "en": "Save digital edition"
+  },
+  {
+    "key": "Saving your place…",
+    "kk": "Оқу орны сақталуда…",
+    "ru": "Сохраняем место чтения…",
+    "en": "Saving your place…"
+  },
+  {
+    "key": "Search",
+    "kk": "Іздеу",
+    "ru": "Поиск",
+    "en": "Search"
+  },
+  {
+    "key": "Search by title or author",
+    "kk": "Атауы немесе авторы бойынша іздеу",
+    "ru": "Поиск по названию или автору",
+    "en": "Search by title or author"
+  },
+  {
+    "key": "Search digital books",
+    "kk": "Электрондық кітап іздеу",
+    "ru": "Поиск электронных книг",
+    "en": "Search digital books"
+  },
+  {
+    "key": "Search in book",
+    "kk": "Кітаптан іздеу",
+    "ru": "Поиск в книге",
+    "en": "Search in book"
+  },
+  {
+    "key": "Searching the book…",
+    "kk": "Кітаптан ізделуде…",
+    "ru": "Поиск по книге…",
+    "en": "Searching the book…"
+  },
+  {
+    "key": "Sepia",
+    "kk": "Сепия",
+    "ru": "Сепия",
+    "en": "Sepia"
+  },
+  {
+    "key": "Sign in to read",
+    "kk": "Оқу үшін кіріңіз",
+    "ru": "Войдите для чтения",
+    "en": "Sign in to read"
+  },
+  {
+    "key": "Sort by",
+    "kk": "Сұрыптау",
+    "ru": "Сортировка",
+    "en": "Sort by"
+  },
+  {
+    "key": "Source or provenance URL",
+    "kk": "Дереккөз немесе шығу тегі сілтемесі",
+    "ru": "Ссылка на источник или происхождение",
+    "en": "Source or provenance URL"
+  },
+  {
+    "key": "Status",
+    "kk": "Мәртебе",
+    "ru": "Статус",
+    "en": "Status"
+  },
+  {
+    "key": "Subject",
+    "kk": "Пән",
+    "ru": "Дисциплина",
+    "en": "Subject"
+  },
+  {
+    "key": "Subjects and filters",
+    "kk": "Пәндер және сүзгілер",
+    "ru": "Дисциплины и фильтры",
+    "en": "Subjects and filters"
+  },
+  {
+    "key": "Table of contents",
+    "kk": "Мазмұны",
+    "ru": "Оглавление",
+    "en": "Table of contents"
+  },
+  {
+    "key": "The book could not be opened. Check your connection and try again.",
+    "kk": "Кітапты ашу мүмкін болмады. Байланысты тексеріп, қайта көріңіз.",
+    "ru": "Не удалось открыть книгу. Проверьте соединение и повторите попытку.",
+    "en": "The book could not be opened. Check your connection and try again."
+  },
+  {
+    "key": "The bookmark could not be saved. Please try again.",
+    "kk": "Бетбелгі сақталмады. Қайта көріңіз.",
+    "ru": "Не удалось сохранить закладку. Повторите попытку.",
+    "en": "The bookmark could not be saved. Please try again."
+  },
+  {
+    "key": "The server checks the actual file structure and removes active EPUB content.",
+    "kk": "Сервер файлдың нақты құрылымын тексеріп, EPUB ішіндегі белсенді мазмұнды жояды.",
+    "ru": "Сервер проверяет структуру файла и удаляет активное содержимое EPUB.",
+    "en": "The server checks the actual file structure and removes active EPUB content."
+  },
+  {
+    "key": "This reader requires JavaScript to render pages and save your reading position.",
+    "kk": "Беттерді көрсету және оқу орнын сақтау үшін JavaScript қажет.",
+    "ru": "Для отображения страниц и сохранения места чтения требуется JavaScript.",
+    "en": "This reader requires JavaScript to render pages and save your reading position."
+  },
+  {
+    "key": "Title",
+    "kk": "Атауы",
+    "ru": "Название",
+    "en": "Title"
+  },
+  {
+    "key": "Try another format, subject or search phrase. Only registered digital files appear here.",
+    "kk": "Басқа форматты, пәнді немесе іздеу сөзін таңдаңыз. Мұнда тек нақты тіркелген файлдар көрсетіледі.",
+    "ru": "Попробуйте другой формат, дисциплину или запрос. Здесь отображаются только зарегистрированные файлы.",
+    "en": "Try another format, subject or search phrase. Only registered digital files appear here."
+  },
+  {
+    "key": "Update file metadata, rights and access. Leave the file field empty to keep the current edition.",
+    "kk": "Файл ақпараты, құқықтары мен қолжетімділігін жаңартыңыз. Ағымдағы файлды сақтау үшін файл өрісін бос қалдырыңыз.",
+    "ru": "Обновите сведения, права и доступ. Оставьте поле файла пустым, чтобы сохранить текущую версию.",
+    "en": "Update file metadata, rights and access. Leave the file field empty to keep the current edition."
+  },
+  {
+    "key": "Upload a PDF or EPUB and record its license before publishing.",
+    "kk": "PDF немесе EPUB жүктеп, жарияламас бұрын лицензиясын көрсетіңіз.",
+    "ru": "Загрузите PDF или EPUB и укажите лицензию перед публикацией.",
+    "en": "Upload a PDF or EPUB and record its license before publishing."
+  },
+  {
+    "key": "Upload digital edition",
+    "kk": "Электрондық нұсқа жүктеу",
+    "ru": "Загрузить электронное издание",
+    "en": "Upload digital edition"
+  },
+  {
+    "key": "Upload, license and publish digital editions linked to existing catalog books.",
+    "kk": "Каталогтағы кітаптарға электрондық нұсқаларды жүктеп, лицензиясын көрсетіп, жариялаңыз.",
+    "ru": "Загружайте, лицензируйте и публикуйте электронные издания для книг каталога.",
+    "en": "Upload, license and publish digital editions linked to existing catalog books."
+  },
+  {
+    "key": "View license",
+    "kk": "Лицензияны қарау",
+    "ru": "Посмотреть лицензию",
+    "en": "View license"
+  },
+  {
+    "key": "View my shelf",
+    "kk": "Менің сөреме өту",
+    "ru": "Перейти к моей полке",
+    "en": "View my shelf"
+  },
+  {
+    "key": "View original source",
+    "kk": "Бастапқы дереккөзді қарау",
+    "ru": "Посмотреть первоисточник",
+    "en": "View original source"
+  },
+  {
+    "key": "Your next chapter starts here",
+    "kk": "Келесі тарауыңыз осы жерден басталады",
+    "ru": "Ваша следующая глава начинается здесь",
+    "en": "Your next chapter starts here"
+  },
+  {
+    "key": "Your place could not be saved. Keep this page open and try again.",
+    "kk": "Оқу орны сақталмады. Бетті жаппай, қайта сақтап көріңіз.",
+    "ru": "Не удалось сохранить место чтения. Не закрывайте страницу и повторите попытку.",
+    "en": "Your place could not be saved. Keep this page open and try again."
+  },
+  {
+    "key": "Your place is saved",
+    "kk": "Оқу орны сақталды",
+    "ru": "Место чтения сохранено",
+    "en": "Your place is saved"
+  },
+  {
+    "key": "Your reading history, saved places and bookmarks, securely linked to your account.",
+    "kk": "Оқу тарихыңыз, сақталған орындарыңыз бен бетбелгілеріңіз есептік жазбаңызға қауіпсіз байланыстырылған.",
+    "ru": "История чтения, сохранённые места и закладки безопасно связаны с вашей учётной записью.",
+    "en": "Your reading history, saved places and bookmarks, securely linked to your account."
+  },
+  {
+    "key": "Your reading, everywhere",
+    "kk": "Оқуыңыз әрқашан өзіңізбен бірге",
+    "ru": "Ваше чтение всегда с вами",
+    "en": "Your reading, everywhere"
+  },
+  {
+    "key": "Zoom in",
+    "kk": "Үлкейту",
+    "ru": "Увеличить",
+    "en": "Zoom in"
+  },
+  {
+    "key": "Zoom out",
+    "kk": "Кішірейту",
+    "ru": "Уменьшить",
+    "en": "Zoom out"
+  },
+  {
+    "key": "{0} editions",
+    "kk": "{0} нұсқа",
+    "ru": "Изданий: {0}",
+    "en": "{0} editions"
+  },
+  {
+    "key": "{0} pages",
+    "kk": "{0} бет",
+    "ru": "Страниц: {0}",
+    "en": "{0} pages"
+  },
+  {
+    "key": "{0}% read",
+    "kk": "{0}% оқылды",
+    "ru": "Прочитано {0}%",
+    "en": "{0}% read"
+  },
+  {
+    "key": "Unknown",
+    "kk": "Анықталмаған",
+    "ru": "Не определено",
+    "en": "Unspecified"
+  },
+  {
+    "key": "Original",
+    "kk": "Түпнұсқа материал",
+    "ru": "Оригинальный материал",
+    "en": "Original material"
+  },
+  {
+    "key": "PublicDomain",
+    "kk": "Қоғамдық игілік",
+    "ru": "Общественное достояние",
+    "en": "Public domain"
+  },
+  {
+    "key": "CreativeCommons",
+    "kk": "Creative Commons лицензиясы",
+    "ru": "Лицензия Creative Commons",
+    "en": "Creative Commons"
+  },
+  {
+    "key": "AuthorPermission",
+    "kk": "Автор рұқсаты",
+    "ru": "Разрешение автора",
+    "en": "Author permission"
+  },
+  {
+    "key": "Institutional",
+    "kk": "Университет лицензиясы",
+    "ru": "Университетская лицензия",
+    "en": "Institutional license"
+  },
+  {
+    "key": "Authenticated",
+    "kk": "Жүйеге кірген оқырмандар",
+    "ru": "Авторизованные читатели",
+    "en": "Signed-in readers"
+  },
+  {
+    "key": "Students",
+    "kk": "Студенттер",
+    "ru": "Студенты",
+    "en": "Students"
+  },
+  {
+    "key": "Staff",
+    "kk": "Кітапхана қызметкерлері",
+    "ru": "Сотрудники библиотеки",
+    "en": "Library staff"
+  }
+]

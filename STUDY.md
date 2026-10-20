@@ -264,3 +264,106 @@ Librarian `MarkReadyAsync()` кезінде сол кітапқа тиесілі
 `tests/EduLibrary.Tests/ReservationRulesTests.cs` таза кесте/уақыт/код ережелерін тексереді. `tests/EduLibrary.ReservationChecks` жеке random SQL базасында migration-нан бастап толық сценарийді орындайды: hold/queue, concurrent last copy мен slot, stale форма, бөтен ownership, role, pickup, Loan/history, cancel/return promotion және concurrent expiry/reminder. Хабарландыруға уақытша CHECK constraint қою арқылы creation/ready/fulfillment/cancel/expiry өзгерістерінің rollback-і SQL-ден қайта оқылып тексеріледі. Constraint пен бүкіл тест базасы тек осы harness-ке тиесілі. `tests/reservations_ui_smoke.cjs` бөлек 5399 қосымшасында нақты формаларды басып, POST код іздеуі, handover, қайтару және FIFO мәртебелерін көрсетеді; негізгі деректер базасына жазбайды.
 
 Reservation қосылғаннан кейін осы тексерулердің нақты нәтижесі: **83 SQL, 94 read-only HTTP, 153 браузер тексеруі өтті; қате жоқ**. 153 browser assertion ішіндегі 96-сы Student/Staff экрандарының light/dark және 360/390/768/1024/1440/1920 px матрицасына тиесілі. Таза ережелерге 16 жаңа xUnit case қосылды; жалпы unit саны соңғы README тексеру кестесінде тіркеледі. SQL harness өзінің базасын тазартты; successful browser workflow тек бөлек UI базасын пайдаланды. `artifacts/reservation-ui/` ішіндегі PNG-де pickup code пен QR әдейі жасырылған; камера құрылғысы тексерілмеген.
+
+## 20. ASP.NET Core Localization деген не?
+
+Localization — бір бағдарламаның бірдей функциясын пайдаланушы таңдаған тілмен көрсету. Кітаптың атауын немесе сақталған ISBN-ін қайта жазу емес. Осы жобада `kk-KZ`, `ru-RU`, `en-US` culture қолданылады. `CurrentUICulture` мәтінді таңдаса, `CurrentCulture` күн, сан және ақша пішімін анықтайды. Мысалы, бір SQL күні қазақша және ағылшынша интерфейсте әртүрлі қысқа пішіммен көрсетілуі мүмкін; оның базадағы мәні өзгермейді.
+
+Нақты конфигурация `Program.cs` ішінде: `AddLocalization`, MVC `AddViewLocalization`, `AddDataAnnotationsLocalization`, supported cultures және `UseRequestLocalization`. `SharedResource.cs` — ресурстың қай assembly-ден табылатынын көрсететін marker class; `Localization/UiText.cs` — сервистерге арналған ортақ lookup құралы. Бизнес ережесі аудармаға тәуелді емес: рөл атауы, enum мәні, ISBN, SQL constraint немесе queue key аударылмайды.
+
+## 21. IStringLocalizer және IViewLocalizer қалай жұмыс істейді?
+
+`Views/_ViewImports.cshtml` барлық Razor бетіне `IStringLocalizer<SharedResource>` түріндегі `T` объектісін береді. `@T["Profile photo"]` ағымдағы UI culture бойынша SharedResource ішінен мән іздейді. Resource value HTML ретінде сенімсіз енгізілмейді: Razor қалыпты мәтінді encode жасайды. `IViewLocalizer` жеке view ресурсына қажет болғанда қолданылады; тіл ауыстырғыштың view ресурстары `Resources/Views/Shared/` ішінде бар.
+
+Сервисте Razor жоқ, сондықтан `UiText.Get("Reader.InvalidProgress")` пайдаланылады. Аргумент бар болса, `UiText.Get("Notifications.IssuedBody", title, dueDate)` немесе `UiText.Format($"Open {book.Title}")` қолданылады. Соңғысының ресурс кілті — `Open {0}`; кітап атауы аудармаға қосылмай, аргумент ретінде беріледі. `AccountActionResult.Failure()` account қателерін де осы жолмен аударып, controller-ге дайын хабар береді. DataAnnotations-тағы `Display`/`ErrorMessage` мәндерін MVC ортақ localizer арқылы аударады.
+
+## 22. RESX файлдары және аударма каталогтары
+
+`Resources/SharedResource.resx` — әдепкі қазақша fallback; `.kk-KZ.resx`, `.ru-RU.resx`, `.en-US.resx` — culture ресурстары. Build оларды assembly/satellite resources ретінде жинайды. Сондықтан RESX өзгерген соң тек браузер refresh жеткіліксіз: қосымшаны қайта build/run жасау керек.
+
+Қолмен үлкен XML файлдарын қатар өңдемеу үшін тексерілген бастапқы каталогтар бар: `legacy-translations.json`, сондай-ақ `profile-translations.json`, `remaining-ui-translations.json`, `remaining-server-translations.json`, digital/reader/notification/recommendation каталогтары. `python tools/build_resources.py` бәрін біріктіріп, бос мәнді, формат placeholder сәйкессіздігін және регистрі ғана бөлек кілттерді тексереді. Жаңа key енгізгенде бірден үш тілін толтырыңыз; бастапқы файлды өңдеп барып құралды іске қосыңыз. `tools/localize_views.py` бастапқы көшіру құралы болған; кейінгі қол өзгерістерін сақтау үшін оны қайтадан соқыр орындауға болмайды.
+
+## 23. RequestLocalizationMiddleware және тілдің сақталуы
+
+Сұрау маршрутының controller-і орындалмай тұрып localization middleware culture cookie-ді оқиды. Қолдау жоқ немесе cookie жоқ болса, қазақша `kk-KZ` қолданылады. `Controllers/CultureController.cs` ішіндегі `Set` тек рұқсат етілген culture-ді POST+CSRF арқылы қабылдайды, cookie-ге жазады және кірген адамның `ApplicationUser.PreferredLanguage` мәнін жаңартады. Қайту URL-і `Url.IsLocalUrl` арқылы тексеріліп, `LocalRedirect` орындалады; сыртқы сайтқа еркін redirect жоқ.
+
+`Controllers/AccountController.cs` кіру сәтінде браузерде cookie болмаса ғана аккаунттағы тілді қайтарады. Профиль формасын сақтау таңдалған тілді SQL-ге және cookie-ге бірге жазады. `PreferredTheme` жеке өріс: `system/light/dark`. Тіл мен көрініс HTTP арқылы қойылатын баптау болғанымен, тек сол Identity пайдаланушысына сақталады; форма арқылы басқа UserId берілмейді.
+
+## 24. Book және DigitalBookAsset байланысы қандай?
+
+`Models/Entities/LibraryEntities.cs` ішіндегі `Book` бұрынғы библиографиялық жазба болып қалады; `BookCopy` — инвентарлық нөмірі, сөресі және availability мәртебесі бар физикалық дана. `Models/Entities/DigitalLibraryEntities.cs` ішіндегі `DigitalBookAsset` осы Book-қа тиесілі нақты PDF/EPUB файлды сипаттайды. Бір кітапта бірнеше физикалық дана және бөлек PDF/EPUB нұсқалары болуы мүмкін.
+
+```mermaid
+flowchart LR
+    Book[Book: атау, ISBN] --> Copy[BookCopy: физикалық дана]
+    Copy --> Loan[Loan / Return]
+    Book --> Asset[DigitalBookAsset: PDF немесе EPUB]
+    User[ApplicationUser] --> Progress[ReadingProgress]
+    User --> Bookmark[ReadingBookmark]
+    Asset --> Progress
+    Asset --> Bookmark
+```
+
+`DigitalBookAsset` файлдың random атауын, MIME, өлшемін, SHA-256, тілін, license/source/rights holder дерегін, access level, publication/archive және download рұқсатын сақтайды. `DigitalLibraryService.GetAuthorizedAssetAsync()` осы шарттар мен ағымдағы пайдаланушыны серверде тексереді. Тек frontend батырмасына сенбейді. Экрандарға entity емес, `ViewModels/DigitalLibraryViewModels.cs` объектілері беріледі. Электрондық оқу физикалық Loan/CopyStatus жүйесіне араласпайды.
+
+## 25. PDF.js қалай жұмыс істейді?
+
+`Controllers/ReaderController.cs` ішіндегі `Pdf(id)` формат пен рұқсатты тексеріп, `Views/Reader/Pdf.cshtml` бетін ашады. `wwwroot/js/reader-pdf.js` жергілікті PDF.js 6.4.299 кітапханасын пайдаланып, `/Reader/File/{id}` жауабындағы PDF беттерін canvas-қа салады. Файл public `wwwroot` ішінде жатпайды; controller қайта authorization жасап, private/no-store, nosniff, CSP және HTTP range қолдауымен stream береді.
+
+PDF бетінің нөмірі reader control арқылы өзгереді; JS масштаб, енге сыйдыру, іздеу және fullscreen әрекеттерін басқарады. Бет өзгергенде ортақ `reader-common.js` нақты page/total/percentage locator-ын сақтау кезегіне қояды. Сервер `ReadingProgressService.ValidateLocator()` арқылы posted total pages мәнін asset-тің тексерілген PageCount мәнімен салыстырады. Клиент өзінше «1000-бетке жеттім» деп шекарадан тыс прогресс сақтай алмайды.
+
+`Helpers/DigitalFileRules.cs` PDF upload үшін classic-xref құрылымын талап етеді және active content/шифрлау/object streams-ті қабылдамайды. Бұл толық PDF parser немесе антивирус емес; кейбір заманауи PDF-ті қауіпсіз classic-xref нұсқасына қайта экспорттау қажет. `AllowDownload` — бөлек download endpoint саясаты; браузерде көрсетілген контентке DRM уәдесі берілмейді.
+
+## 26. EPUB.js, sandbox және қауіпсіз XHTML
+
+EPUB — ZIP ішіндегі package manifest, тараулар, navigation және суреттер жиыны. `ReaderController.Epub(id)`, `Views/Reader/Epub.cshtml`, `wwwroot/js/reader-epub.js` және жергілікті EPUB.js 0.3.93 осы құрылымды тарау/экран ретінде көрсетеді. CFI — мәтін ішіндегі нақты оқу орнын сипаттайтын locator; қаріп өлшемі өзгерсе де PDF бетіне қарағанда тұрақтырақ. Reader тарау мәзірін, алдыңғы/келесі өтуді, қаріп/жоларалық интервалды және Light/Dark/Sepia көрінісін береді.
+
+Браузерге жүктемес бұрын `DigitalFileRules.SanitizeEpub()` архивті қайта құрады: zip-slip жолдары, шамадан тыс entries/expanded size/compression ratio қабылданбайды; XML DTD/external entities өшірілген. XHTML үшін нақты allowlist бар. Script, iframe, forms, event attributes, сыртқы URL және кіріс CSS сақталмайды; тек пакеттегі қауіпсіз мазмұн/сурет сілтемелері қалады. Renderer қосымша sandbox/CSP қолданады. Publisher-дің барлық визуалды безендірілуін не DRM EPUB-ты қолдау мақсат етілмейді.
+
+## 27. ReadingProgress SQL Server-де қалай сақталады?
+
+`Services/Implementations/ReadingProgressService.cs` әр сұрауда пайдаланушының өз `UserId` және asset ID жұбымен жұмыс істейді. `ReadingProgress` ішінде `CurrentPage`, `TotalPages`, `EpubCfi`, `ProgressPercentage`, `LastReadAt`, `CompletedAt` бар; `UserId + DigitalBookAssetId` unique. `WithLockAsync()` Serializable транзакция және осы жұптан SHA-256 арқылы алынған SQL applock resource қолданады. Екі құрылғы қатар сақтаса, duplicate progress пайда болмайды.
+
+PDF пайызы серверде нақты page/pageCount арқылы есептеледі; EPUB CFI/пайызы шекаралармен тексеріледі. `reader-common.js` соңғы navigation-ды debounce арқылы сақтайды, қайталанған locator-ды өткізіп жібереді, сәтсіздікте retry ұсынады және мүмкін болса page exit кезінде соңғы save жібереді. Сервер өзгермеген күйді әр scroll үшін жаңартпайды; heartbeat кемінде 30 секунд аралықпен орындалады. `DigitalReadingSession` idle аралықтан кейін жаңа сеанс ашады; әдепкі idle — 30 минут. Өзге құрылғыда жалғастыруды SQL-дегі progress қамтамасыз етеді.
+
+## 28. Bookmarks және ownership
+
+`ReadingBookmark` нақты `UserId`, `DigitalBookAssetId`, PDF page немесе EPUB CFI, атау, ескертпе және уақыттарды сақтайды. `ReadingProgressService.SaveBookmarkAsync()` мәтін ұзындығын, locator форматын, asset рұқсатын және иесін тексереді. Бұрынғы bookmark ID берілсе, query оның сол пайдаланушыға тиесілігін де талап етеді. `RemoveBookmarkAsync()` өзгенің жазбасын өшірмейді.
+
+`ReaderController.Bookmark/RemoveBookmark` — CSRF-қорғалған POST endpoint-тер. JS атау мен ескертпені DOM-ға `textContent` арқылы шығарады; пайдаланушы енгізген HTML орындалмайды. `/Reader/State/{id}` тек сол пайдаланушыға арналған progress+bookmark күйін қайтарады. `/DigitalLibrary/My` және профильдегі соңғы оқылған кітаптар да `UserId` бойынша SQL-де шектеледі; random percentage қолданылмайды.
+
+## 29. Avatar upload қауіпсіздігі қалай жасалған?
+
+Ағын: `Views/Account/Profile.cshtml` → `AccountController.UploadAvatar` → `AccountService.UpdateAvatarAsync()` → `AvatarStorage` → `AvatarImageProcessor`. Controller UserId-ді claims ішінен алады. Форма басқа пайдаланушының ID-ін қабылдамайды; authorization және CSRF тексеріледі. Editor `wwwroot/js/avatar.js`, бейнелеу стилі `wwwroot/css/avatar.css` ішінде. Preview локалды canvas-пен жұмыс істейді, confirm басылғанша файл серверге жіберілмейді.
+
+CropX/Y/Size өрістеріне ғана `Helpers/DoubleModelBinder.cs` бекітілген. Ол `0.25` пен `0,25` мәндерін барлық UI тілінде бірдей оқиды, grouping/exponent/nonfinite мәндерді қабылдамайды. Одан кейін `[Range(0d, 1d)]` және `AvatarImageProcessor.ValidCrop` шектерді тексереді. Double өрісіне `Range(0, 1)` бүтін сан overload-ын қолданбаңыз: ол шеткі бөлшекті дөңгелектеп жіберуі мүмкін.
+
+`AvatarImageProcessor` 2 МБ metadata-ға ғана сенбей, нақты stream-ді де шектейді. JPG/JPEG/PNG/WebP extension, MIME, magic signature және SkiaSharp codec нәтижесі сәйкес болуы тиіс. Decode алдында 4096-side/16-megapixel шегі тексеріледі. Animation/SVG қабылданбайды. SkiaSharp 4.153.1 EXIF orientation-ды ескеріп, тексерілген square crop-ты жаңа 256×256 WebP pixels ретінде encode жасайды; бастапқы EXIF/GPS/text metadata көшірілмейді.
+
+`AvatarStorage` жеке `App_Data/avatars` қалтасына 128-bit random атаумен жазады. SQL-дегі `AvatarPath` — filesystem жолы емес, тек `/Account/Avatar/{opaque-name}.webp` маршруты. GET endpoint filename allowlist және нақты SQL сілтемесін тексеріп, тек `image/webp` береді. Ауыстыру `ConcurrencyStamp + old AvatarPath` шартты SQL UPDATE-ін қолданады: екі parallel upload-тың біреуі ғана жеңеді, екіншісінің файлы жойылады. Жаңа сілтеме commit болғанша ескі сурет өшірілмейді. `RemoveAvatarAsync()` сілтемені тазалап барып файлды жояды.
+
+`ViewComponents/AvatarViewComponent.cs` + `Views/Shared/Components/Avatar/Default.cshtml` барлық орынға ортақ. `resolved=true` болғанда тізім projection-ында алынған avatar path қолданылады, әр жол үшін жаңа SQL query жасалмайды. Сурет ашылмаса, script оны жасырып, Unicode initials fallback қалдырады. Public review label бұрынғыдай анонимді; компонент оған fullname, email немесе phone қоспайды.
+
+## 30. Жаңа EF Core migration қалай қосылды?
+
+`Data/Migrations/20261019213906_MultilingualDigitalLibraryProfiles.cs` additive өзгерістерден тұрады: төрт digital table және үш profile өрісі. Бұрынғы кестелерді Drop/Create жасамайды. `Data/Configurations/DigitalLibraryConfiguration.cs` және Identity конфигурациясы сыртқы кілт, required/max length, unique progress index, rowversion және дерек шектеулерін белгілейді. Preferred language/theme үшін SQL defaults бар, сондықтан бар аккаунттар бос не жарамсыз preference алмайды.
+
+Алдымен migration кодын тексеріп, `dotnet ef database update` қолданылады; migration history өшірілмейді. Production алдында SQL+private files backup жасаңыз. Жаңа `DigitalDemoSeeder` `Data/DigitalDemo/manifest.json` ішіндегі тек түпнұсқа файлдардың SHA-256 мәнін тексеріп, бес жеке Book және он asset қосады. `SeedHistory`, ISBN және format тексерулері қайталама жазбадан қорғайды. Бастапқы каталог ID, физикалық copies, оқырмандар, Loan/Return/Fine/Reservation жазбалары сақталады.
+
+## 31. Digital Library architecture және тексеру реті
+
+Кодты осы ретпен оқыңыз:
+
+1. `Models/Entities/DigitalLibraryEntities.cs`, `Models/Enums/DigitalLibraryEnums.cs` — сақталатын модель.
+2. `Helpers/DigitalLibraryOptions.cs`, `Helpers/DigitalFileRules.cs` — лимит, PDF/EPUB тексеру және sanitization.
+3. `Services/Implementations/DigitalAssetStorage.cs` — private disk storage.
+4. `Services/Implementations/DigitalLibraryService.cs` — upload/metadata/publication/access policy және каталог сұраулары.
+5. `Services/Implementations/ReadingProgressService.cs` — жеке progress/bookmark/session транзакциялары.
+6. `Controllers/DigitalLibraryController.cs`, `Controllers/ReaderController.cs` — HTTP/form/stream/JSON жауаптары.
+7. `Views/DigitalLibrary/`, `Views/Reader/`, `wwwroot/js/reader-common.js`, `reader-pdf.js`, `reader-epub.js` — нақты экран мен reader.
+8. `Data/Seed/DigitalDemoSeeder.cs`, `Data/DigitalDemo/manifest.json` — заңды бастапқы демонстрация.
+9. `Controllers/AccountController.cs`, `AccountService.cs`, `AvatarStorage.cs`, `AvatarImageProcessor.cs` — профиль/файл/SQL байланысы.
+
+`tests/EduLibrary.Tests/AvatarTests.cs` raster format, spoofed MIME/signature, өлшем, EXIF orientation, metadata stripping, crop, path safety және initials-ті тексереді. `AccountLocalizationTests.cs` теріс login нәтижесі мен account validation/display resource coverage-ін үш тілде тексереді. `AvatarCropBindingTests.cs` нүкте/үтірді үш culture-де байланыстыруды, malformed/nonfinite мәндерді және бөлшек шектерін тексереді. `tests/EduLibrary.DigitalChecks` нақты migration+SQL+private temp storage ортасында digital/seed сценарийлерін тексереді; оның **19-ы** avatar upload/replace/remove және екі DbContext қатар істеген CAS/loser cleanup туралы. Барлық SQL harness жинағы **309**, unit тест **233**, HTTP **751**, браузер **615** тексеруден өтті. Harness-тер өз random базасын және файлдарын тазартты. `tests/avatar_multilingual_upload_smoke.cjs` үш тілде нақты fractional crop POST → 256 WebP → SQL refresh → remove ретін бөлек **25** тексерумен растады.
+
+`tests/digital_ui_smoke.cjs` тек `http://localhost:5399` уақытша қосымшасына successful writes жасайды. Ол PDF/EPUB-ті шын браузерде ашып, сақталған оқу орны/бетбелгі және профиль crop/сурет ауыстыру/өшіруді тексереді. Негізгі `5298` базасын мұндай smoke жазбаларымен толтырмаңыз. Жаңа publisher PDF/EPUB-ін енгізгенде файл validation шектеулерін ескеріп, desktop/mobile reader мен нақты лицензия дерегін қайта тексеріңіз.

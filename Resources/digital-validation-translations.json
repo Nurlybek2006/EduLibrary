@@ -1,0 +1,6 @@
+[
+  { "key": "Validation.Required", "kk": "Бұл өрісті толтырыңыз.", "ru": "Заполните это поле.", "en": "Fill in this field." },
+  { "key": "Validation.StringLength", "kk": "Ең көбі {1} таңба енгізіңіз.", "ru": "Введите не более {1} символов.", "en": "Use at most {1} characters." },
+  { "key": "Validation.Range", "kk": "{1} мен {2} аралығындағы мәнді енгізіңіз.", "ru": "Введите значение от {1} до {2}.", "en": "Enter a value between {1} and {2}." },
+  { "key": "Validation.SelectItem", "kk": "Қолжетімді нұсқаны таңдаңыз.", "ru": "Выберите доступный вариант.", "en": "Choose an available item." }
+]

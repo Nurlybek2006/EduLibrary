@@ -33,7 +33,7 @@ public sealed class ReadingShelfBookViewModel
     public DateTime? ReturnedAt { get; set; }
     public int DaysUntilDue { get; set; }
     public bool IsArchived { get; set; }
-    public string DeadlineLabel => DaysUntilDue < 0 ? $"{-DaysUntilDue} күн кешіккен" : DaysUntilDue == 0 ? "Бүгін қайтару керек" : $"{DaysUntilDue} күн қалды";
+    public string DeadlineLabel => DaysUntilDue < 0 ? global::EduLibrary.Localization.UiText.Format($"{-DaysUntilDue} күн кешіккен") : DaysUntilDue == 0 ? global::EduLibrary.Localization.UiText.Get("Бүгін қайтару керек") : global::EduLibrary.Localization.UiText.Format($"{DaysUntilDue} күн қалды");
 }
 
 public sealed class ReadingActivityViewModel

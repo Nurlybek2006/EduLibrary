@@ -76,6 +76,12 @@ class Client:
         if status != 200 or not token:
             record(f"{role}: login form and antiforgery", False, status)
             return False
+        # Pin the legacy Kazakh assertions explicitly; a previous browser test
+        # may have saved a different preferred language on this demo account.
+        status, _, source = self.request("/Culture/Set", {
+            "culture": "kk-KZ", "returnUrl": "/Account/Login", "__RequestVerificationToken": token,
+        })
+        token = Page(source).token
         status, url, source = self.request("/Account/Login", {
             "Email": credentials["Email"], "Password": credentials["Password"],
             "RememberMe": "false", "__RequestVerificationToken": token,

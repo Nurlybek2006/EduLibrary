@@ -100,7 +100,7 @@ def recommendation_context(client, path, label, expected, expected_score=None):
 
 def reading_identity(source):
     # Compare reader content, excluding changing CSRF and signed book-link tokens.
-    greeting = re.search(r'<span class="eyebrow">(Қош келдіңіз,[^<]+)</span>', source)
+    greeting = re.search(r'<span class="eyebrow">(Қош келдіңіз,[^<]+)</span>', html.unescape(source))
     page = Page(source)
     return (html.unescape(greeting.group(1)) if greeting else None,
             tuple(baseline.ids(page, "/Loans/Details")), tuple(baseline.ids(page, "/Books/Details")))
@@ -240,7 +240,8 @@ def run():
     record("Student: real recommendations have six sections and actual book links", len(re.findall(r'class="curated-shelf"', rec_source)) == 6 and bool(own_book_ids))
     scores = [float(value.replace(",", ".")) for value in re.findall(r'class="recommendation-match">([\d.,]+)<span>%', rec_source)]
     record("Student: displayed recommendation scores stay within 0–100", bool(scores) and all(0 <= value <= 100 for value in scores))
-    record("Student: local or enhanced recommendation mode is explicit", "Local Recommendation Engine" in rec_source or "LLM-enhanced explanations" in rec_source)
+    mode_text = html.unescape(rec_source)
+    record("Student: local or enhanced recommendation mode is explicit", "Жергілікті ұсыныс жүйесі" in mode_text or "LLM көмегімен толықтырылған" in mode_text)
     signed_link = next((link for link in rec_page.links
         if re.fullmatch(r"/Books/Details/\d+", urllib.parse.urlparse(link).path, re.I)
         and urllib.parse.parse_qs(urllib.parse.urlparse(link).query).get("relevance")), None)

@@ -34,7 +34,7 @@
         idle.hidden = false;
         startButton.disabled = false;
         stopButton.disabled = true;
-        if (showMessage) message("Камера өшірілді. Кодты қолмен енгізуге болады.");
+        if (showMessage) message(window.eduT("Камера өшірілді. Кодты қолмен енгізуге болады."));
     };
 
     const acceptCode = raw => {
@@ -42,14 +42,14 @@
         if (found || !code) return;
         if (code.length > 100 || /[\x00-\x1f\x7f]/.test(code)) {
             stop(false);
-            message(panel.dataset.scanInvalid || "Бұл QR код кітап данасының коды ретінде жарамсыз. Штрихкодты қолмен енгізіңіз.");
+            message(panel.dataset.scanInvalid || window.eduT("Бұл QR код кітап данасының коды ретінде жарамсыз. Штрихкодты қолмен енгізіңіз."));
             codeInput.focus();
             return;
         }
         found = true;
         codeInput.value = code;
         stop(false);
-        message(panel.dataset.scanSuccess || "Код оқылды. Кітап данасы ізделуде…");
+        message(panel.dataset.scanSuccess || window.eduT("Код оқылды. Кітап данасы ізделуде…"));
         // Decoded text is submitted as a value to our own route, never navigated as a URL.
         form.requestSubmit();
     };
@@ -67,7 +67,7 @@
     const startZxing = async currentSession => {
         if (!window.ZXingBrowser?.BrowserQRCodeReader) {
             stop(false);
-            message("Камералық сканер қолжетімсіз. Кодты қолмен немесе USB сканермен енгізіңіз.");
+            message(window.eduT("Камералық сканер қолжетімсіз. Кодты қолмен немесе USB сканермен енгізіңіз."));
             return;
         }
         const reader = new window.ZXingBrowser.BrowserQRCodeReader();
@@ -84,12 +84,12 @@
         found = false;
         const currentSession = session;
         if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
-            message("Камера үшін HTTPS немесе localhost қажет. Кодты қолмен енгізіңіз.");
+            message(window.eduT("Камера үшін HTTPS немесе localhost қажет. Кодты қолмен енгізіңіз."));
             return;
         }
         startButton.disabled = true;
         stopButton.disabled = false;
-        message("Камераға рұқсат күтілуде…");
+        message(window.eduT("Камераға рұқсат күтілуде…"));
         try {
             const acquired = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
             if (currentSession !== session) { acquired.getTracks().forEach(track => track.stop()); return; }
@@ -99,7 +99,7 @@
             idle.hidden = true;
             await video.play();
             if (currentSession !== session) return;
-            message("QR кодты камераға жақындатып, анық көрсетіңіз.");
+            message(window.eduT("QR кодты камераға жақындатып, анық көрсетіңіз."));
             const detector = await nativeReader();
             if (currentSession !== session) return;
             if (!detector) { await startZxing(currentSession); return; }
@@ -116,7 +116,7 @@
                         try { await startZxing(currentSession); }
                         catch {
                             stop(false);
-                            message("QR сканерін іске қосу мүмкін болмады. Кодты қолмен енгізіңіз.");
+                            message(window.eduT("QR сканерін іске қосу мүмкін болмады. Кодты қолмен енгізіңіз."));
                         }
                     }
                     return;
@@ -128,8 +128,8 @@
             if (currentSession !== session) return;
             stop(false);
             message(error?.name === "NotAllowedError"
-                ? "Камераға рұқсат берілмеді. Кодты қолмен немесе USB сканермен енгізіңіз."
-                : "Камераны қосу мүмкін болмады. Құрылғыны тексеріңіз немесе кодты қолмен енгізіңіз.");
+                ? window.eduT("Камераға рұқсат берілмеді. Кодты қолмен немесе USB сканермен енгізіңіз.")
+                : window.eduT("Камераны қосу мүмкін болмады. Құрылғыны тексеріңіз немесе кодты қолмен енгізіңіз."));
         }
     };
 

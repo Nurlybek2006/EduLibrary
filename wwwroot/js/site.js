@@ -1,11 +1,37 @@
-﻿(() => {
+(() => {
+    const messages = JSON.parse(document.getElementById('ui-messages')?.textContent || '{}');
+    window.eduT = (key, ...args) => (messages[key] ?? key).replace(/\{(\d+)\}/g, (_, index) => String(args[Number(index)] ?? ''));
+    // The real input keeps native selection, focus, labels and validation; only its chrome is translated.
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        const picker = document.createElement('span');
+        picker.className = 'localized-file-picker';
+        const button = document.createElement('span');
+        button.className = 'localized-file-button';
+        button.textContent = window.eduT('Choose file');
+        button.setAttribute('aria-hidden', 'true');
+        const filename = document.createElement('span');
+        filename.className = 'localized-file-name';
+        filename.setAttribute('aria-live', 'polite');
+        const describeFile = () => {
+            const names = Array.from(input.files || [], file => file.name).join(', ');
+            filename.textContent = names || window.eduT('No file selected');
+            filename.title = names;
+        };
+        input.before(picker);
+        picker.append(button, filename, input);
+        input.addEventListener('change', describeFile);
+        input.addEventListener('edulibrary:file-reset', describeFile);
+        input.form?.addEventListener('reset', () => requestAnimationFrame(describeFile));
+        describeFile();
+    });
+    document.querySelector('[data-language-select]')?.addEventListener('change', event => event.target.form.requestSubmit());
     const icons = () => window.lucide?.createIcons();
     icons();
     if (window.bootstrap?.Tooltip) document.querySelectorAll('.icon-button[aria-label]:not([data-bs-toggle]),.icon-link[aria-label],.rail-link[aria-label]').forEach(element => {
         bootstrap.Tooltip.getOrCreateInstance(element, { title: element.getAttribute('aria-label'), trigger: 'hover focus', container: 'body', placement: element.classList.contains('rail-link') ? 'right' : 'bottom' });
     });
     const themeButton = document.querySelector('#theme-toggle');
-    function describeTheme() { themeButton?.setAttribute('aria-label', document.documentElement.dataset.theme === 'dark' ? 'Ашық режимге ауысу' : 'Қараңғы режимге ауысу'); }
+    function describeTheme() { themeButton?.setAttribute('aria-label', document.documentElement.dataset.theme === 'dark' ? window.eduT('Ашық режимге ауысу') : window.eduT('Қараңғы режимге ауысу')); }
     describeTheme();
     themeButton?.addEventListener('click', () => {
         const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -46,7 +72,7 @@
         const show = input.type === 'password';
         input.type = show ? 'text' : 'password';
         button.setAttribute('aria-pressed', String(show));
-        button.setAttribute('aria-label', show ? 'Құпиясөзді жасыру' : 'Құпиясөзді көрсету');
+        button.setAttribute('aria-label', show ? window.eduT('Құпиясөзді жасыру') : window.eduT('Құпиясөзді көрсету'));
         button.innerHTML = '<i data-lucide="' + (show ? 'eye-off' : 'eye') + '"></i>';
         icons();
     }));

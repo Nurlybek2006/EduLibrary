@@ -130,20 +130,20 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
     {
         var isbn = NormalizeIsbn(model.ISBN);
         if (await db.Books.AnyAsync(x => x.ISBN.Replace("-", "").Replace(" ", "") == isbn && x.Id != model.Id, ct))
-            throw new BusinessException("Бұл ISBN бар кітап тіркелген. Қажет болса, оған жаңа дана қосыңыз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл ISBN бар кітап тіркелген. Қажет болса, оған жаңа дана қосыңыз."));
         if (!await db.Publishers.AnyAsync(x => x.Id == model.PublisherId, ct))
-            throw new BusinessException("Таңдалған баспа табылмады.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Таңдалған баспа табылмады."));
         var authorIds = model.AuthorIds.Distinct().ToList();
         var categoryIds = model.CategoryIds.Distinct().ToList();
         var subjectIds=model.SubjectIds.Distinct().ToList();
-        if(await db.Subjects.CountAsync(s=>subjectIds.Contains(s.Id),ct)!=subjectIds.Count)throw new BusinessException("Жарамды пәндерді таңдаңыз.");
+        if(await db.Subjects.CountAsync(s=>subjectIds.Contains(s.Id),ct)!=subjectIds.Count)throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Жарамды пәндерді таңдаңыз."));
         if (authorIds.Count == 0 || await db.Authors.CountAsync(x => authorIds.Contains(x.Id), ct) != authorIds.Count)
-            throw new BusinessException("Кемінде бір жарамды авторды таңдаңыз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кемінде бір жарамды авторды таңдаңыз."));
         if (categoryIds.Count == 0 || await db.Categories.CountAsync(x => categoryIds.Contains(x.Id), ct) != categoryIds.Count)
-            throw new BusinessException("Кемінде бір жарамды санатты таңдаңыз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кемінде бір жарамды санатты таңдаңыз."));
         if (!string.IsNullOrWhiteSpace(model.CoverImageUrl) &&
             (!Uri.TryCreate(model.CoverImageUrl.Trim(), UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps))
-            throw new BusinessException("Мұқаба үшін жарамды HTTPS сілтемесін енгізіңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Мұқаба үшін жарамды HTTPS сілтемесін енгізіңіз."));
         Book book;
         if (model.Id == 0)
         {
@@ -153,7 +153,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         else
         {
             book = await db.Books.Include(x => x.BookAuthors).Include(x => x.BookCategories).Include(x=>x.BookSubjects).AsSplitQuery().SingleOrDefaultAsync(x => x.Id == model.Id, ct)
-                ?? throw new BusinessException("Кітап табылмады.");
+                ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітап табылмады."));
         }
         book.ISBN = isbn; book.Title = model.Title.Trim(); book.Description = model.Description?.Trim() ?? "";
         book.PublicationYear = model.PublicationYear; book.Language = model.Language.Trim(); book.PageCount = model.PageCount;
@@ -167,7 +167,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
             book.BookCategories.Add(new BookCategory { CategoryId = categoryId });
         foreach(var item in book.BookSubjects.Where(x=>!subjectIds.Contains(x.SubjectId)).ToList())db.BookSubjects.Remove(item);
         foreach(var subjectId in subjectIds.Where(id=>book.BookSubjects.All(x=>x.SubjectId!=id)))book.BookSubjects.Add(new(){SubjectId=subjectId});
-        await SaveAsync("Кітапты сақтау мүмкін болмады. ISBN бірегейлігін және анықтамалықтарды тексеріңіз.", ct);
+        await SaveAsync(global::EduLibrary.Localization.UiText.Get("Кітапты сақтау мүмкін болмады. ISBN бірегейлігін және анықтамалықтарды тексеріңіз."), ct);
         logger.LogInformation("Book {BookId} saved", book.Id);
         return book.Id;
     }
@@ -178,10 +178,10 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         await ReservationCoordinator.LockAsync(db, ct);
         if (archived && await db.Reservations.AnyAsync(r => r.BookId == id &&
                 (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.ReadyForPickup || r.Status == ReservationStatus.Queued), ct))
-            throw new BusinessException("Кітапта белсенді броньдар бар. Мұрағатқа көшіру алдында оларды тоқтатыңыз.");
-        var book = await db.Books.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Кітап табылмады.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітапта белсенді броньдар бар. Мұрағатқа көшіру алдында оларды тоқтатыңыз."));
+        var book = await db.Books.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітап табылмады."));
         book.IsArchived = archived; book.UpdatedAt = clock.UtcNow;
-        await SaveAsync("Кітап мәртебесін өзгерту мүмкін болмады.", ct);
+        await SaveAsync(global::EduLibrary.Localization.UiText.Get("Кітап мәртебесін өзгерту мүмкін болмады."), ct);
         await transaction.CommitAsync(ct);
         logger.LogInformation("Book {BookId} archive status changed to {Archived}", id, archived);
     }
@@ -203,18 +203,18 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
     {
         var firstName = model.FirstName.Trim(); var lastName = model.LastName.Trim();
         if (await db.Authors.AnyAsync(x => x.Id != model.Id && x.FirstName == firstName && x.LastName == lastName, ct))
-            throw new BusinessException("Бұл автор анықтамалықта бар.");
-        var author = model.Id == 0 ? new Author() : await db.Authors.FindAsync([model.Id], ct) ?? throw new BusinessException("Автор табылмады.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл автор анықтамалықта бар."));
+        var author = model.Id == 0 ? new Author() : await db.Authors.FindAsync([model.Id], ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Автор табылмады."));
         if (model.Id == 0) db.Authors.Add(author);
         author.FirstName = firstName; author.LastName = lastName; author.Biography = model.Biography?.Trim() ?? "";
-        await SaveAsync("Авторды сақтау мүмкін болмады.", ct);
+        await SaveAsync(global::EduLibrary.Localization.UiText.Get("Авторды сақтау мүмкін болмады."), ct);
     }
 
     public async Task DeleteAuthorAsync(int id, CancellationToken ct = default)
     {
-        if (await db.BookAuthors.AnyAsync(x => x.AuthorId == id, ct)) throw new BusinessException("Автор кітаптармен байланысқан. Алдымен кітаптағы авторларды өзгертіңіз.");
-        var author = await db.Authors.FindAsync([id], ct) ?? throw new BusinessException("Автор табылмады.");
-        db.Authors.Remove(author); await SaveAsync("Авторды жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін.", ct);
+        if (await db.BookAuthors.AnyAsync(x => x.AuthorId == id, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Автор кітаптармен байланысқан. Алдымен кітаптағы авторларды өзгертіңіз."));
+        var author = await db.Authors.FindAsync([id], ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Автор табылмады."));
+        db.Authors.Remove(author); await SaveAsync(global::EduLibrary.Localization.UiText.Get("Авторды жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін."), ct);
     }
 
     public async Task<CatalogLookupViewModel> GetPublishersAsync(string? search, CancellationToken ct = default)
@@ -231,20 +231,20 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
     public async Task SavePublisherAsync(PublisherEditViewModel model, CancellationToken ct = default)
     {
         var name = model.Name.Trim();
-        if (await db.Publishers.AnyAsync(x => x.Id != model.Id && x.Name == name, ct)) throw new BusinessException("Бұл атаумен баспа тіркелген.");
+        if (await db.Publishers.AnyAsync(x => x.Id != model.Id && x.Name == name, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл атаумен баспа тіркелген."));
         if (!string.IsNullOrWhiteSpace(model.Website) && (!Uri.TryCreate(model.Website.Trim(), UriKind.Absolute, out var uri) ||
-            (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))) throw new BusinessException("Веб-сайт үшін HTTP немесе HTTPS сілтемесін енгізіңіз.");
-        var publisher = model.Id == 0 ? new Publisher() : await db.Publishers.FindAsync([model.Id], ct) ?? throw new BusinessException("Баспа табылмады.");
+            (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Веб-сайт үшін HTTP немесе HTTPS сілтемесін енгізіңіз."));
+        var publisher = model.Id == 0 ? new Publisher() : await db.Publishers.FindAsync([model.Id], ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Баспа табылмады."));
         if (model.Id == 0) db.Publishers.Add(publisher);
         publisher.Name = name; publisher.Country = model.Country.Trim(); publisher.Website = string.IsNullOrWhiteSpace(model.Website) ? null : model.Website.Trim();
-        await SaveAsync("Баспаны сақтау мүмкін болмады.", ct);
+        await SaveAsync(global::EduLibrary.Localization.UiText.Get("Баспаны сақтау мүмкін болмады."), ct);
     }
 
     public async Task DeletePublisherAsync(int id, CancellationToken ct = default)
     {
-        if (await db.Books.AnyAsync(x => x.PublisherId == id, ct)) throw new BusinessException("Баспа кітаптармен байланысқан. Алдымен кітаптардағы баспаны өзгертіңіз.");
-        var publisher = await db.Publishers.FindAsync([id], ct) ?? throw new BusinessException("Баспа табылмады.");
-        db.Publishers.Remove(publisher); await SaveAsync("Баспаны жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін.", ct);
+        if (await db.Books.AnyAsync(x => x.PublisherId == id, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Баспа кітаптармен байланысқан. Алдымен кітаптардағы баспаны өзгертіңіз."));
+        var publisher = await db.Publishers.FindAsync([id], ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Баспа табылмады."));
+        db.Publishers.Remove(publisher); await SaveAsync(global::EduLibrary.Localization.UiText.Get("Баспаны жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін."), ct);
     }
 
     public async Task<CatalogLookupViewModel> GetCategoriesAsync(string? search, CancellationToken ct = default)
@@ -262,18 +262,18 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
     public async Task SaveCategoryAsync(CategoryEditViewModel model, CancellationToken ct = default)
     {
         var name = model.Name.Trim();
-        if (await db.Categories.AnyAsync(x => x.Id != model.Id && x.Name == name, ct)) throw new BusinessException("Бұл атаумен санат тіркелген.");
-        var category = model.Id == 0 ? new Category() : await db.Categories.FindAsync([model.Id], ct) ?? throw new BusinessException("Санат табылмады.");
+        if (await db.Categories.AnyAsync(x => x.Id != model.Id && x.Name == name, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл атаумен санат тіркелген."));
+        var category = model.Id == 0 ? new Category() : await db.Categories.FindAsync([model.Id], ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Санат табылмады."));
         if (model.Id == 0) db.Categories.Add(category);
         category.Name = name; category.Description = model.Description?.Trim() ?? "";
-        await SaveAsync("Санатты сақтау мүмкін болмады.", ct);
+        await SaveAsync(global::EduLibrary.Localization.UiText.Get("Санатты сақтау мүмкін болмады."), ct);
     }
 
     public async Task DeleteCategoryAsync(int id, CancellationToken ct = default)
     {
-        if (await db.BookCategories.AnyAsync(x => x.CategoryId == id, ct)) throw new BusinessException("Санат кітаптармен байланысқан. Алдымен кітаптардағы санаттарды өзгертіңіз.");
-        var category = await db.Categories.FindAsync([id], ct) ?? throw new BusinessException("Санат табылмады.");
-        db.Categories.Remove(category); await SaveAsync("Санатты жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін.", ct);
+        if (await db.BookCategories.AnyAsync(x => x.CategoryId == id, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Санат кітаптармен байланысқан. Алдымен кітаптардағы санаттарды өзгертіңіз."));
+        var category = await db.Categories.FindAsync([id], ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Санат табылмады."));
+        db.Categories.Remove(category); await SaveAsync(global::EduLibrary.Localization.UiText.Get("Санатты жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін."), ct);
     }
 
     public async Task<CopiesIndexViewModel> GetCopiesAsync(string? search, int? bookId, CopyStatus? status, int page, CancellationToken ct = default)
@@ -304,7 +304,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
     public async Task PopulateCopyOptionsAsync(CopyEditViewModel model, CancellationToken ct = default)
     {
         model.Books = await db.Books.AsNoTracking().Where(x => !x.IsArchived || x.Id == model.BookId).OrderBy(x => x.Title)
-            .Select(x => new SelectListItem(x.Title + " · " + x.ISBN + (x.IsArchived ? " (мұрағат)" : ""), x.Id.ToString())).ToListAsync(ct);
+            .Select(x => new SelectListItem(x.Title + " · " + x.ISBN + (x.IsArchived ? global::EduLibrary.Localization.UiText.Get(" (мұрағат)") : ""), x.Id.ToString())).ToListAsync(ct);
         if (model.Id != 0) model.IsOnLoan = await db.BookCopies.AnyAsync(x => x.Id == model.Id && x.Status == CopyStatus.OnLoan, ct);
         if (model.Id != 0) model.IsReserved = await db.BookCopies.AnyAsync(x => x.Id == model.Id && x.Status == CopyStatus.Reserved, ct);
     }
@@ -314,37 +314,37 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
         await ReservationCoordinator.LockAsync(db, ct);
         if (model.AcquiredAt.Year < 1900 || model.AcquiredAt.Date > clock.Today)
-            throw new BusinessException("Қабылданған күн 1900 жылдан бүгінгі күнге дейін болуы тиіс.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Қабылданған күн 1900 жылдан бүгінгі күнге дейін болуы тиіс."));
         var inventoryNumber = model.InventoryNumber.Trim();
         var barcode = string.IsNullOrWhiteSpace(model.Barcode) ? "EL-" + Guid.NewGuid().ToString("N").ToUpperInvariant() : model.Barcode.Trim();
         if (await db.BookCopies.AnyAsync(x => x.Id != model.Id && x.InventoryNumber == inventoryNumber, ct))
-            throw new BusinessException("Бұл түгендеу нөмірі басқа данаға тиесілі.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл түгендеу нөмірі басқа данаға тиесілі."));
         if (await db.BookCopies.AnyAsync(x => x.Id != model.Id && x.Barcode == barcode, ct))
-            throw new BusinessException("Бұл штрихкод басқа данаға тиесілі.");
-        if (!Enum.IsDefined(model.Status)) throw new BusinessException("Жарамды мәртебені таңдаңыз.");
-        if (model.Status == CopyStatus.Reserved) throw new BusinessException("Дананы брондау үшін «Броньдар» бөлімін пайдаланыңыз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл штрихкод басқа данаға тиесілі."));
+        if (!Enum.IsDefined(model.Status)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Жарамды мәртебені таңдаңыз."));
+        if (model.Status == CopyStatus.Reserved) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Дананы брондау үшін «Броньдар» бөлімін пайдаланыңыз."));
         BookCopy copy;
         if (model.Id == 0)
         {
-            if (!await db.Books.AnyAsync(x => x.Id == model.BookId && !x.IsArchived, ct)) throw new BusinessException("Белсенді кітапты таңдаңыз.");
-            if (model.Status == CopyStatus.OnLoan) throw new BusinessException("Кітапты беру үшін «Кітап беру» бөлімін пайдаланыңыз.");
+            if (!await db.Books.AnyAsync(x => x.Id == model.BookId && !x.IsArchived, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Белсенді кітапты таңдаңыз."));
+            if (model.Status == CopyStatus.OnLoan) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітапты беру үшін «Кітап беру» бөлімін пайдаланыңыз."));
             copy = new BookCopy { BookId = model.BookId }; db.BookCopies.Add(copy);
         }
         else
         {
-            copy = await db.BookCopies.SingleOrDefaultAsync(x => x.Id == model.Id, ct) ?? throw new BusinessException("Кітап данасы табылмады.");
-            if (copy.BookId != model.BookId) throw new BusinessException("Тіркелген дананы басқа кітапқа ауыстыруға болмайды.");
+            copy = await db.BookCopies.SingleOrDefaultAsync(x => x.Id == model.Id, ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітап данасы табылмады."));
+            if (copy.BookId != model.BookId) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Тіркелген дананы басқа кітапқа ауыстыруға болмайды."));
             if (copy.Status == CopyStatus.Reserved || await db.Reservations.AnyAsync(r => r.BookCopyId == copy.Id &&
                     (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.ReadyForPickup), ct))
-                throw new BusinessException("Брондалған дананы өзгертуге болмайды. Алдымен броньды тоқтатыңыз немесе кітапты тапсырыңыз.");
+                throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Брондалған дананы өзгертуге болмайды. Алдымен броньды тоқтатыңыз немесе кітапты тапсырыңыз."));
             if (copy.Status == CopyStatus.OnLoan || await db.Loans.AnyAsync(x => x.BookCopyId == copy.Id && x.ReturnedAt == null, ct))
-                throw new BusinessException("Оқырмандағы дананы өзгертуге болмайды. Алдымен қайтаруды рәсімдеңіз.");
-            if (model.Status == CopyStatus.OnLoan) throw new BusinessException("Кітапты беру үшін «Кітап беру» бөлімін пайдаланыңыз.");
+                throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Оқырмандағы дананы өзгертуге болмайды. Алдымен қайтаруды рәсімдеңіз."));
+            if (model.Status == CopyStatus.OnLoan) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітапты беру үшін «Кітап беру» бөлімін пайдаланыңыз."));
             db.Entry(copy).Property(x => x.RowVersion).OriginalValue = ParseRowVersion(model.RowVersion);
         }
         copy.InventoryNumber = inventoryNumber; copy.Barcode = barcode; copy.Status = model.Status;
         copy.ShelfLocation = model.ShelfLocation.Trim(); copy.Condition = model.Condition.Trim(); copy.AcquiredAt = model.AcquiredAt.Date;
-        await SaveAsync("Дананы сақтау мүмкін болмады. Түгендеу нөмірі мен штрихкодтың бірегейлігін тексеріңіз.", ct);
+        await SaveAsync(global::EduLibrary.Localization.UiText.Get("Дананы сақтау мүмкін болмады. Түгендеу нөмірі мен штрихкодтың бірегейлігін тексеріңіз."), ct);
         await ReservationCoordinator.ReconcileAsync(db, clock, reservationOptions?.Value ?? new ReservationOptions(), model.BookId, ct);
         await transaction.CommitAsync(ct);
         logger.LogInformation("Copy {CopyId} saved", copy.Id); return copy.Id;
@@ -354,13 +354,13 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
     {
         await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
         await ReservationCoordinator.LockAsync(db, ct);
-        var copy = await db.BookCopies.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException("Кітап данасы табылмады.");
+        var copy = await db.BookCopies.SingleOrDefaultAsync(x => x.Id == id, ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітап данасы табылмады."));
         if (copy.Status == CopyStatus.Reserved || await db.Reservations.AnyAsync(r => r.BookCopyId == id, ct))
-            throw new BusinessException("Броньмен байланысқан дананы жоюға болмайды. Брондау тарихы сақталады.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Броньмен байланысқан дананы жоюға болмайды. Брондау тарихы сақталады."));
         if (copy.Status == CopyStatus.OnLoan || await db.Loans.AnyAsync(x => x.BookCopyId == id, ct))
-            throw new BusinessException("Берілу тарихы бар дананы жоюға болмайды. Қажет болса, мәртебесін өзгертіңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Берілу тарихы бар дананы жоюға болмайды. Қажет болса, мәртебесін өзгертіңіз."));
         db.Entry(copy).Property(x => x.RowVersion).OriginalValue = ParseRowVersion(rowVersion);
-        db.BookCopies.Remove(copy); await SaveAsync("Дананы жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін.", ct);
+        db.BookCopies.Remove(copy); await SaveAsync(global::EduLibrary.Localization.UiText.Get("Дананы жою мүмкін болмады: ол басқа жазбамен байланысқан болуы мүмкін."), ct);
         await transaction.CommitAsync(ct);
         logger.LogInformation("Copy {CopyId} deleted", id);
     }
@@ -385,7 +385,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
             if (bytes.Length != 8) throw new FormatException();
             return bytes;
         }
-        catch (FormatException) { throw new BusinessException("Өзгеріс нұсқасы жарамсыз. Бетті жаңартып, қайта көріңіз."); }
+        catch (FormatException) { throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Өзгеріс нұсқасы жарамсыз. Бетті жаңартып, қайта көріңіз.")); }
     }
 
     private async Task SaveAsync(string message, CancellationToken ct)
@@ -394,7 +394,7 @@ public sealed class CatalogService(ApplicationDbContext db, ILibraryClock clock,
         catch (DbUpdateConcurrencyException ex)
         {
             logger.LogWarning(ex, "Catalog concurrency conflict");
-            throw new BusinessException("Жазбаны басқа қызметкер өзгертті. Бетті жаңартып, қайта көріңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Жазбаны басқа қызметкер өзгертті. Бетті жаңартып, қайта көріңіз."));
         }
         catch (DbUpdateException ex)
         {

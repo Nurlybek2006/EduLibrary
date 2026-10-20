@@ -1,42 +1,42 @@
 @model EduLibrary.ViewModels.BookCatalogViewModel
 @{
-    ViewData["Title"] = "Кітаптар каталогы";
+    ViewData["Title"] = UiText.Get("Кітаптар каталогы");
     var staff = User.IsInRole("Admin") || User.IsInRole("Librarian");
     var activeCount = new[] { Model.Filter.AuthorId.HasValue, Model.Filter.PublisherId.HasValue, Model.Filter.CategoryId.HasValue, Model.Filter.SubjectId.HasValue, !string.IsNullOrEmpty(Model.Filter.Language), Model.Filter.AvailableOnly, Model.Filter.IncludeArchived }.Count(x => x);
 }
 <section class="catalog-page" aria-labelledby="catalog-heading">
     <header class="catalog-intro">
-        <div><span class="section-caption">Университеттің цифрлық кітапханасы</span><h1 id="catalog-heading">Білім әлемін ашыңыз.</h1><p>Келесі идеяңызға жол ашатын кітапты табыңыз.</p></div>
-        <div class="catalog-intro-actions">@if (User.Identity?.IsAuthenticated == true) { <a class="catalog-discovery-link" asp-controller="Recommendations" asp-action="Index"><i data-lucide="sparkles" aria-hidden="true"></i> Сізге арналған</a> }@if (staff) { <a class="btn btn-primary" asp-action="Create"><i data-lucide="plus" aria-hidden="true"></i> Кітап қосу</a> }</div>
+        <div><span class="section-caption">@T["Университеттің цифрлық кітапханасы"]</span><h1 id="catalog-heading">@T["Білім әлемін ашыңыз."]</h1><p>@T["Келесі идеяңызға жол ашатын кітапты табыңыз."]</p></div>
+        <div class="catalog-intro-actions">@if (User.Identity?.IsAuthenticated == true) { <a class="catalog-discovery-link" asp-controller="Recommendations" asp-action="Index"><i data-lucide="sparkles" aria-hidden="true"></i> @T["Сізге арналған"]</a> }@if (staff) { <a class="btn btn-primary" asp-action="Create"><i data-lucide="plus" aria-hidden="true"></i> @T["Кітап қосу"]</a> }</div>
     </header>
-    <form method="get" id="catalog-filter" class="catalog-discovery-form" role="search" aria-label="Каталогтан кітап іздеу">
-        <div class="catalog-searchbar"><i data-lucide="search" aria-hidden="true"></i><label class="visually-hidden" for="catalog-search">Кітап, автор немесе ISBN іздеу</label><input id="catalog-search" name="Search" value="@Model.Filter.Search" placeholder="Кітап, автор немесе ISBN іздеңіз…" maxlength="200" autocomplete="off" /><button class="btn btn-primary" type="submit">Іздеу <i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
+    <form method="get" id="catalog-filter" class="catalog-discovery-form" role="search" aria-label="@T["Каталогтан кітап іздеу"]">
+        <div class="catalog-searchbar"><i data-lucide="search" aria-hidden="true"></i><label class="visually-hidden" for="catalog-search">@T["Кітап, автор немесе ISBN іздеу"]</label><input id="catalog-search" name="Search" value="@Model.Filter.Search" placeholder="@T["Кітап, автор немесе ISBN іздеңіз…"]" maxlength="200" autocomplete="off" /><button class="btn btn-primary" type="submit">@T["Іздеу"] <i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
         <div class="catalog-refinements">
             <div class="catalog-filter-chips">
-                <div class="catalog-select-chip"><i data-lucide="shapes" aria-hidden="true"></i><label class="visually-hidden" for="catalog-category">Санат</label><select id="catalog-category" name="CategoryId"><option value="">Барлық санаттар</option>@foreach (var item in Model.Categories) { <option value="@item.Value" selected="@(item.Value == Model.Filter.CategoryId?.ToString())">@item.Text</option> }</select></div>
-                <div class="catalog-select-chip"><label class="visually-hidden" for="catalog-language">Кітап тілі</label><select id="catalog-language" name="Language"><option value="">Барлық тілдер</option>@foreach (var item in Model.Languages) { <option value="@item.Value" selected="@(item.Value == Model.Filter.Language)">@item.Text</option> }</select></div>
-                <label class="catalog-check-chip"><input type="checkbox" name="AvailableOnly" value="true" checked="@Model.Filter.AvailableOnly" /><span class="check-chip-mark"></span>Қолжетімді</label>
+                <div class="catalog-select-chip"><i data-lucide="shapes" aria-hidden="true"></i><label class="visually-hidden" for="catalog-category">@T["Санат"]</label><select id="catalog-category" name="CategoryId"><option value="">@T["Барлық санаттар"]</option>@foreach (var item in Model.Categories) { <option value="@item.Value" selected="@(item.Value == Model.Filter.CategoryId?.ToString())">@item.Text</option> }</select></div>
+                <div class="catalog-select-chip"><label class="visually-hidden" for="catalog-language">@T["Кітап тілі"]</label><select id="catalog-language" name="Language"><option value="">@T["Барлық тілдер"]</option>@foreach (var item in Model.Languages) { <option value="@item.Value" selected="@(item.Value == Model.Filter.Language)">@item.Text</option> }</select></div>
+                <label class="catalog-check-chip"><input type="checkbox" name="AvailableOnly" value="true" checked="@Model.Filter.AvailableOnly" /><span class="check-chip-mark"></span>@T["Қолжетімді"]</label>
                 <details class="catalog-filter-drawer">
-                    <summary><i data-lucide="sliders-horizontal" aria-hidden="true"></i> Сүзгілер @if (activeCount > 0) { <span class="filter-active-count">@activeCount</span> }</summary>
-                    <div class="catalog-filter-drawer-body"><div class="catalog-drawer-heading"><strong>Іздеуді нақтылау</strong><span>Өзіңізге қажет әдебиетті таңдаңыз.</span></div>
+                    <summary><i data-lucide="sliders-horizontal" aria-hidden="true"></i> @T["Сүзгілер"] @if (activeCount > 0) { <span class="filter-active-count">@activeCount</span> }</summary>
+                    <div class="catalog-filter-drawer-body"><div class="catalog-drawer-heading"><strong>@T["Іздеуді нақтылау"]</strong><span>@T["Өзіңізге қажет әдебиетті таңдаңыз."]</span></div>
                         <div class="form-grid">
-                            <div><label for="catalog-author">Автор</label><select id="catalog-author" name="AuthorId" class="form-select"><option value="">Барлық авторлар</option>@foreach (var item in Model.Authors) { <option value="@item.Value" selected="@(item.Value == Model.Filter.AuthorId?.ToString())">@item.Text</option> }</select></div>
-                            <div><label for="catalog-publisher">Баспа</label><select id="catalog-publisher" name="PublisherId" class="form-select"><option value="">Барлық баспалар</option>@foreach (var item in Model.Publishers) { <option value="@item.Value" selected="@(item.Value == Model.Filter.PublisherId?.ToString())">@item.Text</option> }</select></div>
-                            <div class="catalog-drawer-subject"><label for="catalog-subject">Оқу пәні</label><select id="catalog-subject" name="SubjectId" class="form-select"><option value="">Барлық пәндер</option>@foreach (var item in Model.Subjects) { <option value="@item.Value" selected="@(item.Value == Model.Filter.SubjectId?.ToString())">@item.Text</option> }</select></div>
+                            <div><label for="catalog-author">@T["Автор"]</label><select id="catalog-author" name="AuthorId" class="form-select"><option value="">@T["Барлық авторлар"]</option>@foreach (var item in Model.Authors) { <option value="@item.Value" selected="@(item.Value == Model.Filter.AuthorId?.ToString())">@item.Text</option> }</select></div>
+                            <div><label for="catalog-publisher">@T["Баспа"]</label><select id="catalog-publisher" name="PublisherId" class="form-select"><option value="">@T["Барлық баспалар"]</option>@foreach (var item in Model.Publishers) { <option value="@item.Value" selected="@(item.Value == Model.Filter.PublisherId?.ToString())">@item.Text</option> }</select></div>
+                            <div class="catalog-drawer-subject"><label for="catalog-subject">@T["Оқу пәні"]</label><select id="catalog-subject" name="SubjectId" class="form-select"><option value="">@T["Барлық пәндер"]</option>@foreach (var item in Model.Subjects) { <option value="@item.Value" selected="@(item.Value == Model.Filter.SubjectId?.ToString())">@item.Text</option> }</select></div>
                         </div>
-                        @if (staff) { <label class="catalog-archive-option"><input class="form-check-input" type="checkbox" name="IncludeArchived" value="true" checked="@Model.Filter.IncludeArchived" /> Мұрағаттағы кітаптармен бірге көрсету</label> }
-                        <div class="catalog-drawer-footer"><a asp-action="Index">Барлық сүзгіні тазарту</a><button class="btn btn-primary" type="submit">Нәтижелерді көрсету</button></div>
+                        @if (staff) { <label class="catalog-archive-option"><input class="form-check-input" type="checkbox" name="IncludeArchived" value="true" checked="@Model.Filter.IncludeArchived" /> @T["Мұрағаттағы кітаптармен бірге көрсету"]</label> }
+                        <div class="catalog-drawer-footer"><a asp-action="Index">@T["Барлық сүзгіні тазарту"]</a><button class="btn btn-primary" type="submit">@T["Нәтижелерді көрсету"]</button></div>
                     </div>
                 </details>
-                @if (activeCount > 0 || !string.IsNullOrWhiteSpace(Model.Filter.Search)) { <a class="catalog-clear" asp-action="Index">Тазарту <i data-lucide="x" aria-hidden="true"></i></a> }
+                @if (activeCount > 0 || !string.IsNullOrWhiteSpace(Model.Filter.Search)) { <a class="catalog-clear" asp-action="Index">@T["Тазарту"] <i data-lucide="x" aria-hidden="true"></i></a> }
             </div>
             <div class="catalog-presentation-controls">
-                <label class="visually-hidden" for="catalog-sort">Кітаптарды реттеу</label><select id="catalog-sort" name="Sort" aria-label="Кітаптарды реттеу"><option value="title" selected="@(Model.Filter.Sort == "title")">Атауы бойынша</option><option value="year" selected="@(Model.Filter.Sort == "year")">Жаңа басылымдар</option><option value="popularity" selected="@(Model.Filter.Sort == "popularity")">Танымал кітаптар</option><option value="rating" selected="@(Model.Filter.Sort == "rating")">Рейтингі жоғары</option></select>
-                <div class="view-switch" aria-label="Каталог көрінісі"><button type="button" data-catalog-view="grid" class="active" aria-label="Тор көрінісі" aria-pressed="true"><i data-lucide="layout-grid" aria-hidden="true"></i></button><button type="button" data-catalog-view="list" aria-label="Тізім көрінісі" aria-pressed="false"><i data-lucide="list" aria-hidden="true"></i></button></div>
+                <label class="visually-hidden" for="catalog-sort">@T["Кітаптарды реттеу"]</label><select id="catalog-sort" name="Sort" aria-label="@T["Кітаптарды реттеу"]"><option value="title" selected="@(Model.Filter.Sort == "title")">@T["Атауы бойынша"]</option><option value="year" selected="@(Model.Filter.Sort == "year")">@T["Жаңа басылымдар"]</option><option value="popularity" selected="@(Model.Filter.Sort == "popularity")">@T["Танымал кітаптар"]</option><option value="rating" selected="@(Model.Filter.Sort == "rating")">@T["Рейтингі жоғары"]</option></select>
+                <div class="view-switch" aria-label="@T["Каталог көрінісі"]"><button type="button" data-catalog-view="grid" class="active" aria-label="@T["Тор көрінісі"]" aria-pressed="true"><i data-lucide="layout-grid" aria-hidden="true"></i></button><button type="button" data-catalog-view="list" aria-label="@T["Тізім көрінісі"]" aria-pressed="false"><i data-lucide="list" aria-hidden="true"></i></button></div>
             </div>
         </div>
     </form>
-    <span id="catalog-status" class="visually-hidden" aria-live="polite">Каталог дайын</span>
-    <div id="catalog-results" aria-label="Кітаптар тізімі"><partial name="_Results" model="Model" /></div>
+    <span id="catalog-status" class="visually-hidden" aria-live="polite">@T["Каталог дайын"]</span>
+    <div id="catalog-results" aria-label="@T["Кітаптар тізімі"]"><partial name="_Results" model="Model" /></div>
 </section>
 @section Scripts { <script src="~/js/catalog.js" asp-append-version="true"></script> }

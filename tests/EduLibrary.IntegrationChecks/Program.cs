@@ -10,6 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using System.Text;
+using System.Globalization;
+
+// Legacy display assertions intentionally verify the default Kazakh UI.
+CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("kk-KZ");
+CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("kk-KZ");
 
 // Always replace the database name. A supplied connection can select the server and
 // authentication, but this harness never creates, mutates, or drops that database.

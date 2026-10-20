@@ -28,7 +28,7 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
 
     private async Task RequireStaffAsync(string userId, CancellationToken ct)
     {
-        if (!await IsStaffAsync(userId, ct)) throw new BusinessException("Бұл әрекетті тек белсенді кітапхана қызметкері орындай алады.");
+        if (!await IsStaffAsync(userId, ct)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл әрекетті тек белсенді кітапхана қызметкері орындай алады."));
     }
 
     private async Task<Student> RequireStudentAsync(string userId, CancellationToken ct)
@@ -40,7 +40,7 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
             where user.Id == userId && role.Name == RoleNames.Student
                 && (!user.LockoutEnabled || user.LockoutEnd == null || user.LockoutEnd <= clock.UtcNow)
             select user.Id).AnyAsync(ct);
-        return student is not null && permitted ? student : throw new BusinessException("Бронь жасау үшін белсенді студент профилі қажет.");
+        return student is not null && permitted ? student : throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бронь жасау үшін белсенді студент профилі қажет."));
     }
 
     private IQueryable<Reservation> WithPresentation() => db.Reservations.AsNoTracking()
@@ -116,7 +116,7 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
             AvailableCopies = available, JoinQueue = available == 0 || queued,
             PickupLocationId = Settings.PickupLocations[0].Id,
             Locations = Settings.PickupLocations.Select(l => new SelectListItem(l.Name, l.Id)).ToList(),
-            PickupDates = dates.Select(d => new SelectListItem(d.ToString("dd.MM.yyyy"), d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))).ToList(),
+            PickupDates = dates.Select(d => new SelectListItem(d.ToString("d", CultureInfo.CurrentCulture), d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))).ToList(),
             PickupDate = dates.Count > 0 ? dates[0] : null
         };
         if (dates.Count > 0) model.Slots = await GetSlotsAsync(dates[0], model.PickupLocationId, ct);
@@ -143,20 +143,20 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
     public Task<int> CreateAsync(ReservationCreateViewModel model, string userId, CancellationToken ct = default) => InTransactionAsync(async () =>
     {
         var student = await RequireStudentAsync(userId, ct);
-        var book = await db.Books.SingleOrDefaultAsync(b => b.Id == model.BookId && !b.IsArchived, ct) ?? throw new BusinessException("Кітап қолжетімсіз.");
-        if (!Settings.PickupLocations.Any(l => l.Id == model.PickupLocationId)) throw new BusinessException("Алып кету орнын дұрыс таңдаңыз.");
+        var book = await db.Books.SingleOrDefaultAsync(b => b.Id == model.BookId && !b.IsArchived, ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітап қолжетімсіз."));
+        if (!Settings.PickupLocations.Any(l => l.Id == model.PickupLocationId)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Алып кету орнын дұрыс таңдаңыз."));
         if (await db.Reservations.AnyAsync(r => r.StudentId == student.Id && r.BookId == book.Id && (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.ReadyForPickup || r.Status == ReservationStatus.Queued), ct))
-            throw new BusinessException("Бұл кітапқа белсенді броніңіз немесе кезегіңіз бар.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл кітапқа белсенді броніңіз немесе кезегіңіз бар."));
         if (await db.Loans.AnyAsync(l => l.StudentId == student.Id && l.BookCopy.BookId == book.Id && l.ReturnedAt == null, ct))
-            throw new BusinessException("Бұл кітап қазір сіздің қолыңызда. Алдымен оны қайтарыңыз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл кітап қазір сіздің қолыңызда. Алдымен оны қайтарыңыз."));
         DateTime? requested = null;
         if (!model.JoinQueue)
         {
             if (!model.PickupDate.HasValue || !ReservationSchedule.TryGetSlot(model.PickupDate.Value, model.PickupTime, clock.UtcNow, Settings, out var slot))
-                throw new BusinessException("Кітапхананың қолжетімді күні мен уақытын таңдаңыз.");
+                throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітапхананың қолжетімді күні мен уақытын таңдаңыз."));
             requested = slot;
             if (await CapacityAsync(model.PickupLocationId, slot, null, ct) >= Settings.SlotCapacity)
-                throw new BusinessException("Бұл уақыт аралығы толды. Басқа уақытты таңдаңыз.");
+                throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл уақыт аралығы толды. Басқа уақытты таңдаңыз."));
         }
         var queueExists = await db.Reservations.AnyAsync(r => r.BookId == book.Id && r.Status == ReservationStatus.Queued, ct);
         var copy = !model.JoinQueue && !queueExists ? await db.BookCopies.OrderBy(c => c.Id).FirstOrDefaultAsync(c => c.BookId == book.Id && c.Status == CopyStatus.Available && !c.Loans.Any(l => l.ReturnedAt == null), ct) : null;
@@ -176,8 +176,8 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
         }
         db.Reservations.Add(reservation);
         await db.SaveChangesAsync(ct);
-        ReservationCoordinator.Notify(db, reservation, copy is null ? "ReservationQueued" : "ReservationCreated", copy is null ? "Кітап кезегіне қосылдыңыз" : "Бронь қабылданды",
-            copy is null ? "Бос дана шыққанда кезек ретімен сізге бөлінеді." : "Дана сізге сақталды. Қызметкер дайындағаннан кейін хабарлама келеді.", clock.UtcNow);
+        ReservationCoordinator.Notify(db, reservation, copy is null ? "ReservationQueued" : "ReservationCreated", copy is null ? global::EduLibrary.Localization.UiText.Get("Кітап кезегіне қосылдыңыз") : global::EduLibrary.Localization.UiText.Get("Бронь қабылданды"),
+            copy is null ? global::EduLibrary.Localization.UiText.Get("Бос дана шыққанда кезек ретімен сізге бөлінеді.") : global::EduLibrary.Localization.UiText.Get("Дана сізге сақталды. Қызметкер дайындағаннан кейін хабарлама келеді."), clock.UtcNow);
         await db.SaveChangesAsync(ct);
         await ReservationCoordinator.ReconcileAsync(db, clock, Settings, book.Id, ct);
         return reservation.Id;
@@ -202,11 +202,11 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
             await RequireStaffAsync(staffUserId, ct);
             var reservation = await TrackedAsync(model.Id, ct);
             CheckVersion(reservation, model.RowVersion);
-            if (reservation.Status != ReservationStatus.Pending || reservation.ExpiresAtUtc <= clock.UtcNow) throw new BusinessException("Бұл броньді қазір дайындау мүмкін емес. Бетті жаңартыңыз.");
-            if (!reservation.Student.IsActive || reservation.Book.IsArchived) throw new BusinessException("Кітап немесе студент профилі қолжетімсіз.");
+            if (reservation.Status != ReservationStatus.Pending || reservation.ExpiresAtUtc <= clock.UtcNow) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл броньді қазір дайындау мүмкін емес. Бетті жаңартыңыз."));
+            if (!reservation.Student.IsActive || reservation.Book.IsArchived) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітап немесе студент профилі қолжетімсіз."));
             var copy = await db.BookCopies.SingleOrDefaultAsync(c => c.Id == model.BookCopyId && c.BookId == reservation.BookId
                 && (c.Status == CopyStatus.Available || (c.Id == reservation.BookCopyId && c.Status == CopyStatus.Reserved)) && !c.Loans.Any(l => l.ReturnedAt == null), ct)
-                ?? throw new BusinessException("Таңдалған дана қолжетімсіз немесе басқа кітапқа тиесілі.");
+                ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Таңдалған дана қолжетімсіз немесе басқа кітапқа тиесілі."));
             if (reservation.BookCopyId != copy.Id)
             {
                 ReservationCoordinator.Release(reservation);
@@ -219,14 +219,14 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
                 || !ReservationSchedule.IsConfiguredSlot(ReservationSchedule.ToLocal(appointment.Value), Settings)
                 || await CapacityAsync(reservation.PickupLocationId, appointment.Value, reservation.Id, ct) >= Settings.SlotCapacity)
                 appointment = await NextSlotAsync(reservation.PickupLocationId, reservation.Id, ct);
-            if (appointment is null) throw new BusinessException("Алып кетуге бос уақыт жоқ. Күнтізбені немесе орын сыйымдылығын тексеріңіз.");
+            if (appointment is null) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Алып кетуге бос уақыт жоқ. Күнтізбені немесе орын сыйымдылығын тексеріңіз."));
             reservation.PickupAtUtc = appointment;
             reservation.Status = ReservationStatus.ReadyForPickup;
             reservation.ReadyAtUtc = clock.UtcNow;
             reservation.PreparedByUserId = staffUserId;
             reservation.ExpiresAtUtc = ReservationSchedule.HoldDeadline(clock.UtcNow, appointment.Value, Settings.ReadyHoldHours, Settings);
-            var location = Settings.PickupLocations.FirstOrDefault(l => l.Id == reservation.PickupLocationId) ?? throw new BusinessException("Алып кету орны қолжетімсіз.");
-            ReservationCoordinator.Notify(db, reservation, "ReservationReady", "Кітап алып кетуге дайын", $"{location.Name}, {ReservationSchedule.ToLocal(appointment.Value):dd.MM.yyyy HH:mm}. Бронь кодын қызметкерге көрсетіңіз. Сақтау мерзімі: {ReservationSchedule.ToLocal(reservation.ExpiresAtUtc.Value):dd.MM.yyyy HH:mm}.", clock.UtcNow);
+            var location = Settings.PickupLocations.FirstOrDefault(l => l.Id == reservation.PickupLocationId) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Алып кету орны қолжетімсіз."));
+            ReservationCoordinator.Notify(db, reservation, "ReservationReady", global::EduLibrary.Localization.UiText.Get("Кітап алып кетуге дайын"), global::EduLibrary.Localization.UiText.Format($"{location.Name}, {ReservationSchedule.ToLocal(appointment.Value):dd.MM.yyyy HH:mm}. Бронь кодын қызметкерге көрсетіңіз. Сақтау мерзімі: {ReservationSchedule.ToLocal(reservation.ExpiresAtUtc.Value):dd.MM.yyyy HH:mm}."), clock.UtcNow);
             return 0;
         }, ct);
     }
@@ -237,13 +237,13 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
         var reservation = await TrackedAsync(model.Id, ct);
         CheckVersion(reservation, model.RowVersion);
         if (reservation.Status != ReservationStatus.ReadyForPickup || reservation.ExpiresAtUtc <= clock.UtcNow)
-            throw new BusinessException("Бронь алып кетуге дайын емес немесе мерзімі өткен.");
-        if (!ReservationPickupCode.Matches(model.PickupCode, reservation.PickupCode)) throw new BusinessException("Бронь коды қате. Студент көрсеткен кодты қайта тексеріңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бронь алып кетуге дайын емес немесе мерзімі өткен."));
+        if (!ReservationPickupCode.Matches(model.PickupCode, reservation.PickupCode)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бронь коды қате. Студент көрсеткен кодты қайта тексеріңіз."));
         if (!reservation.Student.IsActive || reservation.Book.IsArchived || reservation.BookCopy?.Status != CopyStatus.Reserved)
-            throw new BusinessException("Кітапты беру мүмкін емес: студент немесе бөлінген дана қолжетімсіз.");
-        if (model.DueDate.Date < clock.Today || model.DueDate.Date > clock.Today.AddDays(365)) throw new BusinessException("Қайтару мерзімі бүгіннен бастап бір жыл аралығында болуы керек.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Кітапты беру мүмкін емес: студент немесе бөлінген дана қолжетімсіз."));
+        if (model.DueDate.Date < clock.Today || model.DueDate.Date > clock.Today.AddDays(365)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Қайтару мерзімі бүгіннен бастап бір жыл аралығында болуы керек."));
         if (await db.Loans.AnyAsync(l => l.ReturnedAt == null && (l.BookCopyId == reservation.BookCopyId || (l.StudentId == reservation.StudentId && l.BookCopy.BookId == reservation.BookId)), ct))
-            throw new BusinessException("Бұл дана немесе студенттің осы кітапқа белсенді берілімі бар.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл дана немесе студенттің осы кітапқа белсенді берілімі бар."));
         var loan = new Loan { BookCopyId = reservation.BookCopyId!.Value, StudentId = reservation.StudentId,
             LoanDate = clock.Today, DueDate = model.DueDate.Date, IssuedByUserId = staffUserId };
         db.Loans.Add(loan);
@@ -264,14 +264,14 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
         {
             if (isStaff) await RequireStaffAsync(userId, ct);
             var reservation = await TrackedAsync(id, ct);
-            if (!isStaff && reservation.Student.IdentityUserId != userId) throw new BusinessException("Бұл броньге қол жеткізуге рұқсат жоқ.");
+            if (!isStaff && reservation.Student.IdentityUserId != userId) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бұл броньге қол жеткізуге рұқсат жоқ."));
             CheckVersion(reservation, rowVersion);
-            if (!IsActive(reservation.Status)) throw new BusinessException("Аяқталған броньді тоқтату мүмкін емес.");
+            if (!IsActive(reservation.Status)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Аяқталған броньді тоқтату мүмкін емес."));
             ReservationCoordinator.Release(reservation);
             reservation.Status = ReservationStatus.Cancelled;
             reservation.CancelledAtUtc = clock.UtcNow;
             reservation.CancelledByUserId = userId;
-            ReservationCoordinator.Notify(db, reservation, "ReservationCancelled", "Бронь тоқтатылды", "Бронь тоқтатылды; бөлінген дана кезектегі келесі оқырманға ұсынылады.", clock.UtcNow);
+            ReservationCoordinator.Notify(db, reservation, "ReservationCancelled", global::EduLibrary.Localization.UiText.Get("Бронь тоқтатылды"), global::EduLibrary.Localization.UiText.Get("Бронь тоқтатылды; бөлінген дана кезектегі келесі оқырманға ұсынылады."), clock.UtcNow);
             await db.SaveChangesAsync(ct);
             await ReservationCoordinator.ReconcileAsync(db, clock, Settings, reservation.BookId, ct);
             return 0;
@@ -307,7 +307,7 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
             db.ChangeTracker.Clear();
             // Do not log payloads, pickup codes, student identities, or SQL parameters.
             logger.LogWarning("Reservation update conflicted with another transaction.");
-            throw new BusinessException("Бронь басқа әрекетпен жаңартылды. Бетті жаңартып, қайта көріңіз.");
+            throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бронь басқа әрекетпен жаңартылды. Бетті жаңартып, қайта көріңіз."));
         }
         catch
         {
@@ -318,15 +318,15 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
 
     private Task<Reservation> TrackedAsync(int id, CancellationToken ct) => FindTrackedAsync(id, ct);
     private async Task<Reservation> FindTrackedAsync(int id, CancellationToken ct) => await db.Reservations.Include(r => r.Student).Include(r => r.Book).Include(r => r.BookCopy)
-        .SingleOrDefaultAsync(r => r.Id == id, ct) ?? throw new BusinessException("Бронь табылмады.");
+        .SingleOrDefaultAsync(r => r.Id == id, ct) ?? throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бронь табылмады."));
 
     private static void CheckVersion(Reservation reservation, string? version)
     {
-        if (version is null || version.Length != 12) throw new BusinessException("Бетті жаңартып, қайта көріңіз.");
+        if (version is null || version.Length != 12) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бетті жаңартып, қайта көріңіз."));
         byte[] supplied;
         try { supplied = Convert.FromBase64String(version); }
-        catch (FormatException) { throw new BusinessException("Бетті жаңартып, қайта көріңіз."); }
-        if (supplied.Length != 8 || !supplied.AsSpan().SequenceEqual(reservation.RowVersion)) throw new BusinessException("Бронь өзгертілген. Бетті жаңартып, қайта көріңіз.");
+        catch (FormatException) { throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бетті жаңартып, қайта көріңіз.")); }
+        if (supplied.Length != 8 || !supplied.AsSpan().SequenceEqual(reservation.RowVersion)) throw new BusinessException(global::EduLibrary.Localization.UiText.Get("Бронь өзгертілген. Бетті жаңартып, қайта көріңіз."));
     }
 
     private Task<int> CapacityAsync(string locationId, DateTime slot, int? excludingId, CancellationToken ct) => db.Reservations.CountAsync(r => (!excludingId.HasValue || r.Id != excludingId.Value)
@@ -357,7 +357,7 @@ public sealed class ReservationService(ApplicationDbContext db, IOptions<Reserva
         row.StudentName = reservation.Student.FullName; row.StudentNumber = reservation.Student.StudentNumber; row.Status = reservation.Status;
         row.CreatedAt = ReservationSchedule.ToLocal(reservation.CreatedAtUtc); row.PickupAt = Local(reservation.PickupAtUtc); row.ExpiresAt = Local(reservation.ExpiresAtUtc);
         row.QueuePosition = position > 0 ? position : null;
-        row.PickupLocationName = Settings.PickupLocations.FirstOrDefault(l => l.Id == reservation.PickupLocationId)?.Name ?? "Қолжетімсіз орын";
+        row.PickupLocationName = Settings.PickupLocations.FirstOrDefault(l => l.Id == reservation.PickupLocationId)?.Name ?? global::EduLibrary.Localization.UiText.Get("Қолжетімсіз орын");
         return row;
     }
 

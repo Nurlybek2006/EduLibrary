@@ -25,7 +25,7 @@
             const table = document.getElementById('data-' + series.id);
             table.replaceChildren(...series.labels.map((label, index) => {
                 const row = document.createElement('tr');
-                [label, series.isRating ? series.values[index].toFixed(2) : series.values[index].toLocaleString('kk-KZ')].forEach(value => {
+                [label, series.isRating ? series.values[index].toFixed(2) : series.values[index].toLocaleString(document.documentElement.dataset.culture)].forEach(value => {
                     const cell = document.createElement('td'); cell.textContent = value; row.append(cell);
                 });
                 return row;
@@ -40,7 +40,7 @@
                 options: { responsive: true, maintainAspectRatio: false, animation: reducedMotion ? false : { duration: 350 },
                     indexAxis: series.horizontal ? 'y' : 'x',
                     font: { family: 'Manrope, sans-serif', size: 14 },
-                    plugins: { legend: { display: doughnut, position: 'bottom', labels: { color: text, boxWidth: 12, padding: 18, font: { family: 'Manrope, sans-serif', size: 14 } } }, tooltip: { titleFont: { family: 'Manrope, sans-serif', size: 14 }, bodyFont: { family: 'Manrope, sans-serif', size: 14 }, padding: 14, callbacks: { label: context => context.dataset.label + ': ' + (series.isRating ? Number(context.raw).toFixed(2) + ' / 5' : Number(context.raw).toLocaleString('kk-KZ')) } } },
+                    plugins: { legend: { display: doughnut, position: 'bottom', labels: { color: text, boxWidth: 12, padding: 18, font: { family: 'Manrope, sans-serif', size: 14 } } }, tooltip: { titleFont: { family: 'Manrope, sans-serif', size: 14 }, bodyFont: { family: 'Manrope, sans-serif', size: 14 }, padding: 14, callbacks: { label: context => context.dataset.label + ': ' + (series.isRating ? Number(context.raw).toFixed(2) + ' / 5' : Number(context.raw).toLocaleString(document.documentElement.dataset.culture)) } } },
                     scales: doughnut ? {} : {
                         x: { beginAtZero: series.horizontal, grid: { color: border, display: series.horizontal }, ticks: { color: muted, maxTicksLimit: 8, precision: 0, font: { family: 'Manrope, sans-serif', size: 14 } } },
                         y: { beginAtZero: true, max: series.isRating ? 5 : undefined, grid: { color: border, display: !series.horizontal }, ticks: { color: muted, precision: 0, font: { family: 'Manrope, sans-serif', size: 14 }, callback: series.horizontal ? function (value) { const label = this.getLabelForValue(value); return label.length > 32 ? label.slice(0, 30) + '…' : label; } : undefined } }
@@ -58,7 +58,7 @@
         request?.abort(); request = new AbortController();
         const activeRequest = request;
         const status = document.getElementById('analytics-status');
-        status.textContent = 'SQL деректері жүктелуде…';
+        status.textContent = window.eduT('SQL деректері жүктелуде…');
         form.setAttribute('aria-busy', 'true');
         try {
             const query = new URLSearchParams(new FormData(form));
@@ -79,9 +79,9 @@
             form.elements.EndDate.value = data.endDate.slice(0, 10);
             draw(data);
             history.replaceState(null, '', form.action.split('?')[0] + '?' + query);
-            status.textContent = 'Деректер жаңартылды.';
+            status.textContent = window.eduT('Деректер жаңартылды.');
         } catch (error) {
-            if (error.name !== 'AbortError') status.textContent = 'Жаңарту сәтсіз аяқталды. Кезеңді тексеріп, қайталаңыз.';
+            if (error.name !== 'AbortError') status.textContent = window.eduT('Жаңарту сәтсіз аяқталды. Кезеңді тексеріп, қайталаңыз.');
         } finally { if (request === activeRequest) form.removeAttribute('aria-busy'); }
     });
 })();

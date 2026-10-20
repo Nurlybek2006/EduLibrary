@@ -27,15 +27,15 @@
         request = new AbortController();
         const current = ++generation;
         const previous = time.value;
-        time.replaceChildren(new Option("Уақытты таңдаңыз", ""));
+        time.replaceChildren(new Option(window.eduT("Уақытты таңдаңыз"), ""));
         if (!location.value || !date.value) {
             loading = false;
-            message("Алып кету орнын және күнін таңдаңыз.");
+            message(window.eduT("Алып кету орнын және күнін таңдаңыз."));
             update();
             return;
         }
         loading = true;
-        message("Қолжетімді уақыттар тексерілуде…");
+        message(window.eduT("Қолжетімді уақыттар тексерілуде…"));
         update();
         const url = new URL(form.dataset.slotsUrl, window.location.origin);
         url.searchParams.set("pickupDate", date.value);
@@ -46,7 +46,7 @@
             if (current !== generation) return;
             if (!response.ok || !Array.isArray(data)) {
                 const failure = new Error();
-                failure.userMessage = typeof data?.message === "string" ? data.message : "Уақыттарды жүктеу мүмкін болмады. Күнді қайта таңдаңыз.";
+                failure.userMessage = typeof data?.message === "string" ? data.message : window.eduT("Уақыттарды жүктеу мүмкін болмады. Күнді қайта таңдаңыз.");
                 throw failure;
             }
             data.forEach(slot => {
@@ -55,10 +55,10 @@
                 if (slot.value === previous && !option.disabled) option.selected = true;
                 time.add(option);
             });
-            message(available() ? "Қолжетімді уақытты таңдаңыз. Орын бронь расталғанда қайта тексеріледі." : "Бұл күні бос уақыт жоқ. Басқа күнді немесе алып кету орнын таңдаңыз.");
+            message(available() ? window.eduT("Қолжетімді уақытты таңдаңыз. Орын бронь расталғанда қайта тексеріледі.") : window.eduT("Бұл күні бос уақыт жоқ. Басқа күнді немесе алып кету орнын таңдаңыз."));
         } catch (error) {
             if (error.name === "AbortError" || current !== generation) return;
-            message(error.userMessage || "Уақыттарды жүктеу мүмкін болмады. Байланысты тексеріп, күнді қайта таңдаңыз.", true);
+            message(error.userMessage || window.eduT("Уақыттарды жүктеу мүмкін болмады. Байланысты тексеріп, күнді қайта таңдаңыз."), true);
         } finally {
             if (current === generation) { loading = false; update(); }
         }
@@ -67,7 +67,7 @@
     date.addEventListener("change", load);
     time.addEventListener("change", update);
     form.addEventListener("submit", event => {
-        if (loading || time.disabled || !time.value) { event.preventDefault(); message("Бос алып кету уақытын таңдаңыз.", true); time.focus(); }
+        if (loading || time.disabled || !time.value) { event.preventDefault(); message(window.eduT("Бос алып кету уақытын таңдаңыз."), true); time.focus(); }
     });
     update();
     if (location.value && date.value && time.options.length <= 1) load();

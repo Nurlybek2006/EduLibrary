@@ -38,7 +38,7 @@ public sealed class StudentsController(IStudentService students) : Controller
             try
             {
                 var id = await students.CreateAsync(model, cancellationToken);
-                TempData["Success"] = "Студент қосылды.";
+                TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Студент қосылды.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
@@ -63,7 +63,7 @@ public sealed class StudentsController(IStudentService students) : Controller
             try
             {
                 await students.UpdateAsync(id, model, cancellationToken);
-                TempData["Success"] = "Студент деректері жаңартылды.";
+                TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Студент деректері жаңартылды.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
@@ -78,7 +78,7 @@ public sealed class StudentsController(IStudentService students) : Controller
         try
         {
             await students.DeactivateAsync(id, cancellationToken);
-            TempData["Success"] = "Студенттің белсенділігі тоқтатылды. Кітап алу тарихы сақталды.";
+            TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Студенттің белсенділігі тоқтатылды. Кітап алу тарихы сақталды.");
         }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Details), new { id });

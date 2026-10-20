@@ -1,6 +1,6 @@
 # EduLibrary
 
-EduLibrary — университеттің оқу әдебиеттері кітапханасын басқаратын ASP.NET Core MVC қосымшасы. Каталог, оқырмандар, кітап айналымы, жеке кітап ұсыныстары, бес есеп, талдау, пікірлер, QR іздеу және ішкі хабарландырулар SQL Server деректеріне сүйенеді. Кітап сипаттамасы мен физикалық дана бөлек сақталады. Интерфейс қазақ тілінде, ашық және қараңғы тақырыптарды қолдайды.
+EduLibrary — университеттің оқу әдебиеттері кітапханасын басқаратын ASP.NET Core MVC қосымшасы. Каталог, оқырмандар, кітап айналымы, жеке кітап ұсыныстары, бес есеп, талдау, пікірлер, QR, онлайн бронь және ішкі хабарландырулар SQL Server деректеріне сүйенеді. Физикалық даналардан бөлек қорғалған PDF/EPUB кітапхана, оқу прогресі, бетбелгілер және профиль суреттері бар. Интерфейс қазақша, орысша, ағылшынша жұмыс істейді; ашық, қараңғы және құрылғыға сай көріністі қолдайды.
 
 ## Технологиялар
 
@@ -404,7 +404,7 @@ ViewModels/                 Формалар мен экрандарға арн�
 Services/Interfaces/        Сервис келісімдері
 Services/Implementations/   Бизнес ережелері және EF сұраулары
 Helpers/                    Конфигурация, бизнес қатесі, Identity хабарламалары
-Views/                      Қазақша Razor беттері
+Views/                      Үш тілде көрсетілетін Razor беттері
 wwwroot/                    CSS, JavaScript, жергілікті frontend кітапханалары
 tests/                      SQL Server интеграциялық тексерулері
 ```
@@ -472,5 +472,140 @@ HTTP есебі — `artifacts/reservation-http-results.json`, браузер е
 Сыртқы LLM әдепкіде өшірулі және тірі API-мен тексерілмеген; жергілікті ұсынымдар оған тәуелсіз. Камера мен баспа сапасын нақты құрылғыда тексеру керек. Desktop/mobile өлшемдері Chrome Playwright арқылы тексерілді; Safari/Firefox пен физикалық мобильді құрылғы тексерілмеген. Email/SMS және банк төлем шлюзі қосылмаған; хабарландырулар ішкі, төлемдер қызметкер тіркейтін кітапхана есебі ретінде жұмыс істейді.
 
 API кілттері, парольдер және local connection string-дер жауаптарға не Git-ке шығарылмайды; `appsettings.Local.json`, build/test artifacts `.gitignore` ішінде. Production үшін сыртқы құпиялар сақтау орнын, дұрыс HTTPS/SQL сертификаттарын, резервтік көшіруді және шектеулі SQL құқықтарын қолданыңыз. Басқа жобаға (`IntelligentProgrammingPlatform`) өзгеріс енгізілмейді.
+
+## Үш тілдегі сайт, электрондық кітапхана және жеке профиль
+
+Осы кеңейту алдыңғы каталогты, броньды, кітап беру/қайтаруды және қолданыстағы аккаунттарды сақтайды. `20261019213906_MultilingualDigitalLibraryProfiles` migration-ы төрт қосымша кесте — `DigitalBookAssets`, `ReadingProgress`, `ReadingBookmarks`, `DigitalReadingSessions` — және `AspNetUsers` ішіне `AvatarPath`, `PreferredLanguage`, `PreferredTheme` өрістерін қосады. Бұрынғы пайдаланушыларға тілдің `kk-KZ`, көріністің `system` мәні беріледі. `Books`/`BookCopies` қайта құрылмайды, бұрынғы ID және кітап айналымы жазбалары өзгертілмейді.
+
+### Тіл және көрініс таңдауы
+
+Жоғарғы мәзірден **ҚАЗ / РУС / ENG** таңдаңыз. `CultureController.Set` CSRF арқылы қорғалған POST сұрауында тек `kk-KZ`, `ru-RU`, `en-US` мәндерін қабылдайды. `.AspNetCore.Culture` cookie-і тіл таңдауыңызды жаңартудан кейін және келесі беттерде сақтайды. Авторизацияланған пайдаланушының таңдауы SQL-дегі `PreferredLanguage` өрісіне де жазылады. Кіру кезінде браузерде нақты тіл cookie-і болмаса ғана аккаунттағы тіл қалпына келеді; бұрынғы cookie таңдауы басым. Қайту мекенжайы тек жергілікті URL болып тексеріледі, query parameters сақталады.
+
+`/Account/Profile` ішіндегі тіл мен көрініс баптаулары барлық рөлге арналған. `PreferredTheme`: `system`, `light`, `dark`. Студенттің академиялық нөмірі/факультеті/курсы профиль POST-ы арқылы өзгертілмейді. Профильде тек өз белсенді және қайтарылған кітаптары, электрондық оқу прогресі көрсетіледі; қызметкерге студенттік блоктар шығарылмайды.
+
+`Program.cs` стандартты ASP.NET Core Localization, `IStringLocalizer`, `IViewLocalizer`, DataAnnotations localization және `RequestLocalizationMiddleware` қолданады. Негізгі ресурстар — `Resources/SharedResource.kk-KZ.resx`, `.ru-RU.resx`, `.en-US.resx`; Razor беттерінде `@T[...]`, сервер хабарларында `Localization/UiText.cs` пайдаланылады. Кітаптың ресми атауы, ISBN және бастапқы мазмұны UI тілінен тәуелсіз сақталады. Аударманы өзгерткенде тиісті `Resources/*-translations.json` немесе `legacy-translations.json` каталогын өңдеп, RESX файлдарын қайта жасаңыз:
+
+```powershell
+python tools/build_resources.py
+dotnet build
+```
+
+Бұл құрал үш тілдегі мәндер мен `{0}` формат аргументтерінің сәйкестігін тексереді және регистрі ғана бөлек resource keys-ті біріздендіреді. JSON файлындағы нақты UI мәтінін RESX орнына браузерге тікелей шығармайды. JavaScript хабарлары серверде аударылған конфигурация/`data-*` мәндерінен алынады; күндер мен сандар ағымдағы culture бойынша көрсетіледі. Жеке ұсынымдардың жергілікті түсіндірмелері де үш тілде жұмыс істейді, LLM қажет емес.
+
+### PDF/EPUB электрондық кітапхана
+
+Негізгі маршруттар:
+
+| Мекенжай | Мақсаты |
+|---|---|
+| `/DigitalLibrary` | Нақты тіркелген электрондық материалдар, формат/тіл/автор/санат/пән сүзгілері |
+| `/DigitalLibrary/My` | Өзінің оқылып жатқан, аяқталған және соңғы ашылған кітаптары |
+| `/DigitalLibrary/Manage` | Admin/Librarian үшін upload, metadata, құқық, publish/unpublish, архивтеу |
+| `/Reader/Pdf/{id}` | PDF.js арқылы браузерде оқу |
+| `/Reader/Epub/{id}` | EPUB.js арқылы тараулар/CFI негізінде оқу |
+| `/Reader/File/{id}` | Қолжетімділігі серверде қайта тексерілетін streaming, HTTP range қолдауы |
+
+Бір `Book` бірнеше `DigitalBookAsset` нұсқасына және бөлек физикалық даналарға ие бола алады. Электрондық кітап оқу `Loan`, `Return` немесе `CopyStatus` мәндерін өзгертпейді. Кітап беті мен ұсынымдардағы **Онлайн оқу** сілтемесі тек шын тіркелген, жарияланған және ағымдағы пайдаланушыға рұқсат етілген нұсқаға беріледі. `Authenticated`, `Students`, `Staff` access levels серверде тексеріледі. `AllowDownload=false` download endpoint-ін жабады; бұл DRM емес: браузерде оқуға рұқсат алған адамның көрсетілген мазмұнды көшіруіне толық техникалық тыйым берілмейді.
+
+PDF.js **6.4.299**, EPUB.js **0.3.93**, JSZip және reader скрипттері `wwwroot/lib/`, `wwwroot/js/` ішінде жергілікті сақталады. Сыртқы CDN reader жұмысына қажет емес. PDF reader бет ауыстыруды, масштабты, енге сыйдыруды, мәтін іздеуді, fullscreen және бетбелгілерді қолдайды. EPUB reader тарау мазмұнын, CFI бойынша жалғастыруды, қаріп өлшемі/жоларалық интервалды және Light/Dark/Sepia оқу көрінісін қолдайды.
+
+`ReadingProgressService` SQL-де PDF беті/жалпы беті мен пайызын немесе EPUB CFI/пайызын сақтайды. `UserId + DigitalBookAssetId` unique индексі және транзакциялық SQL құлпы бір пайдаланушының параллель сұрауларын үйлестіреді. Браузерде debounce бар; өзгермеген прогресс пен session heartbeat әр scroll сайын қайта жазылмайды. Беттен шығуда соңғы сақтау әрекеті жасалады, сәтсіздікте экран қайта көруді ұсынады. Басқа құрылғыдан кіру кезінде негізгі дереккөз — SQL, localStorage емес. Бетбелгі атауы/ескертпесін өзгерту және өшіру тек иесіне рұқсат етіледі.
+
+### Қорғалған файлдар және шынайы демо материалдар
+
+Әдепкі конфигурация:
+
+```json
+"DigitalLibrary": {
+  "SeedDemoContent": false,
+  "StorageRoot": "App_Data/DigitalLibrary",
+  "MaxFileBytes": 52428800,
+  "MaxExpandedEpubBytes": 104857600,
+  "MaxEpubEntries": 1000,
+  "MaxBookmarksPerAsset": 200,
+  "SessionIdleMinutes": 30
+}
+```
+
+Development конфигурациясында `SeedDemoContent=true`. `DigitalAssetStorage` сақтау орнын `wwwroot` сыртына орналастырып, бастапқы файл атын жол ретінде қолданбайды; random leaf name, MIME/signature, шынайы stream көлемі және SHA-256 тексеріледі. Файлдарға тікелей public filesystem URL жоқ. Қолданба аккаунтына тек осы сақтау қалталары үшін оқу/жазу/ескірген файлды жою құқығын беріңіз. `App_Data` Git-ке кірмейді; production backup құрамына SQL-мен бірге қорғалған файлдарды да қосыңыз.
+
+PDF қабылдау саясаты әдейі шектеулі: classic `xref`, `startxref`, EOF және бет құрылымы тексеріледі; шифрлау, JavaScript/actions, embedded files, forms және compressed object streams қабылданбайды. Қалыпты PDF редакторында ашылатын кейбір қазіргі object-stream PDF-тері де қабылданбауы мүмкін; оларды шифрлаусыз, active content-сыз classic-xref PDF ретінде қайта экспорттау қажет. Бұл толық антивирус сканері немесе кез келген PDF нұсқасын қабылдайтын әмбебап валидатор емес.
+
+EPUB ZIP үшін жол traversal, файл саны, ашылған жалпы көлем және compression ratio шектеледі. DTD/external entities, script/iframe/form, event handlers, сыртқы ресурс URL-дері және рұқсат етілмеген CSS жойылады; пакет қауіпсіз XHTML/PNG/JPEG ресурстарымен қайта құралады. Шифрланған/DRM EPUB қолдау таппайды. Reader қосымша sandbox/CSP шектеулерін қолданады. Күрделі publisher stylesheet-і саналы түрде сақталмайды: қауіпсіздік пен оқылатын мәтінге басымдық беріледі.
+
+`Data/DigitalDemo/manifest.json` ішінде **5 түпнұсқа оқу материалы**, әрқайсысының **8 беті**, PDF+EPUB түріндегі **10 нақты файл**, SHA-256 және жергілікті мұқабалары берілген:
+
+1. C# бағдарламалау негіздері.
+2. SQL және деректер базасына кіріспе.
+3. Алгоритмдер және деректер құрылымдары.
+4. Веб-бағдарламалау негіздері.
+5. Киберқауіпсіздік негіздері.
+
+Автор: **EduLibrary Demo Content**. Бұлар коммерциялық кітаптардың көшірмелері емес, жобаға жазылған қысқаша сабақтар. `DigitalDemoSeeder` бес жеке каталог жазбасын және оларға электрондық нұсқаларды қосады; бастапқы 36 кітапқа жалған PDF тіркемейді, бұрынғы кітап ID/106 дана/оқырмандар/берілімдер сақталады. SeedHistory белгісі, ISBN+format тексеруі және manifest checksum қайталама seed-тің duplicate жасамауын қамтамасыз етеді. Нақты құқық/лицензия расталмайынша өзге материалды жарияламаңыз; license/source/rights holder өрістерін шынайы дерекпен толтырыңыз.
+
+### Қауіпсіз профиль суреті
+
+Барлық рөл өз профилінде JPG/JPEG, PNG немесе WebP жүктей алады. Сервер **2 МБ**, әр жағы **4096 пиксель**, жалпы **16 мегапиксель** шектерін, extension+MIME+signature+codec сәйкестігін тексереді; SVG және animation қабылданбайды. MIT лицензиялы **SkiaSharp 4.153.1** Windows native assets-пен суретті decode жасап, EXIF orientation мен тексерілген crop-ты қолданады және metadata-сыз жаңа **256×256 WebP** шығарады. Бастапқы файл сақталмайды.
+
+`wwwroot/js/avatar.js` шаршы crop, дөңгелек preview, zoom, drag, бағыт пернелері және confirm/cancel интерфейсін басқарады. JavaScript өшірілсе, қауіпсіз орталық шаршы crop орындалады. `AvatarStorage` random атауды `App_Data/avatars` ішінде сақтайды; `/Account/Avatar/{opaque-name}.webp` тек жарамды, SQL-де пайдаланылатын суретті береді. Өзіндік upload/remove POST-тары authorization+CSRF қолданады және posted UserId қабылдамайды. SQL `ConcurrencyStamp` бойынша conditional update қатар ауыстырудың біреуін ғана қабылдайды; жеңілген файл тазаланады, ескі сурет жаңа SQL сілтемесі commit болғаннан кейін жойылады.
+
+`AvatarViewComponent` навигацияда, профильде, оқу кеңістігінде, қызметкер/студент тізімдерінде және пікірлерде бірдей көрсетіледі. Сурет жоқ не ашылмаса, аты-жөнінің бас әріптері қалады. Ашық пікірлерде бұрынғы «Оқырман/Сіздің пікіріңіз» белгісі сақталады; email, телефон және Identity ID интерфейске шығарылмайды.
+
+CropX/Y/Size тек өздеріне арналған `Helpers/DoubleModelBinder.cs` арқылы culture-дан тәуелсіз байланысады: нүкте не үтір бөлшек белгісі ретінде қабылданады; grouping, exponent, NaN/Infinity және шамадан ұзын мәндер қабылданбайды. `[Range(0d, 1d)]` мен сервердегі `ValidCrop` координаттарды қайта тексереді. Сондықтан браузердің `toFixed(10)` мәндері қазақша, орысша және ағылшынша режимде бірдей жүктеледі.
+
+### Жаңа мүмкіндіктерді тексеру және қорғауда көрсету
+
+```powershell
+dotnet build
+dotnet test tests/EduLibrary.Tests
+dotnet run --project tests/EduLibrary.IntegrationChecks
+dotnet run --project tests/EduLibrary.FeatureChecks
+dotnet run --project tests/EduLibrary.ReservationChecks
+dotnet run --project tests/EduLibrary.DigitalChecks
+```
+
+SQL harness-тер өздері жасаған random базаны ғана пайдаланып, соңында жояды; негізгі `EduLibraryDb`-ге бағытталмайды. Жаңа `DigitalChecks` миграция, upload, access levels, прогресс/CFI, ownership, бетбелгі, seed idempotency және нақты avatar SQL/storage/CAS сценарийлерін тексереді. Төмендегі кесте — осы кеңейтуден кейін қайта орындалған тексерулер; жоғарыдағы editorial/reservation кестелері өз кезеңдерінің тарихын сақтайды.
+
+| Тексеру | Соңғы расталған нәтиже |
+|---|---|
+| Restore / build | 0 қате, 0 ескерту |
+| xUnit | 233 өтті, 0 қате; 17 жаңа crop model-binding regression сценарийі бар |
+| Бұрынғы SQL harness-тер | Integration 79 + Feature 64 + Reservation 83 = 226 өтті |
+| Digital SQL harness | 83 өтті: 42 digital + 19 avatar + 14 notification + 2 draft + 6 seed тексеруі |
+| Барлық SQL тексеруі | Digital/seed сценарийлерімен бірге 309 өтті; уақытша базалар/файлдар тазартылды |
+| Негізгі HTTP smoke | 162 өтті |
+| Reservation HTTP smoke | 94 өтті |
+| Үш тіл / digital HTTP | 206 өтті |
+| Phase 2 HTTP | 289 өтті; барлық HTTP жинағы 162 + 289 + 94 + 206 = 751 өтті |
+| Editorial браузер матрицасы | 399 өтті: 3 рөл, 6 viewport, light/dark; Digital Library қосылған |
+| Editorial әрекеттері | 13 өтті: сүзгілер, мәзір, cancel, validation, fallback, 7 график, JavaScript жоқтағы GET |
+| Үш тілдегі визуалды матрица | 64 өтті: Books/DigitalLibrary/Profile, kk/ru/en, 360/1440, light/dark |
+| Жаңа digital/avatar browser workflow | 71 өтті: нақты reader, progress/bookmark, culture және avatar сценарийлері |
+| Үш тілдегі файл таңдау / crop reset | 43 өтті: native chooser/focus/validation, файл атауы, cancel/reset, 360 px, екі theme |
+| Үш тілдегі нақты avatar upload | 25 өтті: noninteger dot crop POST, SQL refresh, нақты 256 WebP, remove және ескі файл 404 |
+
+Браузер жинақтары барлығы **615** тексеруден өтті. Read-only матрицаларда көлденең overflow және JavaScript қатесі жоқ. Каталогтың mobile 2 / desktop 4 бағаны және алғашқы мұқабалардың экранда көрінуі сақталды. Books, DigitalLibrary және Profile үшін 360/1440 PNG көріністері қаралды; есептер `artifacts/editorial-ui/`, `artifacts/localized-visual/`, `artifacts/digital-ui/`, `artifacts/file-picker/`, `artifacts/avatar-multilingual/` ішінде. Тірі сыртқы LLM, физикалық камера және нақты мобильді Safari құрылғысы бұл нәтижелерге қосылмайды.
+
+`tests/digital_ui_smoke.cjs` нақты PDF/EPUB navigation, SQL-де сақталған жалғастыру, бетбелгі және avatar crop/ауыстыру/өшіруді тек **5399** портындағы алдын ала migration/seed жасалған уақытша UI базасында орындайды. Басқа портқа жазуға script өзі тыйым салады:
+
+```powershell
+node tests/digital_ui_smoke.cjs http://localhost:5399
+node tests/file_picker_smoke.cjs http://localhost:5399
+node tests/avatar_multilingual_upload_smoke.cjs http://localhost:5399
+```
+
+Негізгі сайт әдеттегідей `http://localhost:5298`. Қорғауда тіл ауыстыру → original demo PDF ашу → келесі бетке өту/бетбелгі → қайта ашқанда жалғастыру → EPUB тарауы/қаріп/CFI → My Digital Books → профиль crop/upload/remove ретін көрсетіңіз. Нақты камера, тірі сыртқы LLM және барлық PDF publisher пішімдері бұл жаңа бөлімнің орындалған тесті ретінде мәлімделмейді.
+
+### Digital UI үшін қайталанатын оқшауланған орта
+
+Windows PowerShell-де, `dotnet restore` орындалғаннан және жергілікті үш seed аккаунты бапталғаннан кейін (5399 порты бос болуы керек):
+
+```powershell
+.\tools\digital_ui_sandbox.ps1 -Start
+node tests/digital_ui_smoke.cjs http://localhost:5399
+.\tools\digital_ui_sandbox.ps1 -Stop
+```
+
+Script build нәтижесін тексеріп, жаңа `EduLibraryDigitalUi_<guid>` SQL базасын, жеке runtime/content root және қорғалған storage жасайды. Құпия мәндер шығарылмайды; ownership/PID `artifacts/digital-ui-sandbox.json` ішінде сақталады. `-Stop` дәл сол процессті, база мен private қалтаны ғана жояды; негізгі сайт пен `artifacts/digital-ui` тест дәлелдері сақталады. SQL аккаунтына тексеру базасын жасау/жою құқығы қажет.
 
 

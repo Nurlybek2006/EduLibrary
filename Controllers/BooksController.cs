@@ -43,7 +43,7 @@ public sealed class BooksController(ICatalogService catalog, ILibraryClock clock
         {
             try
             {
-                var id = await catalog.SaveBookAsync(model, ct); TempData["Success"] = "Кітап каталогқа қосылды.";
+                var id = await catalog.SaveBookAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап каталогқа қосылды.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
@@ -63,7 +63,7 @@ public sealed class BooksController(ICatalogService catalog, ILibraryClock clock
         if (id != model.Id || id <= 0) return BadRequest();
         if (ModelState.IsValid)
         {
-            try { await catalog.SaveBookAsync(model, ct); TempData["Success"] = "Кітап деректері жаңартылды."; return RedirectToAction(nameof(Details), new { id }); }
+            try { await catalog.SaveBookAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап деректері жаңартылды."); return RedirectToAction(nameof(Details), new { id }); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         await catalog.PopulateBookOptionsAsync(model, ct); return View(model);
@@ -72,7 +72,7 @@ public sealed class BooksController(ICatalogService catalog, ILibraryClock clock
     [Authorize(Roles = "Admin,Librarian"), HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Archive(int id, CancellationToken ct)
     {
-        try { await catalog.SetBookArchivedAsync(id, true, ct); TempData["Success"] = "Кітап мұрағатқа көшірілді. Берілу тарихы сақталды."; }
+        try { await catalog.SetBookArchivedAsync(id, true, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап мұрағатқа көшірілді. Берілу тарихы сақталды."); }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Index));
     }
@@ -80,7 +80,7 @@ public sealed class BooksController(ICatalogService catalog, ILibraryClock clock
     [Authorize(Roles = "Admin,Librarian"), HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Restore(int id, CancellationToken ct)
     {
-        try { await catalog.SetBookArchivedAsync(id, false, ct); TempData["Success"] = "Кітап каталогқа қалпына келтірілді."; }
+        try { await catalog.SetBookArchivedAsync(id, false, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Кітап каталогқа қалпына келтірілді."); }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Details), new { id });
     }

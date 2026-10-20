@@ -19,7 +19,7 @@
             const remove = document.createElement('button');
             remove.type = 'button';
             remove.textContent = '×';
-            remove.setAttribute('aria-label', 'Қызығушылықты өшіру: ' + value);
+            remove.setAttribute('aria-label', window.eduT('Қызығушылықты өшіру: ') + value);
             remove.addEventListener('click', () => {
                 values.splice(index, 1);
                 error.textContent = '';
@@ -35,9 +35,9 @@
         const next = input.value.trim();
         error.textContent = '';
         if (!next) return;
-        if (next.length > 100 || /[,;\n]/.test(next)) { error.textContent = 'Бір атауды 100 таңбаға дейін енгізіңіз.'; return; }
-        if (values.some(value => value.toLocaleLowerCase() === next.toLocaleLowerCase())) { error.textContent = 'Бұл қызығушылық тізімде бар.'; return; }
-        if (values.length >= 20 || values.concat(next).join(', ').length > 1000) { error.textContent = 'Ең көбі 20 бағыт қосыңыз. Жалпы мәтін 1000 таңбадан аспасын.'; return; }
+        if (next.length > 100 || /[,;\n]/.test(next)) { error.textContent = window.eduT('Бір атауды 100 таңбаға дейін енгізіңіз.'); return; }
+        if (values.some(value => value.toLocaleLowerCase() === next.toLocaleLowerCase())) { error.textContent = window.eduT('Бұл қызығушылық тізімде бар.'); return; }
+        if (values.length >= 20 || values.concat(next).join(', ').length > 1000) { error.textContent = window.eduT('Ең көбі 20 бағыт қосыңыз. Жалпы мәтін 1000 таңбадан аспасын.'); return; }
         values.push(next);
         input.value = '';
         render();

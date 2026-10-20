@@ -20,8 +20,8 @@ public static class WorkflowNotificationWriter
             if(!loans.TryGetValue(loanId,out var loan))return;
             db.Notifications.Add(new(){UserId=loan.UserId,DeduplicationKey=$"{type}:{loanId}",Type=type,Title=title,Message=$"«{loan.Title}»: {message}",Link=link??$"/Loans/Details/{loanId}",CreatedAt=clock.UtcNow});
         }
-        foreach(var loan in issued)Add(loan.Id,"Issued","Кітап сәтті берілді",$"қайтару мерзімі — {loan.DueDate:dd.MM.yyyy}.");
-        foreach(var item in returned)Add(item.LoanId,"Returned","Кітап сәтті қайтарылды","кітапхана дананы қабылдады.");
-        foreach(var fine in fines)Add(fine.LoanId,"Fine","Айыппұл есептелді",$"бекітілген сома — {fine.Amount:N2} ₸.",$"/Fines/Details/{fine.Id}");
+        foreach(var loan in issued)Add(loan.Id,"Issued",global::EduLibrary.Localization.UiText.Get("Кітап сәтті берілді"),global::EduLibrary.Localization.UiText.Format($"қайтару мерзімі — {loan.DueDate:dd.MM.yyyy}."));
+        foreach(var item in returned)Add(item.LoanId,"Returned",global::EduLibrary.Localization.UiText.Get("Кітап сәтті қайтарылды"),global::EduLibrary.Localization.UiText.Get("кітапхана дананы қабылдады."));
+        foreach(var fine in fines)Add(fine.LoanId,"Fine",global::EduLibrary.Localization.UiText.Get("Айыппұл есептелді"),global::EduLibrary.Localization.UiText.Format($"бекітілген сома — {fine.Amount:N2} ₸."),$"/Fines/Details/{fine.Id}");
     }
 }

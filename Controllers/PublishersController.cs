@@ -21,7 +21,7 @@ public sealed class PublishersController(ICatalogService catalog) : Controller
         model.Id = 0;
         if (ModelState.IsValid)
         {
-            try { await catalog.SavePublisherAsync(model, ct); TempData["Success"] = "Баспа анықтамалыққа қосылды."; return RedirectToAction(nameof(Index)); }
+            try { await catalog.SavePublisherAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Баспа анықтамалыққа қосылды."); return RedirectToAction(nameof(Index)); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         return View(model);
@@ -39,7 +39,7 @@ public sealed class PublishersController(ICatalogService catalog) : Controller
         if (id != model.Id || id <= 0) return BadRequest();
         if (ModelState.IsValid)
         {
-            try { await catalog.SavePublisherAsync(model, ct); TempData["Success"] = "Баспа деректері жаңартылды."; return RedirectToAction(nameof(Index)); }
+            try { await catalog.SavePublisherAsync(model, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Баспа деректері жаңартылды."); return RedirectToAction(nameof(Index)); }
             catch (BusinessException ex) { ModelState.AddModelError("", ex.Message); }
         }
         return View(model);
@@ -48,7 +48,7 @@ public sealed class PublishersController(ICatalogService catalog) : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        try { await catalog.DeletePublisherAsync(id, ct); TempData["Success"] = "Баспа жойылды."; }
+        try { await catalog.DeletePublisherAsync(id, ct); TempData["Success"] = global::EduLibrary.Localization.UiText.Get("Баспа жойылды."); }
         catch (BusinessException ex) { TempData["Error"] = ex.Message; }
         return RedirectToAction(nameof(Index));
     }

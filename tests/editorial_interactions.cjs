@@ -5,14 +5,17 @@ const { chromium } = require('../.tools/browser/node_modules/playwright');
 const config = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../appsettings.Local.json'), 'utf8').replace(/^\uFEFF/, ''));
 const output = path.resolve(__dirname, '../artifacts/editorial-ui');
 const checks = [];
+const baseURL = process.argv[2] || 'http://localhost:5298';
+const kazakhCookie = { name: '.AspNetCore.Culture', value: 'c=kk-KZ|uic=kk-KZ', url: baseURL };
 const check = (name, passed) => { checks.push({ name, passed: !!passed }); console.log(`${passed ? 'PASS' : 'FAIL'} ${name}`); };
 (async () => {
  const browser = await chromium.launch({ channel: 'chrome', headless: true });
  try {
-  const context = await browser.newContext({ baseURL: process.argv[2] || 'http://localhost:5298', viewport: { width: 1440, height: 1000 } });
+  const context = await browser.newContext({ baseURL, viewport: { width: 1440, height: 1000 } });
+  await context.addCookies([kazakhCookie]);
   const page = await context.newPage();
   await page.goto('/Account/Login'); await page.locator('#Email').fill(config.SeedUsers.Admin.Email); await page.locator('#Password').fill(config.SeedUsers.Admin.Password);
-  await Promise.all([page.waitForURL(url => !url.pathname.startsWith('/Account/Login')), page.locator('form button[type=submit]').click()]);
+  await Promise.all([page.waitForURL(url => !url.pathname.startsWith('/Account/Login')), page.locator('form:has(input[name="Email"]) button[type=submit]').click()]);
   await page.goto('/Books');
   const category = await page.locator('#catalog-category option[value]:not([value=""])').first().getAttribute('value');
   await page.locator('#catalog-category').selectOption(category);
@@ -59,12 +62,14 @@ const check = (name, passed) => { checks.push({ name, passed: !!passed }); conso
    check('Analytics period filter refreshes JSON charts', await page.locator('canvas[id^=chart-]').count() === 7);
   }
   await context.close();
-  const plainContext = await browser.newContext({ baseURL: process.argv[2] || 'http://localhost:5298', javaScriptEnabled: false });
+  const plainContext = await browser.newContext({ baseURL, javaScriptEnabled: false });
+  await plainContext.addCookies([kazakhCookie]);
   const plain = await plainContext.newPage(); await plain.goto('/Books'); await plain.locator('#catalog-category').selectOption(category);
   await Promise.all([plain.waitForURL(url => url.searchParams.get('CategoryId') === category), plain.locator('#catalog-filter button[type=submit]').first().click()]);
   check('Catalog GET filters work without JavaScript', await plain.locator('#catalog-results .book-jacket').count() > 0);
   await plainContext.close();
-  const publicContext = await browser.newContext({ baseURL: process.argv[2] || 'http://localhost:5298' });
+  const publicContext = await browser.newContext({ baseURL });
+  await publicContext.addCookies([kazakhCookie]);
   const publicPage = await publicContext.newPage();
   for (const route of ['/Account/Login', '/Account/Register', '/Account/ForgotPassword']) for (const width of [360, 1440]) for (const theme of ['light', 'dark']) {
    await publicPage.setViewportSize({ width, height: 1000 }); await publicPage.goto(route);

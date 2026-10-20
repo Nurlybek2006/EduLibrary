@@ -1,6 +1,12 @@
-﻿@{ var staff = User.IsInRole("Admin") || User.IsInRole("Librarian"); }
+@using System.Globalization
+@using System.Text.Json
+@inject Microsoft.AspNetCore.Identity.UserManager<EduLibrary.Models.Entities.ApplicationUser> UserManager
+@{
+    var staff = User.IsInRole("Admin") || User.IsInRole("Librarian");
+    var ownAccount = User.Identity?.IsAuthenticated == true ? await UserManager.GetUserAsync(User) : null;
+}
 <!DOCTYPE html>
-<html lang="kk" data-theme="light">
+<html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName" data-culture="@CultureInfo.CurrentUICulture.Name" data-theme="light" data-preferred-theme="@(ownAccount?.PreferredTheme ?? "light")" data-account="@(ownAccount?.Id ?? "guest")">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -18,24 +24,30 @@
     <link rel="stylesheet" href="~/css/management.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/reservations.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/avatar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/digital.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/reader.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/localization.css" asp-append-version="true" />
 </head>
 <body class="@(staff ? "staff-workspace" : "reader-workspace")">
-<a class="skip-link" href="#main-content">Мазмұнға өту</a>
+<a class="skip-link" href="#main-content">@T["Мазмұнға өту"]</a>
 @if (staff) { <partial name="_AdminNavigation" /> }
 <div class="workspace-shell">
     <partial name="_AppHeader" />
     <main id="main-content" class="main-content" tabindex="-1">
         <partial name="_FlashMessages" />
         @RenderBody()
-        <footer class="library-footer"><a asp-controller="Books" asp-action="Index">EduLibrary<span>Білімге құштар қауымдастық.</span></a><div><a asp-controller="Home" asp-action="Privacy">Құпиялылық</a><span>Университеттің цифрлық кітапханасы</span></div></footer>
+        <footer class="library-footer"><a asp-controller="Books" asp-action="Index">EduLibrary<span>@T["Білімге құштар қауымдастық."]</span></a><div><a asp-controller="Home" asp-action="Privacy">@T["Құпиялылық"]</a><span>@T["Университеттің цифрлық кітапханасы"]</span></div></footer>
     </main>
 </div>
-<button class="navigation-backdrop" id="navigation-backdrop" type="button" aria-label="Мәзірді жабу" tabindex="-1"></button>
-<dialog id="confirm-dialog" class="confirm-dialog"><form method="dialog"><span class="confirm-icon"><i data-lucide="circle-help"></i></span><h2>Әрекетті растау</h2><p id="confirm-message">Жалғастырғыңыз келе ме?</p><div class="actions"><button class="btn btn-light" value="cancel">Бас тарту</button><button class="btn btn-primary" value="confirm">Растау</button></div></form></dialog>
+<button class="navigation-backdrop" id="navigation-backdrop" type="button" aria-label="@T["Мәзірді жабу"]" tabindex="-1"></button>
+<dialog id="confirm-dialog" class="confirm-dialog"><form method="dialog"><span class="confirm-icon"><i data-lucide="circle-help"></i></span><h2>@T["Әрекетті растау"]</h2><p id="confirm-message">@T["Жалғастырғыңыз келе ме?"]</p><div class="actions"><button class="btn btn-light" value="cancel">@T["Бас тарту"]</button><button class="btn btn-primary" value="confirm">@T["Растау"]</button></div></form></dialog>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/lib/lucide/lucide.min.js"></script>
+<script type="application/json" id="ui-messages">@Html.Raw(JsonSerializer.Serialize(ClientText.Messages()))</script>
 <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/js/avatar.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

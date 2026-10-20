@@ -1,0 +1,123 @@
+[
+  {"key":"LLM-enhanced explanations","kk":"LLM көмегімен толықтырылған түсіндірмелер","ru":"Пояснения, дополненные LLM","en":"LLM-enhanced explanations"},
+  {
+    "key": "Edit {0}",
+    "kk": "{0} — өңдеу",
+    "ru": "Изменить: {0}",
+    "en": "Edit {0}"
+  },
+  {
+    "key": "Delete {0}",
+    "kk": "{0} — жою",
+    "ru": "Удалить: {0}",
+    "en": "Delete {0}"
+  },
+  {
+    "key": "{0} reader reviews",
+    "kk": "{0} оқырман пікірі",
+    "ru": "Отзывов читателей: {0}",
+    "en": "{0} reader reviews"
+  },
+  {
+    "key": "QR code for copy {0}",
+    "kk": "{0} данасының QR коды",
+    "ru": "QR-код экземпляра {0}",
+    "en": "QR code for copy {0}"
+  },
+  {
+    "key": "Open loan for {0}",
+    "kk": "{0} кітабының беру жазбасын ашу",
+    "ru": "Открыть выдачу книги «{0}»",
+    "en": "Open loan for {0}"
+  },
+  {
+    "key": "Your account is not linked to a student library record yet. Contact a librarian; you can browse the catalog meanwhile.",
+    "kk": "Аккаунтыңыз студенттің кітапхана жазбасымен әлі байланыстырылмаған. Кітапханашыға хабарласыңыз; осы уақытта каталогтағы әдебиеттерді қарай аласыз.",
+    "ru": "Ваш аккаунт ещё не связан с библиотечной записью студента. Обратитесь к библиотекарю; пока можно просматривать каталог.",
+    "en": "Your account is not linked to a student library record yet. Contact a librarian; you can browse the catalog meanwhile."
+  },
+  {
+    "key": "The local algorithm selects books, excludes current loans, and prioritizes available copies. Optional LLM support only enhances explanations; personal contact details are never sent.",
+    "kk": "Кітаптарды жергілікті алгоритм таңдайды. Қазір қолдағы кітаптар көрсетілмейді, бос даналарға басымдық беріледі. LLM қосылса, тек түсіндірме мәтінін толықтырады; жеке байланыс деректері жіберілмейді.",
+    "ru": "Локальный алгоритм выбирает книги, исключает текущие выдачи и отдаёт приоритет доступным экземплярам. Дополнительная LLM только улучшает пояснения; личные контактные данные не передаются.",
+    "en": "The local algorithm selects books, excludes current loans, and prioritizes available copies. Optional LLM support only enhances explanations; personal contact details are never sent."
+  },
+  {
+    "key": "Separate names with commas. Up to 20 interests, each no longer than 100 characters.",
+    "kk": "Атауларды үтірмен бөліңіз. Ең көбі 20 бағыт; әр атау 100 таңбадан аспасын.",
+    "ru": "Разделяйте названия запятыми. До 20 интересов, не более 100 символов каждый.",
+    "en": "Separate names with commas. Up to 20 interests, each no longer than 100 characters."
+  },
+  {
+    "key": "Score = the sum of each factor multiplied by its weight. Weights for missing data are redistributed.",
+    "kk": "Баға = фактор × салмақ үлестерінің қосындысы. Дерек жоқ фактордың салмағы қайта бөлінеді.",
+    "ru": "Оценка — сумма произведений факторов на их веса. Веса факторов без данных перераспределяются.",
+    "en": "Score = the sum of each factor multiplied by its weight. Weights for missing data are redistributed."
+  },
+  {
+    "key": "Open {0}",
+    "kk": "{0} кітабын ашу",
+    "ru": "Открыть «{0}»",
+    "en": "Open {0}"
+  },
+  {
+    "key": "Keep this code private. It belongs to this reservation and is checked when you collect the book.",
+    "kk": "Кодты басқа адамға бермеңіз. Код тек осы броньға тиесілі; кітапты алу кезінде тексеріледі.",
+    "ru": "Не передавайте код другим людям. Он относится только к этому бронированию и проверяется при получении книги.",
+    "en": "Keep this code private. It belongs to this reservation and is checked when you collect the book."
+  },
+  {
+    "key": "{0} reviews",
+    "kk": "{0} пікір",
+    "ru": "Отзывов: {0}",
+    "en": "{0} reviews"
+  },
+  {
+    "key": "About {0}",
+    "kk": "{0} — кітап туралы",
+    "ru": "О книге «{0}»",
+    "en": "About {0}"
+  },
+  {
+    "key": "Cover of {0}",
+    "kk": "{0} кітабының мұқабасы",
+    "ru": "Обложка книги «{0}»",
+    "en": "Cover of {0}"
+  },
+  {
+    "key": "{0} out of 5 stars",
+    "kk": "5 жұлдыздың {0} жұлдызы",
+    "ru": "{0} из 5 звёзд",
+    "en": "{0} out of 5 stars"
+  },
+  {
+    "key": "Notifications, {0} unread",
+    "kk": "Хабарландырулар, {0} оқылмаған",
+    "ru": "Уведомления, непрочитанных: {0}",
+    "en": "Notifications, {0} unread"
+  },
+  {
+    "key": "Choose a book copy",
+    "kk": "Кітап данасын таңдаңыз",
+    "ru": "Выберите экземпляр книги",
+    "en": "Choose a book copy"
+  },
+  {
+    "key": "{0} available copies",
+    "kk": "{0} қолжетімді дана",
+    "ru": "Доступно экземпляров: {0}",
+    "en": "{0} available copies"
+  },
+  {
+    "key": "Local Recommendation Engine",
+    "kk": "Жергілікті ұсыныс жүйесі",
+    "ru": "Локальная система рекомендаций",
+    "en": "Local Recommendation Engine"
+  },
+  {
+    "key": "LLM enhanced",
+    "kk": "LLM көмегімен толықтырылған",
+    "ru": "Дополнено с помощью LLM",
+    "en": "LLM enhanced"
+  }
+]

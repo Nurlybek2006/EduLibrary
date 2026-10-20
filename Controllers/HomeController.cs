@@ -30,10 +30,10 @@ namespace EduLibrary.Controllers
             Response.StatusCode = code is >=400 and <=599 ? code : 404;
             var (title, message) = Response.StatusCode switch
             {
-                403 => ("Қолжетімділік шектелген", "Бұл әрекетті орындауға рұқсатыңыз жоқ."),
-                400 => ("Сұрау жарамсыз", "Бетті жаңартып, әрекетті қайталап көріңіз."),
-                404 => ("Бет табылмады", "Сілтеме ескірген немесе бұл жазба қолжетімсіз."),
-                _ => ("Сұрау орындалмады", "Кейінірек қайталап көріңіз немесе кітапхана әкімшісіне хабарласыңыз.")
+                403 => (global::EduLibrary.Localization.UiText.Get("Қолжетімділік шектелген"), global::EduLibrary.Localization.UiText.Get("Бұл әрекетті орындауға рұқсатыңыз жоқ.")),
+                400 => (global::EduLibrary.Localization.UiText.Get("Сұрау жарамсыз"), global::EduLibrary.Localization.UiText.Get("Бетті жаңартып, әрекетті қайталап көріңіз.")),
+                404 => (global::EduLibrary.Localization.UiText.Get("Бет табылмады"), global::EduLibrary.Localization.UiText.Get("Сілтеме ескірген немесе бұл жазба қолжетімсіз.")),
+                _ => (global::EduLibrary.Localization.UiText.Get("Сұрау орындалмады"), global::EduLibrary.Localization.UiText.Get("Кейінірек қайталап көріңіз немесе кітапхана әкімшісіне хабарласыңыз."))
             };
             return View(new EduLibrary.ViewModels.StatusPageViewModel(Response.StatusCode, title, message));
         }

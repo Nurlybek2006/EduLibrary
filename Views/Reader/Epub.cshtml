@@ -1,0 +1,4 @@
+@model EduLibrary.ViewModels.ReaderViewModel
+@{ ViewData["Title"] = Model.Asset.Title; }
+<partial name="_Reader" model="Model" />
+@section Scripts { <script src="~/lib/jszip/jszip.min.js" asp-append-version="true"></script><script src="~/lib/epubjs/epub.min.js" asp-append-version="true"></script><script type="module" src="~/js/reader-epub.js" asp-append-version="true"></script> }

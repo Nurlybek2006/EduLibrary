@@ -26,6 +26,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<BookSubject> BookSubjects => Set<BookSubject>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<Reservation> Reservations => Set<Reservation>();
+    public DbSet<DigitalBookAsset> DigitalBookAssets => Set<DigitalBookAsset>();
+    public DbSet<ReadingProgress> ReadingProgress => Set<ReadingProgress>();
+    public DbSet<ReadingBookmark> ReadingBookmarks => Set<ReadingBookmark>();
+    public DbSet<DigitalReadingSession> DigitalReadingSessions => Set<DigitalReadingSession>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
