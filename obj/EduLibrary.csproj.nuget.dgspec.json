@@ -74,6 +74,10 @@
               "target": "Package",
               "version": "[1.7.0, )"
             },
+            "SkiaSharp": {
+              "target": "Package",
+              "version": "[4.153.1, )"
+            },
             "System.Security.Cryptography.Pkcs": {
               "target": "Package",
               "version": "[9.0.21, )"
